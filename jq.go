@@ -29,7 +29,10 @@ func JQ(json, query string) (string, error) {
 
 	result := []string{}
 	for _, s := range seq {
-		result = append(result, string(s))
+		ss := string(s)
+		if ss != "" && ss != "null" {
+			result = append(result, ss)
+		}
 	}
 
 	return strings.Join(result, "\n"), nil

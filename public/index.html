@@ -1,0 +1,91 @@
+<html lang="en"><head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>jq play</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/app.css">
+
+    <!-- Just for debugging purposes. Don't actually copy this line! -->
+    <!--[if lt IE 9]><script src="https://raw.githubusercontent.com/twbs/bootstrap/master/docs/assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="container">
+
+      <div class="page-header">
+        <h1>jq play</h1>
+        <p class="lead">A playground for jq</p>
+      </div>
+
+      <div class="row main">
+        <div class="col-md-6">
+          <h4>Input</h4>
+          <form id="input" class="form-horizontal" role="form">
+            <div id="filterGroup" class="form-group">
+              <div class="col-sm-10">
+                <input type="text" class="form-control" id="filter" name="q" placeholder="Filter">
+              </div>
+            </div>
+            <div id="jsonGroup" class="form-group">
+              <div class="col-sm-10">
+                <textarea class="form-control" rows="10" name="j" placeholder="JSON"></textarea>
+              </div>
+            </div>
+
+            <button id="submitBtn" type="submit" class="btn btn-default">Run</button>
+          </form>
+        </div>
+
+        <div class="col-md-6">
+          <h4>Output</h4>
+          <div class="col-sm-10">
+            <textarea id="result" disabled="disabled" class="panel" rows="10"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <hr>
+
+      <div class="footer">
+        <p>© <a href="https://twitter.com/JingwenOwenOu/">Jingwen Owen Ou</a> 2014</p>
+      </div>
+
+    </div> <!-- /container -->
+
+    <a href="https://github.com/jingweno/jqplay"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://github-camo.global.ssl.fastly.net/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script>
+      $(document).ready(function() {
+          $("#submitBtn").click(function(e) {
+            e.preventDefault();
+            $("#result").text("");
+
+            var input = $("#input").serialize();
+            $.get("/jq", input)
+            .done(function(data) {
+              $("#result").text(data);
+            })
+            .fail(function(req, status, err) {
+              $("#result").text(req.responseText);
+            });
+          });
+      });
+    </script>
+</body></html>
