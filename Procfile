@@ -1,1 +1,1 @@
-web: ./jqit
+web: cd ./bin && ./jqit
