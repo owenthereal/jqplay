@@ -1,0 +1,22 @@
+{
+	"ImportPath": "github.com/jingweno/jqit",
+	"GoVersion": "go1.2.1",
+	"Packages": [
+		"./..."
+	],
+	"Deps": [
+		{
+			"ImportPath": "github.com/codegangsta/inject",
+			"Rev": "9aea7a2fa5b79ef7fc00f63a575e72df33b4e886"
+		},
+		{
+			"ImportPath": "github.com/codegangsta/martini",
+			"Comment": "v0.1-138-g7fbb8b2",
+			"Rev": "7fbb8b23693e93b53dd7c206be93306de1ed242c"
+		},
+		{
+			"ImportPath": "github.com/jingweno/jqpipe-go",
+			"Rev": "babb52663fce6928d012c031ad353af7a3c6a725"
+		}
+	]
+}
