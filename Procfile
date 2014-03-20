@@ -1,1 +1,1 @@
-web: ./bin/jqit
+web: ./bin/jqplay
