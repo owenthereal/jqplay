@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Usage: script/start
+#
+# Builds jqplay
+
+set -e
+
+./script/build

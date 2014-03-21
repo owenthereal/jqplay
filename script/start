@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Usage: script/start
 #
-# Builds and starts server
+# Builds and starts the jqplay server
 
 set -e
 
-./script/godep go build && ./jqplay
+./script/build && ./jqplay
