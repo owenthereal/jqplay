@@ -1,7 +1,7 @@
 jqplay
 ======
 
-http://jqplay.herokuapp.com
+http://jqplay.org
 
 A playground for [jq](https://github.com/stedolan/jq) made with love by [@jingweno](https://github.com/jingweno).
 Please put it into good use.
