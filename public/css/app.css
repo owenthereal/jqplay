@@ -1,20 +1,65 @@
-.container {
-  padding-right: 15px;
-  padding-left: 15px;
+/* ___ Header styles ___ */
+
+header {
+	background: #22201e;
+	color: #fff;
+	padding: 1.5em 0;
 }
 
-.container .row h4 {
-  margin-top: 0;
-  margin-bottom: 25px;
+header .brand {
+	border-bottom: 1px solid #393735;
 }
+
+header .logo {
+	position: relative;
+	margin-bottom: -1px;
+}
+
+header p {
+	font-size: 1.2em;
+	margin-left: 3em;
+	margin-bottom: 0;
+}
+
+
+/* ___ Body styles ___ */
 
 .main {
-  height: 55%;
+	margin-top: 2em;
+  min-height: 55%;
 }
+
+.main textarea {
+	resize: vertical;
+}
+
+.main .btn-run {
+	min-width: 5em; 
+}
+
+/* Input area */
+.input-json {
+	min-height: 21.5em;
+}
+
+
+/* Out area */
 
 .panel {
   background: hsl(0, 0%, 97%);
+  border: 1px solid #DDD;
   width: 100%;
-  height: 80%;
-  resize: none;
+	min-height: 25em;
+}
+
+
+/* ___ Footer styles ___ */
+
+footer {
+	text-align: center;
+	margin-top: 10em;
+}
+
+footer hr {
+	max-width: 15%;
 }
