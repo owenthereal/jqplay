@@ -5,4 +5,4 @@
 
 set -e
 
-./script/build
+./script/godep go build
