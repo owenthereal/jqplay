@@ -43,6 +43,8 @@ func setupJQPath() (string, error) {
 }
 
 func jqVersion() (string, error) {
+	fmt.Println(os.Getenv("PATH"))
+	fmt.Println(Path)
 	out, err := exec.Command(Path, "--version").Output()
 	if err != nil {
 		return "", err
