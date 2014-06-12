@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/jingweno/jqplay/jq"
+	"github.com/jingweno/jqplay/server"
 )
 
 func main() {
@@ -16,6 +17,6 @@ func main() {
 	}
 
 	log.Printf("Starting server at %s\n", port)
-	s := &Server{port}
+	s := server.New(port)
 	s.Start()
 }

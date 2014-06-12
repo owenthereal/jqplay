@@ -1,4 +1,4 @@
-package main
+package server
 
 import (
 	"encoding/json"
@@ -6,7 +6,6 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/codegangsta/negroni"
 	"github.com/jingweno/jqplay/jq"
 	"github.com/unrolled/render"
 )
@@ -53,21 +52,4 @@ func (h *JQHandler) handleJq(rw http.ResponseWriter, r *http.Request) {
 	}
 
 	h.r.JSON(rw, 200, re)
-}
-
-type Server struct {
-	Port string
-}
-
-func (s *Server) Start() {
-	r := render.New(render.Options{})
-	h := &JQHandler{r}
-
-	mux := http.NewServeMux()
-	mux.HandleFunc("/", h.handleIndex)
-	mux.HandleFunc("/jq", h.handleJq)
-
-	n := negroni.Classic()
-	n.UseHandler(mux)
-	n.Run(":" + s.Port)
 }
