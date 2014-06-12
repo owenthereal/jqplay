@@ -55,6 +55,12 @@ func jqVersion() (string, error) {
 		return string(m), nil
 	}
 
+	r = regexp.MustCompile(`^jq version (.+)$`)
+	if r.Match(out) {
+		m := r.FindSubmatch(out)[1]
+		return string(m), nil
+	}
+
 	return "", fmt.Errorf("can't find jq version")
 }
 
