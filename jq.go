@@ -10,7 +10,7 @@ import (
 	"github.com/jingweno/jqpipe-go"
 )
 
-func setupJQExec() error {
+func setupJQPath() error {
 	pwd, err := os.Getwd()
 	if err != nil {
 		return err

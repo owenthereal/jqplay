@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	err := setupJQExec()
+	err := setupJQPath()
 	if err != nil {
 		log.Fatal(err)
 	}
