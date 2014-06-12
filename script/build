@@ -5,4 +5,4 @@
 
 set -e
 
-./script/godep go build
+./script/godep go build -o ./bin/jqplay
