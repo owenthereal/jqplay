@@ -81,12 +81,17 @@
             e.preventDefault();
             $("#result").text("");
 
-            var input = $("#input").serialize();
-            $.get("/jq", input)
-            .done(function(data) {
+            var sa = $("#input").serializeArray();
+            var input = {};
+            $.each(sa, function(i, v) {
+              input[v.name] = v.value;
+            });
+
+            var posting = $.post("/jq", JSON.stringify(input));
+            posting.done(function(data) {
               $("#result").text(data);
-            })
-            .fail(function(req, status, err) {
+            });
+            posting.fail(function(req, status, err) {
               var err = JSON.parse(req.responseText);
               $("#result").text(err.message);
             });

@@ -1,6 +1,8 @@
 package main
 
 import (
+	"encoding/json"
+	"io/ioutil"
 	"log"
 	"net/http"
 
@@ -13,23 +15,33 @@ type JQHandler struct {
 }
 
 func (h *JQHandler) handle(rw http.ResponseWriter, r *http.Request) {
-	query := r.URL.Query()
-	j := query.Get("j")
-	q := query.Get("q")
-
-	if j == "" {
-		h.r.JSON(rw, 422, map[string]string{"message": "param j can't be blank"})
+	if r.Method != "POST" {
+		h.r.JSON(rw, 500, nil)
 		return
 	}
 
-	if q == "" {
-		h.r.JSON(rw, 422, map[string]string{"message": "param q can't be blank"})
+	b, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		h.r.JSON(rw, 422, map[string]string{"message": err.Error()})
+		return
+	}
+	defer r.Body.Close()
+
+	var jq *JQ
+	err = json.Unmarshal(b, &jq)
+	if err != nil {
+		h.r.JSON(rw, 422, map[string]string{"message": err.Error()})
 		return
 	}
 
-	log.Printf("j=%s, q=%s", j, q)
+	if !jq.Valid() {
+		h.r.JSON(rw, 422, map[string]string{"message": "invalid input"})
+		return
+	}
 
-	re, err := JQ(j, q)
+	log.Println(jq)
+
+	re, err := jq.Eval()
 	if err != nil {
 		h.r.JSON(rw, 422, map[string]string{"message": err.Error()})
 		return

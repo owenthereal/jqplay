@@ -21,8 +21,13 @@ func setupJQPath() error {
 	return nil
 }
 
-func JQ(json, query string) (string, error) {
-	seq, err := jq.Eval(json, query)
+type JQ struct {
+	J string `json:"j"`
+	Q string `json:"q"`
+}
+
+func (j *JQ) Eval() (string, error) {
+	seq, err := jq.Eval(j.J, j.Q)
 	if err != nil {
 		return "", err
 	}
@@ -36,4 +41,12 @@ func JQ(json, query string) (string, error) {
 	}
 
 	return strings.Join(result, "\n"), nil
+}
+
+func (j *JQ) Valid() bool {
+	return j.J != "" && j.Q != ""
+}
+
+func (j JQ) String() string {
+	return fmt.Sprintf("j=%s, q=%s", j.J, j.Q)
 }
