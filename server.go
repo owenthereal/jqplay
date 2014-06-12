@@ -4,40 +4,52 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/codegangsta/martini"
+	"github.com/codegangsta/negroni"
+	"github.com/unrolled/render"
 )
 
-func handleJQ(req *http.Request, logger *log.Logger) (int, string) {
-	query := req.URL.Query()
+type JQHandler struct {
+	r *render.Render
+}
+
+func (h *JQHandler) handle(rw http.ResponseWriter, r *http.Request) {
+	query := r.URL.Query()
 	j := query.Get("j")
 	q := query.Get("q")
 
 	if j == "" {
-		return 422, "param j can't be blank"
+		h.r.JSON(rw, 422, map[string]string{"message": "param j can't be blank"})
+		return
 	}
 
 	if q == "" {
-		return 422, "param q can't be blank"
+		h.r.JSON(rw, 422, map[string]string{"message": "param q can't be blank"})
+		return
 	}
 
-	logger.Printf("j=%s, q=%s", j, q)
+	log.Printf("j=%s, q=%s", j, q)
 
-	r, err := JQ(j, q)
+	re, err := JQ(j, q)
 	if err != nil {
-		return 422, err.Error()
+		h.r.JSON(rw, 422, map[string]string{"message": err.Error()})
+		return
 	}
 
-	return 200, r
+	h.r.JSON(rw, 200, re)
 }
 
 type Server struct {
 	Port string
 }
 
-func (s *Server) Start() error {
-	m := martini.Classic()
-	m.Use(martini.Static("public"))
-	m.Get("/jq", handleJQ)
+func (s *Server) Start() {
+	r := render.New(render.Options{})
+	h := &JQHandler{r}
 
-	return http.ListenAndServe(":"+s.Port, m)
+	mux := http.NewServeMux()
+	mux.HandleFunc("/jq", h.handle)
+
+	n := negroni.Classic()
+	n.UseHandler(mux)
+	n.Run(":" + s.Port)
 }

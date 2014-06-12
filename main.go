@@ -18,8 +18,5 @@ func main() {
 
 	log.Printf("Starting server at %s\n", port)
 	s := &Server{port}
-	err = s.Start()
-	if err != nil {
-		log.Fatal(err)
-	}
+	s.Start()
 }

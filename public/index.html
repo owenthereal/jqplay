@@ -87,7 +87,8 @@
               $("#result").text(data);
             })
             .fail(function(req, status, err) {
-              $("#result").text(req.responseText);
+              var err = JSON.parse(req.responseText);
+              $("#result").text(err.message);
             });
           });
       });
