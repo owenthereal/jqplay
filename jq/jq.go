@@ -43,12 +43,10 @@ func setupJQPath() (string, error) {
 }
 
 func jqVersion() (string, error) {
-	out, err := exec.Command("jq", "--version").Output()
+	out, err := exec.Command(Path, "--version").Output()
 	if err != nil {
 		return "", err
 	}
-
-	fmt.Println(out)
 
 	out = bytes.TrimSpace(out)
 	r := regexp.MustCompile(`^jq-(.+)$`)
