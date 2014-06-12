@@ -61,7 +61,7 @@ func jqVersion() (string, error) {
 		return string(m), nil
 	}
 
-	return "", fmt.Errorf("can't find jq version")
+	return "", fmt.Errorf("can't find jq version: %s", out)
 }
 
 type JQ struct {
