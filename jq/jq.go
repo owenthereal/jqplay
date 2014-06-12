@@ -43,21 +43,17 @@ func setupJQPath() (string, error) {
 }
 
 func jqVersion() (string, error) {
-	fmt.Println(os.Getenv("PATH"))
-	fmt.Println(Path)
-	out, err := exec.Command(Path, "--version").Output()
-	if err != nil {
-		return "", err
-	}
+	// get version from `jq --help`
+	// since `jq --version` diffs between versions
+	// e.g., 1.3 & 1.4
+	var b bytes.Buffer
+	cmd := exec.Command(Path, "--help")
+	cmd.Stdout = &b
+	cmd.Stderr = &b
+	cmd.Run()
 
-	out = bytes.TrimSpace(out)
-	r := regexp.MustCompile(`^jq-(.+)$`)
-	if r.Match(out) {
-		m := r.FindSubmatch(out)[1]
-		return string(m), nil
-	}
-
-	r = regexp.MustCompile(`^jq version (.+)$`)
+	out := bytes.TrimSpace(b.Bytes())
+	r := regexp.MustCompile(`\[version (.+)\]`)
 	if r.Match(out) {
 		m := r.FindSubmatch(out)[1]
 		return string(m), nil
