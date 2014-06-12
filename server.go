@@ -7,6 +7,7 @@ import (
 	"net/http"
 
 	"github.com/codegangsta/negroni"
+	"github.com/jingweno/jqplay/jq"
 	"github.com/unrolled/render"
 )
 
@@ -15,7 +16,7 @@ type JQHandler struct {
 }
 
 func (h *JQHandler) handleIndex(rw http.ResponseWriter, r *http.Request) {
-	h.r.HTML(rw, 200, "index", JQVersion)
+	h.r.HTML(rw, 200, "index", jq.Version)
 }
 
 func (h *JQHandler) handleJq(rw http.ResponseWriter, r *http.Request) {
@@ -31,7 +32,7 @@ func (h *JQHandler) handleJq(rw http.ResponseWriter, r *http.Request) {
 	}
 	defer r.Body.Close()
 
-	var jq *JQ
+	var jq *jq.JQ
 	err = json.Unmarshal(b, &jq)
 	if err != nil {
 		h.r.JSON(rw, 422, map[string]string{"message": err.Error()})

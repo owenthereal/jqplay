@@ -1,4 +1,4 @@
-package main
+package jq
 
 import (
 	"bytes"
@@ -14,17 +14,17 @@ import (
 	"github.com/jingweno/jqpipe-go"
 )
 
-var JQPath, JQVersion string
+var Path, Version string
 
 func init() {
 	var err error
 
-	JQPath, err = setupJQPath()
+	Path, err = setupJQPath()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	JQVersion, err = jqVersion()
+	Version, err = jqVersion()
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -39,7 +39,7 @@ func setupJQPath() (string, error) {
 	jqPath := filepath.Join(pwd, "bin", fmt.Sprintf("%s_%s", runtime.GOOS, runtime.GOARCH))
 	os.Setenv("PATH", fmt.Sprintf("%s%c%s", jqPath, os.PathListSeparator, os.Getenv("PATH")))
 
-	return jqPath, nil
+	return filepath.Join(jqPath, "jq"), nil
 }
 
 func jqVersion() (string, error) {
