@@ -48,6 +48,8 @@ func jqVersion() (string, error) {
 		return "", err
 	}
 
+	fmt.Println(out)
+
 	out = bytes.TrimSpace(out)
 	r := regexp.MustCompile(`^jq-(.+)$`)
 	if r.Match(out) {
