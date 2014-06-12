@@ -15,8 +15,17 @@
 			"Rev": "7fbb8b23693e93b53dd7c206be93306de1ed242c"
 		},
 		{
+			"ImportPath": "github.com/codegangsta/negroni",
+			"Comment": "v0.1-4-ga13766a",
+			"Rev": "a13766a8c2572caeb14341b7de158aff2fd00fa9"
+		},
+		{
 			"ImportPath": "github.com/jingweno/jqpipe-go",
 			"Rev": "babb52663fce6928d012c031ad353af7a3c6a725"
+		},
+		{
+			"ImportPath": "github.com/unrolled/render",
+			"Rev": "f9c435989c42d76c061b645e5ba8beadbd1c90d6"
 		}
 	]
 }
