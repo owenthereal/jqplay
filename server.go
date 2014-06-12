@@ -14,7 +14,11 @@ type JQHandler struct {
 	r *render.Render
 }
 
-func (h *JQHandler) handle(rw http.ResponseWriter, r *http.Request) {
+func (h *JQHandler) handleIndex(rw http.ResponseWriter, r *http.Request) {
+	h.r.HTML(rw, 200, "index", JQVersion)
+}
+
+func (h *JQHandler) handleJq(rw http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		h.r.JSON(rw, 500, nil)
 		return
@@ -59,7 +63,8 @@ func (s *Server) Start() {
 	h := &JQHandler{r}
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/jq", h.handle)
+	mux.HandleFunc("/", h.handleIndex)
+	mux.HandleFunc("/jq", h.handleJq)
 
 	n := negroni.Classic()
 	n.UseHandler(mux)

@@ -6,10 +6,7 @@ import (
 )
 
 func main() {
-	err := setupJQPath()
-	if err != nil {
-		log.Fatal(err)
-	}
+	log.Printf("jq version=%s path=%s\n", JQVersion, JQPath)
 
 	port := os.Getenv("PORT")
 	if port == "" {
