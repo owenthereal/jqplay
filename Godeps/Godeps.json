@@ -6,15 +6,6 @@
 	],
 	"Deps": [
 		{
-			"ImportPath": "github.com/codegangsta/inject",
-			"Rev": "9aea7a2fa5b79ef7fc00f63a575e72df33b4e886"
-		},
-		{
-			"ImportPath": "github.com/codegangsta/martini",
-			"Comment": "v0.1-138-g7fbb8b2",
-			"Rev": "7fbb8b23693e93b53dd7c206be93306de1ed242c"
-		},
-		{
 			"ImportPath": "github.com/codegangsta/negroni",
 			"Comment": "v0.1-4-ga13766a",
 			"Rev": "a13766a8c2572caeb14341b7de158aff2fd00fa9"
