@@ -28,7 +28,7 @@ func (s *Server) Start() {
 	n := negroni.Classic()
 	n.UseHandler(mux)
 	if nwk := os.Getenv("NEW_RELIC_LICENSE_KEY"); nwk != "" {
-		n.Use(negronigorelic.New(nwk, "jqplay", true))
+		n.Use(negronigorelic.New(nwk, "jqplay", false))
 	}
 	n.Run(":" + s.Port)
 }
