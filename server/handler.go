@@ -38,8 +38,8 @@ func (h *JQHandler) handleJq(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !jq.Valid() {
-		h.r.JSON(rw, 422, map[string]string{"message": "invalid input"})
+	if err := jq.Validate(); err != nil {
+		h.r.JSON(rw, 422, map[string]string{"message": err.Error()})
 		return
 	}
 

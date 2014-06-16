@@ -84,8 +84,22 @@ func (j *JQ) Eval() (string, error) {
 	return strings.Join(result, "\n"), nil
 }
 
-func (j *JQ) Valid() bool {
-	return j.J != "" && j.Q != ""
+func (j *JQ) Validate() error {
+	errMsgs := []string{}
+
+	if j.Q == "" {
+		errMsgs = append(errMsgs, "missing filter")
+	}
+
+	if j.J == "" {
+		errMsgs = append(errMsgs, "missing JSON")
+	}
+
+	if len(errMsgs) > 0 {
+		return fmt.Errorf("invalid input: %s", strings.Join(errMsgs, " and "))
+	}
+
+	return nil
 }
 
 func (j JQ) String() string {
