@@ -1,8 +1,12 @@
 language: go
 go:
 - 1.2.2
+install:
+- npm install -g bower
+- bower install
+- script/build
 script:
-- ./script/test
+- script/test
 deploy:
   provider: heroku
   buildpack: https://github.com/kr/heroku-buildpack-go.git

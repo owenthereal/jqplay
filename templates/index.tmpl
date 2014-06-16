@@ -1,4 +1,5 @@
-<html lang="en"><head>
+<html lang="en" ng-app="jqplay">
+  <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -8,7 +9,7 @@
     <title>jq play</title>
 
     <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/app.css">
 
     <!-- Just for debugging purposes. Don't actually copy this line! -->
@@ -33,71 +34,51 @@
           <p>A playground for <a href="http://stedolan.github.io/jq/">jq</a> {{.}}</p>
         </div>
     </header>
+
     <div class="container">
-      <div class="row main">
+      <div class="row main" ng-controller="JqplayCtrl">
         <div class="col-md-6">
           <h2>Input</h2>
-          <form id="input" class="form-horizontal" role="form">
+          <form name="input" class="form-horizontal" role="form" novalidate>
             <div id="filterGroup" class="form-group">
               <div class="col-sm-12">
-                <input type="text" class="form-control" id="filter" name="q" placeholder="Filter">
+                <input type="text" class="form-control" id="filter" name="q" placeholder="Filter" ng-model="jq.q" autofocus required>
               </div>
             </div>
             <div id="jsonGroup" class="form-group">
               <div class="col-sm-12">
-                <textarea class="form-control input-json" rows="10" name="j" placeholder="JSON"></textarea>
+                <textarea class="form-control input-json" rows="10" name="j" placeholder="JSON" ng-model="jq.j" required></textarea>
               </div>
             </div>
 
-            <button id="submitBtn" type="submit" class="btn btn-primary btn-run">Run</button>
+            <button id="submitBtn" type="submit" class="btn btn-primary btn-run" ng-click="run(jq)" ng-disabled="input.$invalid">Run</button>
           </form>
         </div>
 
         <div class="col-md-6">
           <div class="col-sm-12">
             <h2>Output</h2>
-            <textarea id="result" disabled="disabled" class="panel" rows="10"></textarea>
+            <textarea id="result" ng-model="result" disabled="disabled" class="panel" rows="10"></textarea>
           </div>
         </div>
       </div>
 
-    </div>  
+    </div>
+
     <footer class="footer">
       <hr>
       <p>Made with love by <a href="https://github.com/jingweno">@jingweno</a> & <a href="https://github.com/lokywin">@lokywin</a></p>
     </footer>
 
-
     <a href="https://github.com/jingweno/jqplay"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/52760788cde945287fbb584134c4cbc2bc36f904/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f77686974655f6666666666662e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_white_ffffff.png"></a>
-
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-    <script>
-      $(document).ready(function() {
-          $("#submitBtn").click(function(e) {
-            e.preventDefault();
-            $("#result").text("");
-
-            var sa = $("#input").serializeArray();
-            var input = {};
-            $.each(sa, function(i, v) {
-              input[v.name] = v.value;
-            });
-
-            var posting = $.post("/jq", JSON.stringify(input));
-            posting.done(function(data) {
-              $("#result").text(data);
-            });
-            posting.fail(function(req, status, err) {
-              var err = JSON.parse(req.responseText);
-              $("#result").text(err.message);
-            });
-          });
-      });
-    </script>
+    <script src="bower_components/angular/angular.min.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/controllers/jqplayCtrl.js"></script>
+    <script src="js/services/jqplayService.js"></script>
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
