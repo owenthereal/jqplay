@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Usage: script/test
+#
+# Run tests
+
+set -e
+
+./script/godep go test ./...

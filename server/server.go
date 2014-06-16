@@ -2,8 +2,10 @@ package server
 
 import (
 	"net/http"
+	"os"
 
 	"github.com/codegangsta/negroni"
+	"github.com/jingweno/negroni-gorelic"
 	"github.com/unrolled/render"
 )
 
@@ -25,5 +27,8 @@ func (s *Server) Start() {
 
 	n := negroni.Classic()
 	n.UseHandler(mux)
+	if nwk := os.Getenv("NEW_RELIC_LICENSE_KEY"); nwk != "" {
+		n.Use(negronigorelic.New(nwk, "jqplay", true))
+	}
 	n.Run(":" + s.Port)
 }
