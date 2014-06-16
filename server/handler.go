@@ -51,5 +51,5 @@ func (h *JQHandler) handleJq(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	h.r.JSON(rw, 200, re)
+	h.r.JSON(rw, 200, map[string]string{"result": re})
 }
