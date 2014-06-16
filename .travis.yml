@@ -2,7 +2,7 @@ language: go
 go:
 - 1.2.2
 script:
-- go test ./...
+- ./script/test
 deploy:
   provider: heroku
   buildpack: https://github.com/kr/heroku-buildpack-go.git
