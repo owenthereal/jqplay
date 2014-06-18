@@ -23,6 +23,10 @@
 			"Rev": "f9c435989c42d76c061b645e5ba8beadbd1c90d6"
 		},
 		{
+			"ImportPath": "github.com/unrolled/secure",
+			"Rev": "8186d71f0ca905b8df15d41b1f48b68720ba7eb4"
+		},
+		{
 			"ImportPath": "github.com/yvasiyarov/go-metrics",
 			"Rev": "b23f8b043b6492e7aef34eb11aab268a5c89c14b"
 		},
