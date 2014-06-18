@@ -1,9 +1,10 @@
 package server
 
 type Config struct {
-	JQVersion          string
+	Port               string
 	Env                string
 	NewRelicLicenseKey string
+	JQVersion          string
 }
 
 func (c *Config) IsProduction() bool {

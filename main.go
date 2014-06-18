@@ -16,7 +16,14 @@ func main() {
 		port = "3000"
 	}
 
-	log.Printf("Starting server at %s\n", port)
-	s := server.New(port)
+	c := &server.Config{
+		Port:               port,
+		Env:                os.Getenv("JQPLAY_ENV"),
+		NewRelicLicenseKey: os.Getenv("NEW_RELIC_LICENSE_KEY"),
+		JQVersion:          jq.Version,
+	}
+
+	log.Printf("Starting server at %s\n", c.Port)
+	s := server.New(c)
 	s.Start()
 }

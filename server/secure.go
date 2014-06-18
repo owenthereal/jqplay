@@ -5,7 +5,7 @@ import (
 	"github.com/unrolled/secure"
 )
 
-func secureHanlder(c *Config) negroni.Handler {
+func secureMiddleware(c *Config) negroni.Handler {
 	secureMiddleware := secure.New(secure.Options{
 		SSLRedirect:           true,
 		STSSeconds:            315360000,

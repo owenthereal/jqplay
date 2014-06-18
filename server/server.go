@@ -10,12 +10,12 @@ import (
 	"github.com/unrolled/render"
 )
 
-func New(port string) *Server {
-	return &Server{port}
+func New(c *Config) *Server {
+	return &Server{c}
 }
 
 type Server struct {
-	Port string
+	Config *Config
 }
 
 func (s *Server) Start() {
@@ -35,8 +35,8 @@ func (s *Server) Start() {
 	if nwk := c.NewRelicLicenseKey; nwk != "" {
 		n.Use(negronigorelic.New(nwk, "jqplay", false))
 	}
-	n.Use(secureHanlder(c))
+	n.Use(secureMiddleware(c))
 	n.UseHandler(mux)
 
-	n.Run(":" + s.Port)
+	n.Run(":" + s.Config.Port)
 }
