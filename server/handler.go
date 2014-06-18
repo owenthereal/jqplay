@@ -12,10 +12,11 @@ import (
 
 type JQHandler struct {
 	r *render.Render
+	c *Config
 }
 
 func (h *JQHandler) handleIndex(rw http.ResponseWriter, r *http.Request) {
-	h.r.HTML(rw, 200, "index", jq.Version)
+	h.r.HTML(rw, 200, "index", h.c)
 }
 
 func (h *JQHandler) handleJq(rw http.ResponseWriter, r *http.Request) {
