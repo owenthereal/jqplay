@@ -9,6 +9,7 @@ func secureMiddleware(c *Config) negroni.Handler {
 	secureMiddleware := secure.New(secure.Options{
 		SSLRedirect:           true,
 		STSSeconds:            315360000,
+		SSLProxyHeaders:       map[string]string{"X-Forwarded-Proto": "https"},
 		STSIncludeSubdomains:  true,
 		FrameDeny:             true,
 		ContentTypeNosniff:    true,
