@@ -24,17 +24,25 @@ header p {
 
 /* ___ Body styles ___ */
 
-.main {
-	margin-top: 2em;
-  min-height: 55%;
+/* Styles for sticky footer */
+.page-wrap {
+	min-height: 97%;
+	margin-bottom: -3em;
+}
+.page-wrap:after{
+  content: "";
+  display: block;
 }
 
+.main {
+	margin-top: 2em;
+}
 .main textarea {
 	resize: vertical;
 }
 
 .main .btn-run {
-	min-width: 5em; 
+	min-width: 5em;
 }
 
 /* Input area */
@@ -42,9 +50,7 @@ header p {
 	min-height: 21.5em;
 }
 
-
-/* Out area */
-
+/* Output area */
 .panel {
   background: hsl(0, 0%, 97%);
   border: 1px solid #DDD;
@@ -57,7 +63,7 @@ header p {
 
 footer {
 	text-align: center;
-	margin-top: 10em;
+	height: 3em;
 }
 
 footer hr {
