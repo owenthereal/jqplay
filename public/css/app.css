@@ -1,65 +1,75 @@
+/* ___ Base styles ___ */
+body {
+  height: 100%;
+}
+
 /* ___ Header styles ___ */
 
 header {
-	background: #22201e;
-	color: #fff;
-	padding: 1.5em 0;
+  background: #22201e;
+  color: #fff;
+  padding: 1.5em 0;
 }
 
 header .brand {
-	border-bottom: 1px solid #393735;
+  border-bottom: 1px solid #393735;
 }
 
 header .logo {
-	position: relative;
-	margin-bottom: -1px;
+  position: relative;
+  margin-bottom: -1px;
 }
 
 header p {
-	font-size: 1.2em;
-	margin-left: 3em;
-	margin-bottom: 0;
+  font-size: 1.2em;
+  margin-left: 3em;
+  margin-bottom: 0;
 }
 
 
 /* ___ Body styles ___ */
 
-.main {
-	margin-top: 2em;
-  min-height: 55%;
+/* Styles for sticky footer */
+.page-wrap {
+  min-height: 92%;
+}
+.page-wrap:after{
+  content: "";
+  display: block;
 }
 
+.main {
+  margin-top: 2em;
+}
 .main textarea {
-	resize: vertical;
+  resize: vertical;
 }
 
 .main .btn-run {
-	min-width: 5em; 
+  min-width: 5em;
 }
 
 /* Input area */
 .input-json {
-	min-height: 21.5em;
+  min-height: 21.5em;
 }
 
-
-/* Out area */
-
+/* Output area */
 .panel {
   background: hsl(0, 0%, 97%);
   border: 1px solid #DDD;
   width: 100%;
-	min-height: 25em;
+  min-height: 25em;
 }
 
 
 /* ___ Footer styles ___ */
 
 footer {
-	text-align: center;
-	margin-top: 10em;
+  text-align: center;
+  height: 3em;
 }
 
 footer hr {
-	max-width: 15%;
+  max-width: 15%;
 }
