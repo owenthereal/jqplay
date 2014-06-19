@@ -1,3 +1,8 @@
+/* ___ Base styles ___ */
+body {
+  height: 100%;
+}
+
 /* ___ Header styles ___ */
 
 header {
@@ -26,8 +31,7 @@ header p {
 
 /* Styles for sticky footer */
 .page-wrap {
-  min-height: 97%;
-  margin-bottom: -3em;
+  min-height: 92%;
 }
 .page-wrap:after{
   content: "";
