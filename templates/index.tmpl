@@ -56,13 +56,71 @@
           <div class="col-md-6">
             <div class="col-sm-12">
               <h2>Output</h2>
-              <textarea id="result" ng-model="result" disabled="disabled" class="panel" rows="10"></textarea>
+              <textarea id="result" ng-model="result" disabled="disabled" class="output" rows="10"></textarea>
             </div>
           </div>
         </div>
 
+      <div class="row main panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title" style="text-align: center;">
+            Cheatsheet
+          </h3>
+        </div>
+
+        <div class="panel-body">
+          <div class="col-md-6">
+            <table class="table">
+              <tbody>
+                <tr>
+                  <td>.</td>
+                  <td>unchanged input</td>
+                </tr>
+                <tr>
+                  <td>.foo, .foo.bar, .foo?</td>
+                  <td>value at key</td>
+                </tr>
+                <tr>
+                  <td>.[], .[]?, .[&lt;string&gt;], .[2], .[10:15]</td>
+                  <td>array operation</td>
+                </tr>
+                <tr>
+                  <td>,</td>
+                  <td>concatenate multiple filters</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="col-md-6">
+            <table class="table">
+              <tbody>
+                <tr>
+                  <td>,</td>
+                  <td>multiple filters with multiple outputs</td>
+                </tr>
+                <tr>
+                  <td>|</td>
+                  <td>combine multiple filters to one output</td>
+                </tr>
+                <tr>
+                  <td>length</td>
+                  <td>a function to return length of a value</td>
+                </tr>
+                <tr>
+                  <td>keys</td>
+                  <td>a function to return keys in an array</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
       </div>
+
     </div>
+  </div>
+
     <footer class="footer">
       <hr>
       <p>Made with love by <a href="https://github.com/jingweno">@jingweno</a> &amp; <a href="https://github.com/lokywin">@lokywin</a></p>

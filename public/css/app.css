@@ -55,13 +55,16 @@ header p {
 }
 
 /* Output area */
-.panel {
+.output {
   background: hsl(0, 0%, 97%);
   border: 1px solid #DDD;
   width: 100%;
   min-height: 25em;
 }
 
+.panel-heading {
+  margin-bottom: 1.5em;
+}
 
 /* ___ Footer styles ___ */
 
