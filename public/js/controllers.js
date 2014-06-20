@@ -4,7 +4,7 @@ angular.module('jqplay.controllers', []).controller('JqplayCtrl', function Jqpla
   $scope.result = "";
 
   $scope.$watch('jq', function(newValue, oldValue) {
-    if ($scope.input.$valid && !angular.equals(newValue, oldValue)) {
+    if ($scope.input.$valid) {
       if ($scope.runTimeout != null) {
         $timeout.cancel($scope.runTimeout);
         $scope.runTimeout = null;
