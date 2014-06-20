@@ -1,7 +1,6 @@
-/*global jqplay, angular */
 'use strict';
 
-jqplay.controller('JqplayCtrl', function JqplayCtrl($scope, jqplayService) {
+angular.module('jqplay.controllers', []).controller('JqplayCtrl', function JqplayCtrl($scope, jqplayService) {
   $scope.result = "";
   $scope.run = function(jq) {
     $scope.result = "";

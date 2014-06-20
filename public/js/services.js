@@ -1,7 +1,6 @@
-/*global jqplay */
 'use strict';
 
-jqplay.factory('jqplayService', function ($http) {
+angular.module('jqplay.services', []).factory('jqplayService', function ($http) {
   return {
     run: function (jq) {
       return $http({
