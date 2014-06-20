@@ -1,10 +1,6 @@
-/*global angular */
-/*jshint unused:false */
 'use strict';
 
-/**
- * The main TodoMVC app module
- *
- * @type {angular.Module}
- */
-var jqplay = angular.module('jqplay', []);
+angular.module('jqplay', [
+  'jqplay.controllers',
+  'jqplay.services'
+]);
