@@ -14,6 +14,8 @@ angular.module('jqplay.controllers', []).controller('JqplayCtrl', function Jqpla
         $scope.run($scope.jq);
         $scope.runTimeout = null;
       }, 1000);
+    } else {
+      $scope.result = "";
     }
   }, true);
 
