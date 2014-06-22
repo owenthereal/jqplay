@@ -74,7 +74,7 @@
               <tbody>
                 <tr>
                   <td>.</td>
-                  <td>unchanged input</td>
+                  <td>input unchanged as output</td>
                 </tr>
                 <tr>
                   <td>.foo, .foo.bar, .foo?</td>
@@ -83,6 +83,18 @@
                 <tr>
                   <td>.[], .[]?, .[&lt;string&gt;], .[2], .[10:15]</td>
                   <td>array operation</td>
+                </tr>
+                <tr>
+                  <td>[], {}</td>
+                  <td>array/object construction</td>
+                </tr>
+                <tr>
+                  <td>length</td>
+                  <td>length of a value</td>
+                </tr>
+                <tr>
+                  <td>keys</td>
+                  <td>keys in an array</td>
                 </tr>
               </tbody>
             </table>
@@ -93,15 +105,27 @@
               <tbody>
                 <tr>
                   <td>,</td>
-                  <td>multiple filters with multiple outputs</td>
+                  <td>feed input into multiple filters and generate multiple outputs</td>
                 </tr>
                 <tr>
                   <td>|</td>
-                  <td>combine multiple filters to one output</td>
+                  <td>pipe output of one filter to the next filter</td>
                 </tr>
                 <tr>
-                  <td>length</td>
-                  <td>a function to return length of a value</td>
+                  <td>select(foo)</td>
+                  <td>input unchanged if foo returns true</td>
+                </tr>
+                <tr>
+                  <td>map(foo)</td>
+                  <td>for each input run filter foo and produce outputs in an array</td>
+                </tr>
+                <tr>
+                  <td>if-then-else</td>
+                  <td>conditionals</td>
+                </tr>
+                <tr>
+                  <td>\(foo)</td>
+                  <td>string interpolation</td>
                 </tr>
               </tbody>
             </table>
