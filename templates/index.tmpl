@@ -1,92 +1,172 @@
 <html lang="en" ng-app="jqplay">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="">
+  <meta name="author" content="">
 
-    <title>jq play</title>
+  <title>jq play</title>
 
-    <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/app.css">
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+  <link rel="stylesheet" href="css/app.css">
 
-    <!-- Just for debugging purposes. Don't actually copy this line! -->
-    <!--[if lt IE 9]><script src="https://raw.githubusercontent.com/twbs/bootstrap/master/docs/assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+  <!-- Just for debugging purposes. Don't actually copy this line! -->
+  <!--[if lt IE 9]><script src="https://raw.githubusercontent.com/twbs/bootstrap/master/docs/assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
 
-    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-  </head>
+  <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+  <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+  <![endif]-->
+</head>
 
-  <body>
-    <div class="page-wrap">
-      <header>
-        <div class="brand">
-          <div class="container">
-            <a href="/"><img src="images/logo.png" alt="jqplay" class="logo"></a>
-          </div>
+<body>
+  <div class="page-wrap">
+    <header>
+      <div class="brand">
+        <div class="container">
+          <a href="/"><img src="images/logo.png" alt="jqplay" class="logo"></a>
         </div>
-          <div class="container">
-            <p>A playground for <a href="http://stedolan.github.io/jq/">jq</a> {{.JQVersion}}</p>
-          </div>
-      </header>
-
+      </div>
       <div class="container">
-        <div class="row main" ng-controller="JqplayCtrl">
-          <div class="col-md-6">
-            <h2>Input</h2>
-            <form name="input" class="form-horizontal" role="form" novalidate>
-              <div id="filterGroup" class="form-group">
-                <div class="col-sm-12">
-                  <input type="text" class="form-control" id="filter" name="q" placeholder="Filter" ng-model="jq.q" autofocus required>
-                </div>
-              </div>
-              <div id="jsonGroup" class="form-group">
-                <div class="col-sm-12">
-                  <textarea class="form-control input-json" rows="10" name="j" placeholder="JSON" ng-model="jq.j" required></textarea>
-                </div>
-              </div>
-            </form>
-          </div>
+        <p>A playground for <a href="http://stedolan.github.io/jq/">jq</a> {{.JQVersion}}</p>
+      </div>
+    </header>
 
-          <div class="col-md-6">
-            <div class="col-sm-12">
-              <h2>Output</h2>
-              <textarea id="result" ng-model="result" disabled="disabled" class="panel" rows="10"></textarea>
+    <div class="container">
+      <div class="row main" ng-controller="JqplayCtrl">
+
+        <div class="col-md-6">
+          <h2>Input</h2>
+          <form name="input" class="form-horizontal" role="form" novalidate>
+            <div id="filterGroup" class="form-group">
+              <div class="col-sm-12">
+                <input type="text" class="form-control" id="filter" name="q" placeholder="Filter" ng-model="jq.q" autofocus required>
+              </div>
             </div>
+            <div id="jsonGroup" class="form-group">
+              <div class="col-sm-12">
+                <textarea class="form-control input-json" rows="10" name="j" placeholder="JSON" ng-model="jq.j" required></textarea>
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="col-md-6">
+          <div class="col-sm-12">
+            <h2>Output</h2>
+            <textarea id="result" ng-model="result" disabled="disabled" class="output" rows="10"></textarea>
           </div>
         </div>
 
       </div>
+
+      <div class="row main panel panel-default">
+
+        <div class="panel-heading">
+          <h3 class="panel-title" style="text-align: center;">
+            Cheatsheet
+          </h3>
+        </div>
+
+        <div class="panel-body">
+
+          <div class="col-md-6">
+            <table class="table">
+              <tbody>
+                <tr>
+                  <td>.</td>
+                  <td>input unchanged as output</td>
+                </tr>
+                <tr>
+                  <td>.foo, .foo.bar, .foo?</td>
+                  <td>value at key</td>
+                </tr>
+                <tr>
+                  <td>.[], .[]?, .[&lt;string&gt;], .[2], .[10:15]</td>
+                  <td>array operation</td>
+                </tr>
+                <tr>
+                  <td>[], {}</td>
+                  <td>array/object construction</td>
+                </tr>
+                <tr>
+                  <td>length</td>
+                  <td>length of a value</td>
+                </tr>
+                <tr>
+                  <td>keys</td>
+                  <td>keys in an array</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="col-md-6">
+            <table class="table">
+              <tbody>
+                <tr>
+                  <td>,</td>
+                  <td>feed input into multiple filters and generate multiple outputs</td>
+                </tr>
+                <tr>
+                  <td>|</td>
+                  <td>pipe output of one filter to the next filter</td>
+                </tr>
+                <tr>
+                  <td>select(foo)</td>
+                  <td>input unchanged if foo returns true</td>
+                </tr>
+                <tr>
+                  <td>map(foo)</td>
+                  <td>for each input run filter foo and produce outputs in an array</td>
+                </tr>
+                <tr>
+                  <td>if-then-else</td>
+                  <td>conditionals</td>
+                </tr>
+                <tr>
+                  <td>\(foo)</td>
+                  <td>string interpolation</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+
+      </div>
+
     </div>
-    <footer class="footer">
-      <hr>
-      <p>Made with love by <a href="https://github.com/jingweno">@jingweno</a> &amp; <a href="https://github.com/lokywin">@lokywin</a></p>
-    </footer>
+  </div>
 
-    <a href="https://github.com/jingweno/jqplay"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/52760788cde945287fbb584134c4cbc2bc36f904/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f77686974655f6666666666662e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_white_ffffff.png"></a>
+  <footer class="footer">
+    <hr>
+    <p>Made with love by <a href="https://github.com/jingweno">@jingweno</a> &amp; <a href="https://github.com/lokywin">@lokywin</a></p>
+  </footer>
 
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
-    <script type="text/javascript" src="js/app.js"></script>
-    <script type="text/javascript" src="js/controllers.js"></script>
-    <script type="text/javascript" src="js/services.js"></script>
-    {{ if .IsProduction }}
-    <script>
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  <a href="https://github.com/jingweno/jqplay"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/52760788cde945287fbb584134c4cbc2bc36f904/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f77686974655f6666666666662e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_white_ffffff.png"></a>
 
-      ga('create', 'UA-51925421-1', 'jqplay.org');
-      ga('require', 'displayfeatures');
-      ga('send', 'pageview');
-    </script>
-    {{ end }}
-</body></html>
+  <!-- Bootstrap core JavaScript
+  ================================================== -->
+  <!-- Placed at the end of the document so the pages load faster -->
+  <script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
+  <script type="text/javascript" src="js/app.js"></script>
+  <script type="text/javascript" src="js/controllers.js"></script>
+  <script type="text/javascript" src="js/services.js"></script>
+  {{ if .IsProduction }}
+  <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-51925421-1', 'jqplay.org');
+  ga('require', 'displayfeatures');
+  ga('send', 'pageview');
+  </script>
+  {{ end }}
+</body>
+</html>
