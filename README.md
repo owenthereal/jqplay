@@ -1,4 +1,4 @@
-jqplay
+jqplay [![Build Status](https://travis-ci.org/jingweno/jqplay.svg?branch=master)](https://travis-ci.org/jingweno/jqplay)
 ======
 
 http://jqplay.org
