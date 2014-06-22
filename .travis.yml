@@ -3,9 +3,9 @@ go:
 - 1.3
 install:
 - npm install -g bower
-- bower install
-- script/build
+- script/bootstrap
 script:
+- script/build
 - script/test
 deploy:
   provider: heroku
