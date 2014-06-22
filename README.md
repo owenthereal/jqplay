@@ -1,4 +1,4 @@
-jqplay
+jqplay [![Build Status](https://travis-ci.org/jingweno/jqplay.svg?branch=master)](https://travis-ci.org/jingweno/jqplay)
 ======
 
 http://jqplay.org
@@ -16,10 +16,10 @@ You also need to have `bower` installed:
 npm install -g bower
 ```
 
-To install all assets, run:
+To bootstrap development environment, run:
 
 ```
-bower install
+$ ./script/bootstrap
 ```
 
 ### ./script/build

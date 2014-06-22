@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Usage: script/bootstrap
+#
+# Bootstraps jqplay
+
+set -e
+
+bower install && rm -rf public/bower_components/ace-builds/kitchen-sink/docs

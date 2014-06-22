@@ -38,16 +38,21 @@
       <div class="container">
         <div class="row main" ng-controller="JqplayCtrl">
           <div class="col-md-6">
-            <h2>Input</h2>
             <form name="input" class="form-horizontal" role="form" novalidate>
               <div id="filterGroup" class="form-group">
                 <div class="col-sm-12">
-                  <input type="text" class="form-control" id="filter" name="q" placeholder="Filter" ng-model="jq.q" autofocus required>
+                  <label for="filter">Filter</label>
+                  <input type="text" class="form-control" id="filter" name="q" ng-model="jq.q" autofocus required>
                 </div>
               </div>
               <div id="jsonGroup" class="form-group">
                 <div class="col-sm-12">
-                  <textarea class="form-control input-json" rows="10" name="j" placeholder="JSON" ng-model="jq.j" required></textarea>
+                  <label for="json">JSON</label>
+                  <div ui-ace="{
+                    theme:'github',
+                    mode: 'jsoniq',
+                    onLoad: editorLoaded
+                  }" ng-model="jq.j" required class="json-editor"></div>
                 </div>
               </div>
             </form>
@@ -55,8 +60,12 @@
 
           <div class="col-md-6">
             <div class="col-sm-12">
-              <h2>Output</h2>
-              <textarea id="result" ng-model="result" disabled="disabled" class="output" rows="10"></textarea>
+              <label for="result">Result</label>
+              <div ui-ace="{
+                theme:'github',
+                mode: 'jsoniq',
+                onLoad: editorLoaded
+              }" readonly="true" ng-model="result" class="result-editor"></div>
             </div>
           </div>
         </div>
@@ -147,7 +156,9 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
+    <script type="text/javascript" src="bower_components/ace-builds/src-min-noconflict/ace.js"></script>
     <script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
+    <script type="text/javascript" src="bower_components/angular-ui-ace/ui-ace.js"></script>
     <script type="text/javascript" src="js/app.js"></script>
     <script type="text/javascript" src="js/controllers.js"></script>
     <script type="text/javascript" src="js/services.js"></script>
