@@ -49,17 +49,16 @@ header p {
   min-width: 5em;
 }
 
-/* Input area */
-.input-json {
-  min-height: 21.5em;
-}
-
-/* Output area */
-.output {
-  background: hsl(0, 0%, 97%);
+.json-editor {
   border: 1px solid #DDD;
   width: 100%;
-  min-height: 25em;
+  height: 350px;
+}
+
+.result-editor {
+  border: 1px solid #DDD;
+  width: 100%;
+  height: 425px;
 }
 
 .panel-heading {
@@ -76,3 +75,5 @@ footer {
 footer hr {
   max-width: 15%;
 }
+
+.ace_hidden-cursors {opacity:0}

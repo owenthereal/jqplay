@@ -3,6 +3,11 @@
 angular.module('jqplay.controllers', []).controller('JqplayCtrl', function JqplayCtrl($scope, $timeout, jqplayService) {
   $scope.result = "";
 
+  $scope.editorLoaded = function(_editor) {
+    _editor.setHighlightActiveLine(false);
+    _editor.setFontSize(14);
+  };
+
   $scope.$watch('jq', function(newValue, oldValue) {
     if ($scope.input.$valid) {
       if ($scope.runTimeout != null) {
