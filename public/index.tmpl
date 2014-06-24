@@ -37,110 +37,107 @@
 
       <div class="container">
         <div class="row main" ng-controller="JqplayCtrl">
-          <div class="col-md-6">
+          <div class="col-sm-12 col-md-6">
             <form name="input" class="form-horizontal" role="form" novalidate>
-              <div id="filterGroup" class="form-group">
-                <div class="col-sm-12">
-                  <label for="filter">Filter</label>
-                  <input type="text" class="form-control" id="filter" name="q" ng-model="jq.q" autofocus required>
-                </div>
+              <div id="filterGroup" class="form-group col-sm-12">
+                <label for="filter">Filter</label>
+                <input type="text" class="form-control" id="filter" name="q" ng-model="jq.q" autofocus required>
               </div>
-              <div id="jsonGroup" class="form-group">
-                <div class="col-sm-12">
-                  <label for="json">JSON</label>
-                  <div ui-ace="{
-                    theme:'github',
-                    mode: 'jsoniq',
-                    onLoad: editorLoaded
-                  }" ng-model="jq.j" required class="json-editor"></div>
-                </div>
+              <div id="jsonGroup" class="form-group col-sm-12">
+                <label for="json">JSON</label>
+                <div ui-ace="{
+                  theme:'github',
+                  mode: 'jsoniq',
+                  onLoad: editorLoaded
+                }" ng-model="jq.j" required class="json-editor"></div>
               </div>
             </form>
           </div>
 
-          <div class="col-md-6">
-            <div class="col-sm-12">
-              <label for="result">Result</label>
-              <div ui-ace="{
-                theme:'github',
-                mode: 'jsoniq',
-                onLoad: editorLoaded
-              }" readonly="true" ng-model="result" class="result-editor"></div>
+          <div class="col-sm-12 col-md-6">
+            <label for="result">Result</label>
+            <div ui-ace="{
+              theme:'github',
+              mode: 'jsoniq',
+              onLoad: editorLoaded
+            }" readonly="true" ng-model="result" class="result-editor"></div>
+          </div>
+        </div>
+
+      <div class="col-sm-12">
+        <div class="row main panel panel-default">
+          <div class="panel-heading">
+            <h3 class="panel-title text-center">
+              Cheatsheet
+            </h3>
+          </div>
+
+          <div class="panel-body">
+            <div class="col-md-6">
+              <table class="table">
+                <tbody>
+                  <tr>
+                    <td>
+                      <code>.</code>
+                    </td>
+                    <td>input unchanged as output</td>
+                  </tr>
+                  <tr>
+                    <td><code>.foo, .foo.bar, .foo?</code></td>
+                    <td>value at key</td>
+                  </tr>
+                  <tr>
+                    <td><code>.[], .[]?, .[&lt;string&gt;], .[2], .[10:15]</code></td>
+                    <td>array operation</td>
+                  </tr>
+                  <tr>
+                    <td><code>[], {}</code></td>
+                    <td>array/object construction</td>
+                  </tr>
+                  <tr>
+                    <td><code>length</code></td>
+                    <td>length of a value</td>
+                  </tr>
+                  <tr>
+                    <td><code>keys</code></td>
+                    <td>keys in an array</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="col-md-6">
+              <table class="table">
+                <tbody>
+                  <tr>
+                    <td><code>,</code></td>
+                    <td>feed input into multiple filters</td>
+                  </tr>
+                  <tr>
+                    <td><code>|</code></td>
+                    <td>pipe output of one filter to the next filter</td>
+                  </tr>
+                  <tr>
+                    <td><code>select(foo)</code></td>
+                    <td>input unchanged if foo returns true</td>
+                  </tr>
+                  <tr>
+                    <td><code>map(foo)</code></td>
+                    <td>invoke filter foo for each input</td>
+                  </tr>
+                  <tr>
+                    <td><code>if-then-else-end</code></td>
+                    <td>conditionals</td>
+                  </tr>
+                  <tr>
+                    <td><code>\(foo)</code></td>
+                    <td>string interpolation</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
-
-      <div class="row main panel panel-default">
-        <div class="panel-heading">
-          <h3 class="panel-title" style="text-align: center;">
-            Cheatsheet
-          </h3>
-        </div>
-
-        <div class="panel-body">
-          <div class="col-md-6">
-            <table class="table">
-              <tbody>
-                <tr>
-                  <td>.</td>
-                  <td>input unchanged as output</td>
-                </tr>
-                <tr>
-                  <td>.foo, .foo.bar, .foo?</td>
-                  <td>value at key</td>
-                </tr>
-                <tr>
-                  <td>.[], .[]?, .[&lt;string&gt;], .[2], .[10:15]</td>
-                  <td>array operation</td>
-                </tr>
-                <tr>
-                  <td>[], {}</td>
-                  <td>array/object construction</td>
-                </tr>
-                <tr>
-                  <td>length</td>
-                  <td>length of a value</td>
-                </tr>
-                <tr>
-                  <td>keys</td>
-                  <td>keys in an array</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <div class="col-md-6">
-            <table class="table">
-              <tbody>
-                <tr>
-                  <td>,</td>
-                  <td>feed input into multiple filters</td>
-                </tr>
-                <tr>
-                  <td>|</td>
-                  <td>pipe output of one filter to the next filter</td>
-                </tr>
-                <tr>
-                  <td>select(foo)</td>
-                  <td>input unchanged if foo returns true</td>
-                </tr>
-                <tr>
-                  <td>map(foo)</td>
-                  <td>invoke filter foo for each input</td>
-                </tr>
-                <tr>
-                  <td>if-then-else-end</td>
-                  <td>conditionals</td>
-                </tr>
-                <tr>
-                  <td>\(foo)</td>
-                  <td>string interpolation</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
       </div>
 
     </div>
