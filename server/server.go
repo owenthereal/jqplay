@@ -24,7 +24,9 @@ func (s *Server) Start() {
 		Env:                os.Getenv("JQPLAY_ENV"),
 		NewRelicLicenseKey: os.Getenv("NEW_RELIC_LICENSE_KEY"),
 	}
-	r := render.New(render.Options{})
+	r := render.New(render.Options{
+		Directory: "public",
+	})
 	h := &JQHandler{r, c}
 
 	mux := http.NewServeMux()
