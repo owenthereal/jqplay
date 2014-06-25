@@ -1,3 +1,8 @@
+/* ___ Override BS styles ___ */
+input[type='text'], input[type='password'] {
+  border-radius: 3px;
+}
+
 /* ___ Base styles ___ */
 body {
   height: 100%;
@@ -8,11 +13,14 @@ body {
 header {
   background: #22201e;
   color: #fff;
-  padding: 1.5em 0;
+  margin: 0 -1.5em;
+  overflow: hidden;
+  padding: 0.7em 1.5em;
 }
 
 header .brand {
-  border-bottom: 1px solid #393735;
+  float: left;
+  margin-right: 0.5em
 }
 
 header .logo {
@@ -21,8 +29,9 @@ header .logo {
 }
 
 header p {
-  font-size: 1.2em;
-  margin-left: 3em;
+  color: #888;
+  font-size: 0.825em;
+  margin-top: 0.7em;
   margin-bottom: 0;
 }
 
@@ -32,6 +41,7 @@ header p {
 /* Styles for sticky footer */
 .page-wrap {
   min-height: 92%;
+  padding: 0 1.5em;
 }
 
 .page-wrap:after{
@@ -78,8 +88,12 @@ footer hr {
   max-width: 15%;
 }
 
+/* __ Syntax highlight */
 .ace_hidden-cursors {
   opacity: 0;
+}
+.ace_editor {
+  border-radius: 3px;
 }
 
 /* ___ Debugging Utilities ___ */
