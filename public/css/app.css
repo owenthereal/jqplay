@@ -33,6 +33,7 @@ header p {
 .page-wrap {
   min-height: 92%;
 }
+
 .page-wrap:after{
   content: "";
   display: block;
@@ -41,6 +42,7 @@ header p {
 .main {
   margin-top: 2em;
 }
+
 .main textarea {
   resize: vertical;
 }
@@ -76,4 +78,20 @@ footer hr {
   max-width: 15%;
 }
 
-.ace_hidden-cursors {opacity:0}
+.ace_hidden-cursors {
+  opacity: 0;
+}
+
+/* ___ Debugging Utilities ___ */
+.dbg-bdr-red {
+  border: 1px solid red !important;
+}
+.dbg-bdr-green {
+  border: 1px solid green !important;
+}
+.dbg-bdr-orange {
+  border: 1px solid orange !important;
+}
+.dbg-bdr-green {
+  border: 1px solid green !important;
+}
