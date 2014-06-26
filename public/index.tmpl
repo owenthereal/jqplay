@@ -26,24 +26,19 @@
     <div class="page-wrap">
       <header>
         <div class="brand">
-          <div class="container">
-            <a href="/"><img src="images/logo.png" alt="jqplay" class="logo"></a>
-          </div>
+          <a href="/"><img src="images/logo.png" alt="jqplay" class="logo"></a>
         </div>
-          <div class="container">
-            <p>A playground for <a href="http://stedolan.github.io/jq/">jq</a> {{.JQVersion}}</p>
-          </div>
+        <p>A playground for <a href="http://stedolan.github.io/jq/">jq</a> {{.JQVersion}}</p>
       </header>
 
-      <div class="container">
         <div class="row main" ng-controller="JqplayCtrl">
           <div class="col-sm-12 col-md-6">
-            <form name="input" class="form-horizontal" role="form" novalidate>
-              <div id="filterGroup" class="form-group col-sm-12">
+            <form name="input" role="form" novalidate>
+              <div id="filterGroup" class="form-group">
                 <label for="filter">Filter</label>
                 <input type="text" class="form-control" id="filter" name="q" ng-model="jq.q" autofocus required>
               </div>
-              <div id="jsonGroup" class="form-group col-sm-12">
+              <div id="jsonGroup" class="form-group">
                 <label for="json">JSON</label>
                 <div ui-ace="{
                   theme:'github',
@@ -139,16 +134,12 @@
           </div>
         </div>
       </div>
-
-    </div>
   </div>
 
     <footer class="footer">
       <hr>
-      <p>Made with love by <a href="https://github.com/jingweno">@jingweno</a> &amp; <a href="https://github.com/lokywin">@lokywin</a></p>
+      <p>Made with love by <a href="https://github.com/jingweno">@jingweno</a> &amp; <a href="https://github.com/lokywin">@lokywin</a>. View <a href="https://github.com/jingweno/jqplay">source</a> on GitHub</p>
     </footer>
-
-    <a href="https://github.com/jingweno/jqplay"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/52760788cde945287fbb584134c4cbc2bc36f904/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f77686974655f6666666666662e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_white_ffffff.png"></a>
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
