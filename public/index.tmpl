@@ -33,12 +33,12 @@
 
         <div class="row main" ng-controller="JqplayCtrl">
           <div class="col-sm-12 col-md-6">
-            <form name="input" class="form-horizontal" role="form" novalidate>
-              <div id="filterGroup" class="form-group col-sm-12">
+            <form name="input" role="form" novalidate>
+              <div id="filterGroup" class="form-group">
                 <label for="filter">Filter</label>
                 <input type="text" class="form-control" id="filter" name="q" ng-model="jq.q" autofocus required>
               </div>
-              <div id="jsonGroup" class="form-group col-sm-12">
+              <div id="jsonGroup" class="form-group">
                 <label for="json">JSON</label>
                 <div ui-ace="{
                   theme:'github',
