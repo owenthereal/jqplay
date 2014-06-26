@@ -6,6 +6,7 @@ angular.module('jqplay.controllers', []).controller('JqplayCtrl', function Jqpla
   $scope.editorLoaded = function(_editor) {
     _editor.setHighlightActiveLine(false);
     _editor.setFontSize(14);
+    _editor.setShowPrintMargin(false);
   };
 
   $scope.$watch('jq', function(newValue, oldValue) {

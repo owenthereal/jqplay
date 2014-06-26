@@ -4,11 +4,6 @@ input[type='text'], input[type='password'] {
   border-radius: 3px;
 }
 
-/* ace styles */
-.ace-github .ace_print-margin {
-  background: none !important;
-}
-
 /* --------------------------------------- */
 
 /* ___ Base styles ___ */
