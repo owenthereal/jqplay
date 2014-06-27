@@ -80,6 +80,9 @@ header p {
   margin-bottom: 1.5em;
 }
 
+#optionsGroup input {
+  margin-left: 0.7em;
+}
 /* ___ Footer styles ___ */
 
 footer {

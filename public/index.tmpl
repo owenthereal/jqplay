@@ -34,16 +34,6 @@
         <div class="row main" ng-controller="JqplayCtrl">
           <div class="col-sm-12 col-md-6">
             <form name="input" role="form" novalidate>
-              <div id="optionsGroup" class="form-group">
-                <label for="options">Options</label>
-                <div>
-                  <span ng-repeat="(option, checked) in jq.o">
-                    <input type="checkbox" value="{{option}}" ng-model="jq.o[option]">
-                      {{option}}
-                    </input>
-                  </span>
-                </div>
-              </div>
               <div id="filterGroup" class="form-group">
                 <label for="filter">Filter</label>
                 <input type="text" class="form-control" id="filter" name="q" ng-model="jq.q" autofocus required>
@@ -60,7 +50,17 @@
           </div>
 
           <div class="col-sm-12 col-md-6">
-            <label for="result">Result</label>
+            <div id="optionsGroup" class="pull-right">
+              <div>
+                <span ng-repeat="(option, checked) in jq.o">
+                  <input type="checkbox" value="{{option}}" ng-model="jq.o[option]">
+                    {{option}}
+                  </input>
+                </span>
+              </div>
+            </div>
+            <label for="result">Result
+            </label>
             <div ui-ace="{
               theme:'github',
               mode: 'jsoniq',
