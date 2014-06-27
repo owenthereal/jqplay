@@ -83,6 +83,12 @@ header p {
 #optionsGroup input {
   margin-left: 0.7em;
 }
+
+#optionsGroup label {
+  font-weight: normal;
+  text-transform:capitalize;
+}
+
 /* ___ Footer styles ___ */
 
 footer {

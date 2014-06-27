@@ -53,8 +53,8 @@
             <div id="optionsGroup" class="pull-right">
               <div>
                 <span ng-repeat="(option, checked) in jq.o">
-                  <input type="checkbox" value="{{option}}" ng-model="jq.o[option]">
-                    {{option}}
+                  <input type="checkbox" id="{{option}}" value="{{option}}" ng-model="jq.o[option]">
+                    <label for="{{option}}">{{option}}</label>
                   </input>
                 </span>
               </div>
