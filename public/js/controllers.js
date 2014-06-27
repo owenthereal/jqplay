@@ -1,6 +1,8 @@
 'use strict';
 
 angular.module('jqplay.controllers', []).controller('JqplayCtrl', function JqplayCtrl($scope, $timeout, jqplayService) {
+  $scope.jq = {}
+  $scope.jq.o = { "null-input": false, "slurp": false, "compact-output": false, "raw-input": false, "raw-output": false }
   $scope.result = "";
 
   $scope.editorLoaded = function(_editor) {
@@ -10,6 +12,14 @@ angular.module('jqplay.controllers', []).controller('JqplayCtrl', function Jqpla
   };
 
   $scope.$watch('jq', function(newValue, oldValue) {
+    $scope.delayedRun($scope.jq)
+  }, true);
+
+  $scope.$watch('jq.o', function(newValue, oldValue) {
+    $scope.delayedRun($scope.jq)
+  }, true);
+
+  $scope.delayedRun = function(jq) {
     if ($scope.input.$valid) {
       if ($scope.runTimeout != null) {
         $timeout.cancel($scope.runTimeout);
@@ -17,13 +27,13 @@ angular.module('jqplay.controllers', []).controller('JqplayCtrl', function Jqpla
       }
 
       $scope.runTimeout = $timeout(function() {
-        $scope.run($scope.jq);
+        $scope.run(jq);
         $scope.runTimeout = null;
       }, 1000);
     } else {
       $scope.result = "";
     }
-  }, true);
+  };
 
   $scope.run = function(jq) {
     $scope.result = "Loading...";

@@ -8,7 +8,8 @@ angular.module('jqplay.services', []).factory('jqplayService', function ($http) 
         url: "/jq",
         data: {
           j: jq.j,
-          q: jq.q
+          q: jq.q,
+          o: jq.o
         }
       });
     }
