@@ -25,6 +25,7 @@ func (s *Server) Start() {
 		NewRelicLicenseKey: os.Getenv("NEW_RELIC_LICENSE_KEY"),
 	}
 	r := render.New(render.Options{
+		Delims:    render.Delims{"#{", "}"},
 		Directory: "public",
 	})
 	h := &JQHandler{r, c}
