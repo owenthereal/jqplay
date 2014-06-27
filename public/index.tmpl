@@ -23,7 +23,7 @@
   </head>
 
   <body>
-    <div class="page-wrap">
+    <div class="page-wrap" ng-controller="JqplayCtrl">
       <header>
         <div class="brand">
           <a href="/"><img src="images/logo.png" alt="jqplay" class="logo"></a>
@@ -31,7 +31,7 @@
         <p>A playground for <a href="http://stedolan.github.io/jq/">jq</a> #{.JQVersion}</p>
       </header>
 
-        <div class="row main" ng-controller="JqplayCtrl">
+        <div class="row main">
           <div class="col-sm-12 col-md-6">
             <form name="input" role="form" novalidate>
               <div id="optionsGroup" class="form-group">
@@ -56,10 +56,6 @@
                   onLoad: editorLoaded
                 }" ng-model="jq.j" required class="json-editor"></div>
               </div>
-
-              <button type="button" ng-click="loadSample()" class="btn btn-default btn-med">
-                <span class="glyphicon glyphicon-pencil"></span> Load Sample
-              </button>
             </form>
           </div>
 
@@ -85,31 +81,16 @@
             <div class="col-md-6">
               <table class="table">
                 <tbody>
-                  <tr>
+                  <tr ng-repeat="sample in samplesLeft">
                     <td>
-                      <code>.</code>
+                      <code>{{sample.code}}</code>
                     </td>
-                    <td>unchanged input</td>
-                  </tr>
-                  <tr>
-                    <td><code>.foo, .foo.bar, .foo?</code></td>
-                    <td>value at key</td>
-                  </tr>
-                  <tr>
-                    <td><code>.[], .[]?, .[2], .[10:15]</code></td>
-                    <td>array operation</td>
-                  </tr>
-                  <tr>
-                    <td><code>[], {}</code></td>
-                    <td>array/object construction</td>
-                  </tr>
-                  <tr>
-                    <td><code>length</code></td>
-                    <td>length of a value</td>
-                  </tr>
-                  <tr>
-                    <td><code>keys</code></td>
-                    <td>keys in an array</td>
+                    <td>{{sample.text}}</td>
+                    <td>
+                      <button type="button" ng-click="loadSample(samplesLeft, $index)" class="btn btn-default btn-sm">
+                        <span class="glyphicon glyphicon-pencil"></span> Load Sample
+                      </button>
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -118,29 +99,16 @@
             <div class="col-md-6">
               <table class="table">
                 <tbody>
-                  <tr>
-                    <td><code>,</code></td>
-                    <td>feed input into multiple filters</td>
-                  </tr>
-                  <tr>
-                    <td><code>|</code></td>
-                    <td>pipe output of one filter to the next filter</td>
-                  </tr>
-                  <tr>
-                    <td><code>select(foo)</code></td>
-                    <td>input unchanged if foo returns true</td>
-                  </tr>
-                  <tr>
-                    <td><code>map(foo)</code></td>
-                    <td>invoke filter foo for each input</td>
-                  </tr>
-                  <tr>
-                    <td><code>if-then-else-end</code></td>
-                    <td>conditionals</td>
-                  </tr>
-                  <tr>
-                    <td><code>\(foo)</code></td>
-                    <td>string interpolation</td>
+                  <tr ng-repeat="sample in samplesRight">
+                    <td>
+                      <code>{{sample.code}}</code>
+                    </td>
+                    <td>{{sample.text}}</td>
+                    <td>
+                      <button type="button" ng-click="loadSample(samplesRight, $index)" class="btn btn-default btn-sm">
+                        <span class="glyphicon glyphicon-pencil"></span> Load Sample
+                      </button>
+                    </td>
                   </tr>
                 </tbody>
               </table>
