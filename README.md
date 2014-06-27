@@ -3,7 +3,7 @@ jqplay [![Build Status](https://travis-ci.org/jingweno/jqplay.svg?branch=master)
 
 http://jqplay.org
 
-A playground for [jq](https://github.com/stedolan/jq) made with love by [@jingweno](https://github.com/jingweno).
+A playground for [jq](https://github.com/stedolan/jq) made with love by [@jingweno](https://github.com/jingweno), [@lokywin](https://github.com/lokywin) and [@leoping](https://github.com/leoping).
 Please put it into good use.
 
 Development
