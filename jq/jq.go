@@ -63,12 +63,24 @@ func jqVersion() (string, error) {
 }
 
 type JQ struct {
-	J string `json:"j"`
-	Q string `json:"q"`
+	J string          `json:"j"`
+	Q string          `json:"q"`
+	O map[string]bool `json:"o"`
+}
+
+func (j *JQ) Opts() []string {
+	opts := []string{}
+	for opt, enabled := range j.O {
+		if enabled {
+			opts = append(opts, fmt.Sprintf("--%s", opt))
+		}
+	}
+
+	return opts
 }
 
 func (j *JQ) Eval() (string, error) {
-	seq, err := jq.Eval(j.J, j.Q)
+	seq, err := jq.Eval(j.J, j.Q, j.Opts()...)
 	if err != nil {
 		return "", err
 	}
@@ -80,6 +92,7 @@ func (j *JQ) Eval() (string, error) {
 			result = append(result, ss)
 		}
 	}
+
 
 	return strings.Join(result, "\n"), nil
 }
@@ -103,5 +116,5 @@ func (j *JQ) Validate() error {
 }
 
 func (j JQ) String() string {
-	return fmt.Sprintf("j=%s, q=%s", j.J, j.Q)
+	return fmt.Sprintf("j=%s, q=%s, o=%v", j.J, j.Q, j.Opts())
 }
