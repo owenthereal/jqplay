@@ -36,7 +36,6 @@
             <form name="input" role="form" novalidate>
               <div id="filterGroup" class="form-group">
                 <label for="filter">Filter</label>
-                <a href="#" ng-click="loadSample()" class="text-right">Load Sample</a>
                 <input type="text" class="form-control" id="filter" name="q" ng-model="jq.q" autofocus required>
               </div>
               <div id="jsonGroup" class="form-group">
@@ -47,6 +46,10 @@
                   onLoad: editorLoaded
                 }" ng-model="jq.j" required class="json-editor"></div>
               </div>
+
+              <button type="button" ng-click="loadSample()" class="btn btn-default btn-med">
+                <span class="glyphicon glyphicon-pencil"></span> Load Sample
+              </button>
             </form>
           </div>
 

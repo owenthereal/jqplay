@@ -42,11 +42,5 @@ angular.module('jqplay.controllers', []).controller('JqplayCtrl', function Jqpla
     $scope.jq.j = '{ "foo" : { "bar" : { "baz" : 123 } } }'
     $scope.jq.q = '.foo.bar'
     $scope.run($scope.jq)
-    // $scope.$apply();
-
-    // $scope.$apply(function() {
-    //   $scope.jq.j = '{ "foo" : { "bar" : { "baz" : 123 } } }'
-    //   $scope.jq.q = '.foo.bar'
-    // });
   }
 });
