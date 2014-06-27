@@ -2,6 +2,7 @@
 
 angular.module('jqplay.controllers', []).controller('JqplayCtrl', function JqplayCtrl($scope, $timeout, jqplayService) {
   $scope.result = "";
+  $scope.jq = {};
 
   $scope.editorLoaded = function(_editor) {
     _editor.setHighlightActiveLine(false);
@@ -36,4 +37,16 @@ angular.module('jqplay.controllers', []).controller('JqplayCtrl', function Jqpla
       $scope.result = data.message;
     });
   };
+
+  $scope.loadSample = function() {
+    $scope.jq.j = '{ "foo" : { "bar" : { "baz" : 123 } } }'
+    $scope.jq.q = '.foo.bar'
+    $scope.run($scope.jq)
+    // $scope.$apply();
+
+    // $scope.$apply(function() {
+    //   $scope.jq.j = '{ "foo" : { "bar" : { "baz" : 123 } } }'
+    //   $scope.jq.q = '.foo.bar'
+    // });
+  }
 });
