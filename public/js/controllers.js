@@ -128,7 +128,6 @@ angular.module('jqplay.controllers', []).controller('JqplayCtrl', function Jqpla
   $scope.loadSample = function(samples, index) {
     $scope.jq.j = samples[index].input_j;
     $scope.jq.q = samples[index].input_q;
-    $scope.run($scope.jq);
+    $scope.input.$valid = true;
   };
-
 });
