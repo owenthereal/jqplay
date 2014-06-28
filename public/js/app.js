@@ -3,5 +3,6 @@
 angular.module('jqplay', [
   'ui.ace',
   'jqplay.controllers',
-  'jqplay.services'
+  'jqplay.services',
+  'jqplay.filters'
 ]);
