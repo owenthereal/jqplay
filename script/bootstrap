@@ -5,4 +5,4 @@
 
 set -e
 
-bower install && rm -rf public/bower_components/ace-builds/kitchen-sink/docs
+bower install && rm -rf public/bower_components/ace-builds/demo/kitchen-sink/docs
