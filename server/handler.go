@@ -3,7 +3,6 @@ package server
 import (
 	"encoding/json"
 	"io/ioutil"
-	"log"
 	"net/http"
 
 	"github.com/jingweno/jqplay/jq"
@@ -43,8 +42,6 @@ func (h *JQHandler) handleJq(rw http.ResponseWriter, r *http.Request) {
 		h.r.JSON(rw, 422, map[string]string{"message": err.Error()})
 		return
 	}
-
-	log.Println(jq)
 
 	re, err := jq.Eval()
 	if err != nil {
