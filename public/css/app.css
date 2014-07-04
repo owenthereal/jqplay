@@ -4,6 +4,10 @@ input[type='text'], input[type='password'] {
   border-radius: 3px;
 }
 
+code {
+  white-space: normal;
+}
+
 /* --------------------------------------- */
 
 /* ___ Base styles ___ */
@@ -76,16 +80,25 @@ header p {
   height: 425px;
 }
 
-.panel-heading {
-  margin-bottom: 1.5em;
-}
-
 #optionsGroup input {
   margin-left: 0.7em;
 }
 
 #optionsGroup label {
   font-weight: normal;
+}
+
+/* Cheatsheet */
+.panel-heading {
+  margin-bottom: 1.5em;
+}
+
+.panel-heading h3 {
+  margin-bottom: 0.75em;
+}
+
+.panel-heading em {
+  color: #777;
 }
 
 /* ___ Footer styles ___ */
