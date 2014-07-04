@@ -9,6 +9,7 @@ angular.module('jqplay.controllers', []).controller('JqplayCtrl', function Jqpla
     _editor.setHighlightActiveLine(false);
     _editor.setFontSize(14);
     _editor.setShowPrintMargin(false);
+    _editor.session.setUseWorker(false);
   };
 
   $scope.$watch('jq', function(newValue, oldValue) {
