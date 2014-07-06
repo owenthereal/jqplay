@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	JSONPayloadLimit   = JSONPayloadLimitMB * 1024000 // 10MB
+	JSONPayloadLimit   = JSONPayloadLimitMB * 1024000 // 5MB
 	JSONPayloadLimitMB = 5
 )
 
