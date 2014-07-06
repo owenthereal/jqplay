@@ -12,7 +12,7 @@ import (
 
 const (
 	JSONPayloadLimit   = JSONPayloadLimitMB * 1024000 // 10MB
-	JSONPayloadLimitMB = 10
+	JSONPayloadLimitMB = 5
 )
 
 type JQHandler struct {
