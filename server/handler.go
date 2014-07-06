@@ -2,11 +2,17 @@ package server
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 
 	"github.com/jingweno/jqplay/jq"
 	"github.com/unrolled/render"
+)
+
+const (
+	JSONPayloadLimit   = JSONPayloadLimitMB * 1024000 // 10MB
+	JSONPayloadLimitMB = 10
 )
 
 type JQHandler struct {
@@ -21,6 +27,13 @@ func (h *JQHandler) handleIndex(rw http.ResponseWriter, r *http.Request) {
 func (h *JQHandler) handleJq(rw http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		h.r.JSON(rw, 500, nil)
+		return
+	}
+
+	if r.ContentLength > JSONPayloadLimit {
+		h.r.JSON(rw, 403, map[string]string{
+			"message": fmt.Sprintf("JSON payload is larger than limit %dMB.", JSONPayloadLimitMB)},
+		)
 		return
 	}
 
