@@ -2,7 +2,9 @@ package jq
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"os/exec"
@@ -10,9 +12,12 @@ import (
 	"regexp"
 	"runtime"
 	"strings"
+	"time"
 
 	"github.com/jingweno/jqpipe-go"
 )
+
+const jqExecTimeout = 10
 
 var Path, Version string
 
@@ -62,6 +67,27 @@ func jqVersion() (string, error) {
 	return "", fmt.Errorf("can't find jq version: %s", out)
 }
 
+type jqResult struct {
+	Seq []json.RawMessage
+	Err error
+}
+
+func (r *jqResult) Result() (string, error) {
+	if r.Err != nil {
+		return "", r.Err
+	}
+
+	result := []string{}
+	for _, s := range r.Seq {
+		ss := string(s)
+		if ss != "" && ss != "null" {
+			result = append(result, ss)
+		}
+	}
+
+	return strings.Join(result, "\n"), nil
+}
+
 type JQ struct {
 	J string          `json:"j"`
 	Q string          `json:"q"`
@@ -79,22 +105,20 @@ func (j *JQ) Opts() []string {
 	return opts
 }
 
+// eval `jq` expression with timeout support
 func (j *JQ) Eval() (string, error) {
-	seq, err := jq.Eval(j.J, j.Q, j.Opts()...)
-	if err != nil {
-		return "", err
+	resultCh := make(chan jqResult, 1)
+	go func(js, expr string, opts ...string) {
+		seq, err := eval(js, expr, opts...)
+		resultCh <- jqResult{seq, err}
+	}(j.J, j.Q, j.Opts()...)
+
+	select {
+	case r := <-resultCh:
+		return r.Result()
+	case <-time.After(time.Second * jqExecTimeout):
+		return "", fmt.Errorf("jq execution timeout")
 	}
-
-	result := []string{}
-	for _, s := range seq {
-		ss := string(s)
-		if ss != "" && ss != "null" {
-			result = append(result, ss)
-		}
-	}
-
-
-	return strings.Join(result, "\n"), nil
 }
 
 func (j *JQ) Validate() error {
@@ -117,4 +141,25 @@ func (j *JQ) Validate() error {
 
 func (j JQ) String() string {
 	return fmt.Sprintf("j=%s, q=%s, o=%v", j.J, j.Q, j.Opts())
+}
+
+// eval `jq` expression
+func eval(js string, expr string, opts ...string) ([]json.RawMessage, error) {
+	jq, err := jq.New(bytes.NewReader([]byte(js)), expr, opts...)
+	if err != nil {
+		return nil, err
+	}
+
+	ret := make([]json.RawMessage, 0, 16)
+	for {
+		next, err := jq.Next()
+		switch err {
+		case nil:
+			ret = append(ret, next)
+		case io.EOF:
+			return ret, nil
+		default:
+			return ret, err
+		}
+	}
 }
