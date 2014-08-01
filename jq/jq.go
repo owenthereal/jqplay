@@ -17,7 +17,7 @@ import (
 	"github.com/jingweno/jqpipe-go"
 )
 
-const jqExecTimeout = 10
+const jqExecTimeout = 5
 
 var Path, Version string
 
