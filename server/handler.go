@@ -32,6 +32,10 @@ func (h *JQHandler) handleJq(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if r.ContentLength == -1 {
+		log.Printf("Error: Content length is unknown")
+	}
+
 	if r.ContentLength > JSONPayloadLimit {
 		msg := fmt.Sprintf("JSON payload size is %.1fMB, larger than limit %dMB.", float64(r.ContentLength)/OneMB, JSONPayloadLimitMB)
 		log.Printf("Error: %s", msg)

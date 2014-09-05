@@ -117,7 +117,7 @@ func (j *JQ) Eval() (string, error) {
 	case r := <-resultCh:
 		return r.Result()
 	case <-time.After(time.Second * jqExecTimeout):
-		log.Printf("Error: JQ timeout - j=%s, q=%s, o=%v\n", j.J, j.Q, j.O)
+		log.Printf("Error: JQ timeout - %s\n", j)
 		return "", fmt.Errorf("jq execution timeout")
 	}
 }
