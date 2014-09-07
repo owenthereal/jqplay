@@ -9,6 +9,11 @@ import (
 )
 
 func main() {
+	err := jq.Init()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	log.Printf("jq version=%s path=%s\n", jq.Version, jq.Path)
 
 	port := os.Getenv("PORT")

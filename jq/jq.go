@@ -17,37 +17,41 @@ import (
 	"github.com/jingweno/jqpipe-go"
 )
 
-const jqExecTimeout = 5
+const jqExecTimeout = 3
 
 var Path, Version string
 
-func init() {
-	var err error
-
-	Path, err = setupJQPath()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	Version, err = jqVersion()
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
-func setupJQPath() (string, error) {
+func Init() error {
 	pwd, err := os.Getwd()
 	if err != nil {
-		return "", err
+		return err
 	}
 
-	jqPath := filepath.Join(pwd, "bin", fmt.Sprintf("%s_%s", runtime.GOOS, runtime.GOARCH))
-	os.Setenv("PATH", fmt.Sprintf("%s%c%s", jqPath, os.PathListSeparator, os.Getenv("PATH")))
+	err = SetPath(pwd)
+	if err != nil {
+		return err
+	}
 
-	return filepath.Join(jqPath, "jq"), nil
+	return nil
 }
 
-func jqVersion() (string, error) {
+func SetPath(binDir string) error {
+	jqPath := filepath.Join(binDir, "bin", fmt.Sprintf("%s_%s", runtime.GOOS, runtime.GOARCH))
+	Path = filepath.Join(jqPath, "jq")
+
+	_, err := os.Stat(Path)
+	if err != nil {
+		return err
+	}
+
+	os.Setenv("PATH", fmt.Sprintf("%s%c%s", jqPath, os.PathListSeparator, os.Getenv("PATH")))
+
+	err = setVersion()
+
+	return err
+}
+
+func setVersion() error {
 	// get version from `jq --help`
 	// since `jq --version` diffs between versions
 	// e.g., 1.3 & 1.4
@@ -61,10 +65,12 @@ func jqVersion() (string, error) {
 	r := regexp.MustCompile(`\[version (.+)\]`)
 	if r.Match(out) {
 		m := r.FindSubmatch(out)[1]
-		return string(m), nil
+		Version = string(m)
+
+		return nil
 	}
 
-	return "", fmt.Errorf("can't find jq version: %s", out)
+	return fmt.Errorf("can't find jq version: %s", out)
 }
 
 type jqResult struct {
@@ -107,17 +113,30 @@ func (j *JQ) Opts() []string {
 
 // eval `jq` expression with timeout support
 func (j *JQ) Eval() (string, error) {
-	resultCh := make(chan jqResult, 1)
-	go func(js, expr string, opts ...string) {
-		seq, err := eval(js, expr, opts...)
-		resultCh <- jqResult{seq, err}
-	}(j.J, j.Q, j.Opts()...)
+	if err := j.Validate(); err != nil {
+		return "", err
+	}
+
+	jj, err := jq.New(bytes.NewReader([]byte(j.J)), j.Q, j.Opts()...)
+	if err != nil {
+		return "", err
+	}
+
+	rc := make(chan *jqResult, 1)
+	defer close(rc)
+	go run(jj, rc)
 
 	select {
-	case r := <-resultCh:
+	case r := <-rc:
 		return r.Result()
 	case <-time.After(time.Second * jqExecTimeout):
 		log.Printf("Error: JQ timeout - %s\n", j)
+
+		err := jj.Close()
+		if err != nil {
+			return "", fmt.Errorf("jq execution timeout: %s", err)
+		}
+
 		return "", fmt.Errorf("jq execution timeout")
 	}
 }
@@ -144,23 +163,21 @@ func (j JQ) String() string {
 	return fmt.Sprintf("j=%s, q=%s, o=%v", j.J, j.Q, j.Opts())
 }
 
-// eval `jq` expression
-func eval(js string, expr string, opts ...string) ([]json.RawMessage, error) {
-	jq, err := jq.New(bytes.NewReader([]byte(js)), expr, opts...)
-	if err != nil {
-		return nil, err
-	}
-
-	ret := make([]json.RawMessage, 0, 16)
+func run(jq *jq.Pipe, rc chan *jqResult) {
+	r := &jqResult{Seq: make([]json.RawMessage, 0, 16)}
+loop:
 	for {
 		next, err := jq.Next()
 		switch err {
 		case nil:
-			ret = append(ret, next)
+			r.Seq = append(r.Seq, next)
 		case io.EOF:
-			return ret, nil
+			break loop
 		default:
-			return ret, err
+			r.Err = err
+			break loop
 		}
 	}
+
+	rc <- r
 }
