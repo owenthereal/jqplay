@@ -60,11 +60,6 @@ func (h *JQHandler) handleJq(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := jq.Validate(); err != nil {
-		h.r.JSON(rw, 422, map[string]string{"message": err.Error()})
-		return
-	}
-
 	re, err := jq.Eval()
 	if err != nil {
 		h.r.JSON(rw, 422, map[string]string{"message": err.Error()})
