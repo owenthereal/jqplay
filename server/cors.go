@@ -6,15 +6,15 @@ import (
 	"github.com/codegangsta/negroni"
 )
 
-func csrMiddleware(c *Config) negroni.Handler {
-	return &csr{c.AssetHost}
+func corsMiddleware(c *Config) negroni.Handler {
+	return &cors{c.AssetHost}
 }
 
-type csr struct {
+type cors struct {
 	AllowedHost string
 }
 
-func (c *csr) ServeHTTP(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
+func (c *cors) ServeHTTP(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
 	rw.Header().Set("Access-Control-Allow-Origin", c.AllowedHost)
 	rw.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
 	rw.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token")

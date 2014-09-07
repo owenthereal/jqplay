@@ -40,7 +40,7 @@ func (s *Server) Start() {
 		n.Use(negronigorelic.New(nwk, "jqplay", false))
 	}
 	n.Use(secureMiddleware(c))
-	n.Use(csrMiddleware(c))
+	n.Use(corsMiddleware(c))
 	n.UseHandler(mux)
 
 	n.Run(":" + s.Config.Port)
