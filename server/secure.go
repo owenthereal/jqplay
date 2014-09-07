@@ -1,11 +1,14 @@
 package server
 
 import (
+	"fmt"
+
 	"github.com/codegangsta/negroni"
 	"github.com/unrolled/secure"
 )
 
 func secureMiddleware(c *Config) negroni.Handler {
+	csp := fmt.Sprintf("default-src *; script-src 'self' %s https://www.google-analytics.com 'unsafe-inline'; style-src 'self' %s 'unsafe-inline'; object-src 'self' %s;", c.AssetHost, c.AssetHost, c.AssetHost)
 	secureMiddleware := secure.New(secure.Options{
 		SSLRedirect:           true,
 		STSSeconds:            315360000,
@@ -14,7 +17,7 @@ func secureMiddleware(c *Config) negroni.Handler {
 		FrameDeny:             true,
 		ContentTypeNosniff:    true,
 		BrowserXssFilter:      true,
-		ContentSecurityPolicy: "default-src *; script-src 'self' https://www.google-analytics.com 'unsafe-inline'; style-src 'self' 'unsafe-inline'; object-src 'self';",
+		ContentSecurityPolicy: csp,
 		IsDevelopment:         !c.IsProduction(),
 	})
 

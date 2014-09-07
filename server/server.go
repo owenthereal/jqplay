@@ -23,6 +23,7 @@ func (s *Server) Start() {
 		JQVersion:          jq.Version,
 		Env:                os.Getenv("JQPLAY_ENV"),
 		NewRelicLicenseKey: os.Getenv("NEW_RELIC_LICENSE_KEY"),
+		AssetHost:          os.Getenv("ASSET_HOST"),
 	}
 	r := render.New(render.Options{
 		Delims:    render.Delims{"#{", "}"},
