@@ -15,9 +15,12 @@ type cors struct {
 }
 
 func (c *cors) ServeHTTP(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
-	rw.Header().Set("Access-Control-Allow-Origin", c.AllowedHost)
-	rw.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-	rw.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token")
-	rw.Header().Set("Access-Control-Allow-Credentials", "true")
+	if c.AllowedHost != "" {
+		rw.Header().Set("Access-Control-Allow-Origin", c.AllowedHost)
+		rw.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
+		rw.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token")
+		rw.Header().Set("Access-Control-Allow-Credentials", "true")
+	}
+
 	next(rw, r)
 }

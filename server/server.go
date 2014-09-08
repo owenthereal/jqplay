@@ -35,12 +35,15 @@ func (s *Server) Start() {
 	mux.HandleFunc("/", h.handleIndex)
 	mux.HandleFunc("/jq", h.handleJq)
 
-	n := negroni.Classic()
+	n := negroni.New()
+	n.Use(negroni.NewRecovery())
+	n.Use(negroni.NewLogger())
+	n.Use(corsMiddleware(c))
+	n.Use(negroni.NewStatic(http.Dir("public")))
 	if nwk := c.NewRelicLicenseKey; nwk != "" {
 		n.Use(negronigorelic.New(nwk, "jqplay", false))
 	}
 	n.Use(secureMiddleware(c))
-	n.Use(corsMiddleware(c))
 	n.UseHandler(mux)
 
 	n.Run(":" + s.Config.Port)
