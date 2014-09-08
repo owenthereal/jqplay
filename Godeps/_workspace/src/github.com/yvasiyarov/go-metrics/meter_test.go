@@ -5,34 +5,10 @@ import (
 	"time"
 )
 
-func BenchmarkMeter(b *testing.B) {
+func TestMeterZero(t *testing.T) {
 	m := NewMeter()
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
-		m.Mark(1)
-	}
-}
-
-func TestGetOrRegisterMeter(t *testing.T) {
-	r := NewRegistry()
-	NewRegisteredMeter("foo", r).Mark(47)
-	if m := GetOrRegisterMeter("foo", r); 47 != m.Count() {
-		t.Fatal(m)
-	}
-}
-
-func TestMeterDecay(t *testing.T) {
-	ma := meterArbiter{
-		ticker: time.NewTicker(1),
-	}
-	m := newStandardMeter()
-	ma.meters = append(ma.meters, m)
-	go ma.tick()
-	m.Mark(1)
-	rateMean := m.RateMean()
-	time.Sleep(1)
-	if m.RateMean() >= rateMean {
-		t.Error("m.RateMean() didn't decrease")
+	if count := m.Count(); 0 != count {
+		t.Errorf("m.Count(): 0 != %v\n", count)
 	}
 }
 
@@ -44,17 +20,17 @@ func TestMeterNonzero(t *testing.T) {
 	}
 }
 
-func TestMeterSnapshot(t *testing.T) {
-	m := NewMeter()
-	m.Mark(1)
-	if snapshot := m.Snapshot(); m.RateMean() != snapshot.RateMean() {
-		t.Fatal(snapshot)
+func TestMeterDecay(t *testing.T) {
+	m := &StandardMeter{
+		make(chan int64),
+		make(chan meterV),
+		time.NewTicker(1),
 	}
-}
-
-func TestMeterZero(t *testing.T) {
-	m := NewMeter()
-	if count := m.Count(); 0 != count {
-		t.Errorf("m.Count(): 0 != %v\n", count)
+	go m.arbiter()
+	m.Mark(1)
+	rateMean := m.RateMean()
+	time.Sleep(1)
+	if m.RateMean() >= rateMean {
+		t.Error("m.RateMean() didn't decrease")
 	}
 }

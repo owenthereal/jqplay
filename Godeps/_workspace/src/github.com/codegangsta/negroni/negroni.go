@@ -29,8 +29,8 @@ type middleware struct {
 	next    *middleware
 }
 
-func (m middleware) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
-	m.handler.ServeHTTP(rw, r, m.next.ServeHTTP)
+func (h middleware) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
+	h.handler.ServeHTTP(rw, r, h.next.ServeHTTP)
 }
 
 // Wrap converts a http.Handler into a negroni.Handler so it can be used as a Negroni
@@ -52,10 +52,9 @@ type Negroni struct {
 }
 
 // New returns a new Negroni instance with no middleware preconfigured.
-func New(handlers ...Handler) *Negroni {
+func New() *Negroni {
 	return &Negroni{
-		handlers:   handlers,
-		middleware: build(handlers),
+		middleware: middleware{HandlerFunc(voidHandler), &middleware{}},
 	}
 }
 
@@ -66,7 +65,11 @@ func New(handlers ...Handler) *Negroni {
 // Logger - Request/Response Logging
 // Static - Static File Serving
 func Classic() *Negroni {
-	return New(NewRecovery(), NewLogger(), NewStatic(http.Dir("public")))
+	n := New()
+	n.Use(NewRecovery())
+	n.Use(NewLogger())
+	n.Use(NewStatic(http.Dir("public")))
+	return n
 }
 
 func (n *Negroni) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
@@ -76,7 +79,7 @@ func (n *Negroni) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 // Use adds a Handler onto the middleware stack. Handlers are invoked in the order they are added to a Negroni.
 func (n *Negroni) Use(handler Handler) {
 	n.handlers = append(n.handlers, handler)
-	n.middleware = build(n.handlers)
+	n.middleware = build(0, n.handlers)
 }
 
 // UseHandler adds a http.Handler onto the middleware stack. Handlers are invoked in the order they are added to a Negroni.
@@ -92,23 +95,19 @@ func (n *Negroni) Run(addr string) {
 	l.Fatal(http.ListenAndServe(addr, n))
 }
 
-func build(handlers []Handler) middleware {
+func build(i int, handlers []Handler) middleware {
 	var next middleware
 
-	if len(handlers) == 0 {
-		return voidMiddleware()
-	} else if len(handlers) > 1 {
-		next = build(handlers[1:])
+	h := handlers[i]
+	if i < len(handlers)-1 {
+		next = build(i+1, handlers)
 	} else {
-		next = voidMiddleware()
+		next = middleware{HandlerFunc(voidHandler), &middleware{}}
 	}
 
-	return middleware{handlers[0], &next}
+	return middleware{h, &next}
 }
 
-func voidMiddleware() middleware {
-	return middleware{
-		HandlerFunc(func(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {}),
-		&middleware{},
-	}
+func voidHandler(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
+	// do nothing
 }

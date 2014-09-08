@@ -171,7 +171,7 @@ func (plugin *NewrelicPlugin) CheckResponse(httpResponseCode int) (error, bool) 
 		}
 	case http.StatusInternalServerError, http.StatusBadGateway, http.StatusServiceUnavailable, http.StatusGatewayTimeout:
 		{
-			err = fmt.Errorf("Got %v response code.Metricas will be aggregated", httpResponseCode)
+			err = fmt.Errorf("Got %v response code.Metricas will be aggregated")
 		}
 	}
 	return err, isFatal

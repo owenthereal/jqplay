@@ -8,7 +8,7 @@ import (
 	"net/http"
 
 	"github.com/jingweno/jqplay/jq"
-	"gopkg.in/unrolled/render.v1"
+	"github.com/unrolled/render"
 )
 
 const (

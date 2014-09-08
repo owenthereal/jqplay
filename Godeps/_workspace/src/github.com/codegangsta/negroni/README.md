@@ -1,4 +1,4 @@
-# Negroni [![GoDoc](https://godoc.org/github.com/codegangsta/negroni?status.svg)](http://godoc.org/github.com/codegangsta/negroni) [![wercker status](https://app.wercker.com/status/13688a4a94b82d84a0b8d038c4965b61/s "wercker status")](https://app.wercker.com/project/bykey/13688a4a94b82d84a0b8d038c4965b61)
+# Negroni [![GoDoc](https://godoc.org/github.com/codegangsta/negroni?status.png)](http://godoc.org/github.com/codegangsta/negroni)
 
 Negroni is an idiomatic approach to web middleware in Go. It is tiny, non-intrusive, and encourages use of `net/http` Handlers.
 
@@ -54,8 +54,9 @@ Negroni is BYOR (Bring your own Router). The Go community already has a number o
 router := mux.NewRouter()
 router.HandleFunc("/", HomeHandler)
 
-n := negroni.New(Middleware1, Middleware2)
-// Or use a middleware with the Use() function
+n := negroni.New()
+n.Use(Middleware1)
+n.Use(Middleware2)
 n.Use(Middleware3)
 // router goes last
 n.UseHandler(router)
@@ -81,7 +82,7 @@ type Handler interface {
 }
 ~~~
 
-If a middleware hasn't already written to the ResponseWriter, it should call the next `http.HandlerFunc` in the chain to yield to the next middleware handler. This can be used for great good:
+If a middlware hasn't already written to the ResponseWriter, it should call the next `http.HandlerFunc` in the chain to yield to the next middleware handler. This can be used for great good:
 
 ~~~ go
 func MyMiddleware(rw http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
@@ -98,7 +99,7 @@ n := negroni.New()
 n.Use(negroni.HandlerFunc(MyMiddleware))
 ~~~
 
-You can also map plain old `http.Handler`'s:
+You can also map plain ole `http.Handler`'s:
 
 ~~~ go
 n := negroni.New()
@@ -120,22 +121,6 @@ n := negroni.Classic()
 log.Fatal(http.ListenAndServe(":8080", n))
 ~~~
 
-## Route Specific Middleware
-If you have a route group of routes that need specific middleware to be executed, you can simply create a new Negroni instance and use it as your route handler.
-
-~~~ go
-router := mux.NewRouter()
-adminRoutes := mux.NewRouter()
-// add admin routes here
-
-Create a new negroni for the admin middleware
-router.Handle("/admin", negroni.New(
-  Middleware1, 
-  Middleware2, 
-  negroni.Wrap(adminRoutes),
-))
-~~~
-
 ## Third Party Middleware
 
 Here is a current list of Negroni compatible middlware. Feel free to put up a PR linking your middleware if you have built one:
@@ -148,10 +133,7 @@ Here is a current list of Negroni compatible middlware. Feel free to put up a PR
 | [binding](https://github.com/mholt/binding) | [Matt Holt](https://github.com/mholt) | Data binding from HTTP requests into structs |
 | [logrus](https://github.com/meatballhat/negroni-logrus) | [Dan Buch](https://github.com/meatballhat) | Logrus-based logger |
 | [render](https://github.com/unrolled/render) | [Cory Jacobsen](https://github.com/unrolled) | Package for rendering JSON, XML, and HTML templates |
-| [gorelic](https://github.com/jingweno/negroni-gorelic) | [Jingwen Owen Ou](https://github.com/jingweno) | New Relic agent for Go runtime |
-| [gzip](https://github.com/phyber/negroni-gzip) | [phyber](https://github.com/phyber) | GZIP response compression |
-| [oauth2](https://github.com/goincremental/negroni-oauth2) | [David Bochenski](https://github.com/bochenski) | oAuth2 middleware |
-| [sessions](https://github.com/goincremental/negroni-sessions) | [David Bochenski](https://github.com/bochenski) | Session Management |
+
 
 
 ## Live code reload?

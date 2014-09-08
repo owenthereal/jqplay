@@ -54,40 +54,12 @@ addr, _ := net.ResolveTCPAddr("tcp", "127.0.0.1:2003")
 go metrics.Graphite(metrics.DefaultRegistry, 10e9, "metrics", addr)
 ```
 
-Periodically emit every metric into InfluxDB:
-
-```go
-import "github.com/rcrowley/go-metrics/influxdb"
-
-go influxdb.Influxdb(metrics.DefaultRegistry, 10e9, &influxdb.Config{
-    Host:     "127.0.0.1:8086",
-    Database: "metrics",
-    Username: "test",
-    Password: "test",
-})
-```
-
-Periodically upload every metric to Librato:
-
-```go
-import "github.com/rcrowley/go-metrics/librato"
-
-go librato.Librato(metrics.DefaultRegistry,
-    10e9,                  // interval
-    "example@example.com", // account owner email address
-    "token",               // Librato API token
-    "hostname",            // source
-    []float64{95},         // precentiles to send
-    time.Millisecond,      // time unit
-)
-```
-
 Periodically emit every metric to StatHat:
 
 ```go
 import "github.com/rcrowley/go-metrics/stathat"
 
-go stathat.Stathat(metrics.DefaultRegistry, 10e9, "example@example.com")
+stathat.Stathat(metrics.DefaultRegistry, 10e9, "example@example.com")
 ```
 
 Installation

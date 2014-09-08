@@ -4,30 +4,12 @@ import "testing"
 
 func BenchmarkHistogram(b *testing.B) {
 	h := NewHistogram(NewUniformSample(100))
-	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		h.Update(int64(i))
+		h.Update(1)
 	}
 }
 
-func TestGetOrRegisterHistogram(t *testing.T) {
-	r := NewRegistry()
-	s := NewUniformSample(100)
-	NewRegisteredHistogram("foo", r, s).Update(47)
-	if h := GetOrRegisterHistogram("foo", r, s); 1 != h.Count() {
-		t.Fatal(h)
-	}
-}
-
-func TestHistogram10000(t *testing.T) {
-	h := NewHistogram(NewUniformSample(100000))
-	for i := 1; i <= 10000; i++ {
-		h.Update(int64(i))
-	}
-	testHistogram10000(t, h)
-}
-
-func TestHistogramEmpty(t *testing.T) {
+func TestEmptyHistogram(t *testing.T) {
 	h := NewHistogram(NewUniformSample(100))
 	if count := h.Count(); 0 != count {
 		t.Errorf("h.Count(): 0 != %v\n", count)
@@ -56,17 +38,11 @@ func TestHistogramEmpty(t *testing.T) {
 	}
 }
 
-func TestHistogramSnapshot(t *testing.T) {
+func TestHistogram10000(t *testing.T) {
 	h := NewHistogram(NewUniformSample(100000))
 	for i := 1; i <= 10000; i++ {
 		h.Update(int64(i))
 	}
-	snapshot := h.Snapshot()
-	h.Update(0)
-	testHistogram10000(t, snapshot)
-}
-
-func testHistogram10000(t *testing.T, h Histogram) {
 	if count := h.Count(); 10000 != count {
 		t.Errorf("h.Count(): 10000 != %v\n", count)
 	}
@@ -79,8 +55,8 @@ func testHistogram10000(t *testing.T, h Histogram) {
 	if mean := h.Mean(); 5000.5 != mean {
 		t.Errorf("h.Mean(): 5000.5 != %v\n", mean)
 	}
-	if stdDev := h.StdDev(); 2886.751331514372 != stdDev {
-		t.Errorf("h.StdDev(): 2886.751331514372 != %v\n", stdDev)
+	if stdDev := h.StdDev(); 2886.8956799071675 != stdDev {
+		t.Errorf("h.StdDev(): 2886.8956799071675 != %v\n", stdDev)
 	}
 	ps := h.Percentiles([]float64{0.5, 0.75, 0.99})
 	if 5000.5 != ps[0] {

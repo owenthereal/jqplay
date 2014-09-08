@@ -1,14 +1,16 @@
-# Render [![GoDoc](https://godoc.org/github.com/unrolled/render?status.png)](http://godoc.org/github.com/unrolled/render)
+# Render
 
 Render is a package that provides functionality for easily rendering JSON, XML, and HTML templates. This package is based on the [Martini](https://github.com/go-martini/martini) [render](https://github.com/martini-contrib/render) work.
 
+[API Reference](http://godoc.org/github.com/unrolled/render)
+
 ## Usage
-Render can be used with pretty much any web framework providing you can access the `http.ResponseWriter` variable from your handler. The rendering functions simply wrap Go's existing functionality for marshaling and rendering the given data.
+Render can be used with pretty much any web framework providing you can assess the `http.ResponseWriter` variable from your handler. The rendering functions simply wrap Go's existing functionality for marshaling and rendering the given data.
 
 - HTML: Uses the [html/template](http://golang.org/pkg/html/template/) package to render HTML templates.
 - JSON: Uses the [encoding/json](http://golang.org/pkg/encoding/json/) package to marshal data into a JSON-encoded response.
 - XML: Uses the [encoding/xml](http://golang.org/pkg/encoding/xml/) package to marshal data into an XML-encoded response.
-- Binary Data: Passes the incoming data straight through to the `http.ResponseWriter`.
+- Binary Data: Passes the incoming data strait through to the `http.ResponseWriter`.
 
 ~~~ go
 // main.go
@@ -18,7 +20,7 @@ import (
     "encoding/xml"
     "net/http"
 
-    "gopkg.in/unrolled/render.v1"
+    "github.com/unrolled/render"
 )
 
 type ExampleXml struct {
@@ -152,7 +154,7 @@ import (
     "encoding/xml"
     "net/http"
 
-    "gopkg.in/unrolled/render.v1"
+    "github.com/unrolled/render"
 )
 
 type ExampleXml struct {
@@ -201,7 +203,7 @@ import (
     "encoding/xml"
     "net/http"
 
-    "gopkg.in/unrolled/render.v1"
+    "github.com/unrolled/render"
 )
 
 type ExampleXml struct {
@@ -245,33 +247,6 @@ func main() {
 
 ## Integration Examples
 
-### [Gin](https://github.com/gin-gonic/gin)
-~~~ go
-// main.go
-package main
-
-import (
-    "net/http"
-
-    "github.com/gin-gonic/gin"
-    "gopkg.in/unrolled/render.v1"
-)
-
-func main() {
-    r := render.New(render.Options{
-        IndentJSON: true,
-    })
-
-    masterGin := gin.Default()
-
-    masterGin.GET("/", func(c *gin.Context) {
-        r.JSON(c.Writer, http.StatusOK, map[string]string{"welcome": "This is rendered JSON!"})
-    })
-
-    masterGin.Run(":3000")
-}
-~~~
-
 ### [Goji](https://github.com/zenazn/goji)
 ~~~ go
 // main.go
@@ -280,9 +255,9 @@ package main
 import (
     "net/http"
 
+    "github.com/unrolled/render"
     "github.com/zenazn/goji"
     "github.com/zenazn/goji/web"
-    "gopkg.in/unrolled/render.v1"
 )
 
 func main() {
@@ -306,7 +281,7 @@ import (
     "net/http"
 
     "github.com/codegangsta/negroni"
-    "gopkg.in/unrolled/render.v1"
+    "github.com/unrolled/render"
 )
 
 func main() {
@@ -334,7 +309,7 @@ import (
     "net/http"
 
     "github.com/pilu/traffic"
-    "gopkg.in/unrolled/render.v1"
+    "github.com/unrolled/render"
 )
 
 func main() {
@@ -360,7 +335,7 @@ import (
     "net/http"
 
     "github.com/hoisie/web"
-    "gopkg.in/unrolled/render.v1"
+    "github.com/unrolled/render"
 )
 
 func main() {
@@ -375,3 +350,6 @@ func main() {
     web.Run("0.0.0.0:3000")
 }
 ~~~
+
+## Authors
+* [Cory Jacobsen](http://github.com/unrolled)

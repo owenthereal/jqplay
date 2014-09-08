@@ -34,9 +34,7 @@ agent.Run()
 If you using Beego, Martini or Revel framework you can hook up gorelic with your application by using the following middleware:
 - https://github.com/yvasiyarov/beego_gorelic   
 - https://github.com/yvasiyarov/martini_gorelic   
-- https://github.com/yvasiyarov/gocraft_gorelic   
-- http://wiki.colar.net/revel_newelic
-- https://github.com/jingweno/negroni-gorelic
+- http://wiki.colar.net/revel_newelic  
    
 
 ### Configuration  

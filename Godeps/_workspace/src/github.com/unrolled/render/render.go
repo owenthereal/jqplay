@@ -1,7 +1,55 @@
+// Render is a package that provides functionality for easily rendering JSON, XML, and HTML templates.
+//
+// package main
+//
+// import (
+//   "encoding/xml"
+//   "net/http"
+//
+//   "github.com/unrolled/render"
+// )
+//
+// type ExampleXml struct {
+//   XMLName xml.Name `xml:"example"`
+//   One     string   `xml:"one,attr"`
+//   Two     string   `xml:"two,attr"`
+// }
+//
+// func main() {
+//   r := render.New(render.Options{})
+//   mux := http.NewServeMux()
+//
+//   mux.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
+//     w.Write([]byte("Welcome, visit sub pages now."))
+//   })
+//
+//   mux.HandleFunc("/data", func(w http.ResponseWriter, req *http.Request) {
+//     r.Data(w, http.StatusOK, []byte("Some binary data here."))
+//   })
+//
+//   mux.HandleFunc("/json", func(w http.ResponseWriter, req *http.Request) {
+//     r.JSON(w, http.StatusOK, map[string]string{"hello": "json"})
+//   })
+//
+//   mux.HandleFunc("/xml", func(w http.ResponseWriter, req *http.Request) {
+//     r.XML(w, http.StatusOK, ExampleXml{One: "hello", Two: "xml"})
+//   })
+//
+//   mux.HandleFunc("/html", func(w http.ResponseWriter, req *http.Request) {
+//     // Assumes you have a template in ./templates called "example.tmpl"
+//     // $ mkdir -p templates && echo "<h1>Hello HTML world.</h1>" > templates/example.tmpl
+//     r.HTML(w, http.StatusOK, "example", nil)
+//   })
+//
+//  http.ListenAndServe("0.0.0.0:3000", mux)
+// }
+
 package render
 
 import (
 	"bytes"
+	"encoding/json"
+	"encoding/xml"
 	"fmt"
 	"html/template"
 	"io/ioutil"
@@ -12,21 +60,13 @@ import (
 )
 
 const (
-	// ContentType header constant.
-	ContentType = "Content-Type"
-	// ContentLength header constant.
-	ContentLength = "Content-Length"
-	// ContentBinary header value for binary data.
-	ContentBinary = "application/octet-stream"
-	// ContentJSON header value for JSON data.
-	ContentJSON = "application/json"
-	// ContentHTML header value for HTML data.
-	ContentHTML = "text/html"
-	// ContentXHTML header value for XHTML data.
-	ContentXHTML = "application/xhtml+xml"
-	// ContentXML header value for XML data.
-	ContentXML = "text/xml"
-	// Default character encoding.
+	ContentType    = "Content-Type"
+	ContentLength  = "Content-Length"
+	ContentBinary  = "application/octet-stream"
+	ContentJSON    = "application/json"
+	ContentHTML    = "text/html"
+	ContentXHTML   = "application/xhtml+xml"
+	ContentXML     = "text/xml"
 	defaultCharset = "UTF-8"
 )
 
@@ -91,7 +131,7 @@ type Render struct {
 	compiledCharset string
 }
 
-// New constructs a new Render instance with the supplied options.
+// Constructs a new Render instance with the supplied options.
 func New(options Options) *Render {
 	r := Render{
 		opt: options,
@@ -164,61 +204,62 @@ func (r *Render) compileTemplates() {
 	})
 }
 
-// Render is the generic function called by XML, JSON, Data, HTML, and can be called by custom implementations.
-func (r *Render) Render(w http.ResponseWriter, e Engine, data interface{}) {
-	err := e.Render(w, data)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-	}
-}
-
-// XML marshals the given interface object and writes the XML response.
-func (r *Render) XML(w http.ResponseWriter, status int, v interface{}) {
-	head := Head{
-		ContentType: ContentXML + r.compiledCharset,
-		Status:      status,
-	}
-
-	x := XML{
-		Head:   head,
-		Indent: r.opt.IndentXML,
-		Prefix: r.opt.PrefixXML,
-	}
-
-	r.Render(w, x, v)
-}
-
-// JSON marshals the given interface object and writes the JSON response.
+// Marshals the given interface object and writes the JSON response.
 func (r *Render) JSON(w http.ResponseWriter, status int, v interface{}) {
-	head := Head{
-		ContentType: ContentJSON + r.compiledCharset,
-		Status:      status,
+	var result []byte
+	var err error
+	if r.opt.IndentJSON {
+		result, err = json.MarshalIndent(v, "", "  ")
+	} else {
+		result, err = json.Marshal(v)
+	}
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
 	}
 
-	j := JSON{
-		Head:   head,
-		Indent: r.opt.IndentJSON,
-		Prefix: r.opt.PrefixJSON,
+	// JSON marshaled fine, write out the result.
+	w.Header().Set(ContentType, ContentJSON+r.compiledCharset)
+	w.WriteHeader(status)
+	if len(r.opt.PrefixJSON) > 0 {
+		w.Write(r.opt.PrefixJSON)
 	}
-
-	r.Render(w, j, v)
+	w.Write(result)
 }
 
-// Data writes out the raw bytes as binary data.
+// Marshals the given interface object and writes the XML response.
+func (r *Render) XML(w http.ResponseWriter, status int, v interface{}) {
+	var result []byte
+	var err error
+	if r.opt.IndentXML {
+		result, err = xml.MarshalIndent(v, "", "  ")
+	} else {
+		result, err = xml.Marshal(v)
+	}
+	if err != nil {
+		http.Error(w, err.Error(), 500)
+		return
+	}
+
+	// XML marshaled fine, write out the result.
+	w.Header().Set(ContentType, ContentXML+r.compiledCharset)
+	w.WriteHeader(status)
+	if len(r.opt.PrefixXML) > 0 {
+		w.Write(r.opt.PrefixXML)
+	}
+	w.Write(result)
+}
+
+// Writes out the raw bytes as binary data.
 func (r *Render) Data(w http.ResponseWriter, status int, v []byte) {
-	head := Head{
-		ContentType: ContentBinary,
-		Status:      status,
+	if w.Header().Get(ContentType) == "" {
+		w.Header().Set(ContentType, ContentBinary)
 	}
-
-	d := Data{
-		Head: head,
-	}
-
-	r.Render(w, d, v)
+	w.WriteHeader(status)
+	w.Write(v)
 }
 
-// HTML builds up the response from the specified template and bindings.
+// Builds up the HTML response from the specified template and bindings.
 func (r *Render) HTML(w http.ResponseWriter, status int, name string, binding interface{}, htmlOpt ...HTMLOptions) {
 	// If we are in development mode, recompile the templates on every HTML request.
 	if r.opt.IsDevelopment {
@@ -233,18 +274,16 @@ func (r *Render) HTML(w http.ResponseWriter, status int, name string, binding in
 		name = opt.Layout
 	}
 
-	head := Head{
-		ContentType: r.opt.HTMLContentType + r.compiledCharset,
-		Status:      status,
+	out, err := r.execute(name, binding)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
-	h := HTML{
-		Head:      head,
-		Name:      name,
-		Templates: r.templates,
-	}
-
-	r.Render(w, h, binding)
+	// Template rendered fine, write out the result.
+	w.Header().Set(ContentType, r.opt.HTMLContentType+r.compiledCharset)
+	w.WriteHeader(status)
+	w.Write(out.Bytes())
 }
 
 func (r *Render) execute(name string, binding interface{}) (*bytes.Buffer, error) {

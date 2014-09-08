@@ -1,6 +1,8 @@
-# Secure [![GoDoc](https://godoc.org/github.com/unrolled/secure?status.png)](http://godoc.org/github.com/unrolled/secure)
+# Secure
 
 Secure is an HTTP middleware for Go that facilitates some quick security wins.
+
+[API Reference](http://godoc.org/github.com/unrolled/secure)
 
 ## Usage
 
@@ -11,7 +13,7 @@ package main
 import (
     "net/http"
 
-    "gopkg.in/unrolled/secure.v1"
+    "github.com/unrolled/secure"
 )
 
 func myApp(w http.ResponseWriter, r *http.Request) {
@@ -89,7 +91,7 @@ import (
     "log"
     "net/http"
 
-    "gopkg.in/unrolled/secure.v1"
+    "github.com/unrolled/secure"
 )
 
 func myApp(w http.ResponseWriter, r *http.Request) {
@@ -128,9 +130,9 @@ package main
 import (
     "net/http"
 
+    "github.com/unrolled/secure"
     "github.com/zenazn/goji"
     "github.com/zenazn/goji/web"
-    "gopkg.in/unrolled/secure.v1"
 )
 
 func main() {
@@ -156,7 +158,7 @@ import (
     "net/http"
 
     "github.com/codegangsta/negroni"
-    "gopkg.in/unrolled/secure.v1"
+    "github.com/unrolled/secure"
 )
 
 func main() {
@@ -200,3 +202,6 @@ add_header X-Content-Type-Options "nosniff";
 add_header X-XSS-Protection "1; mode=block";
 add_header Content-Security-Policy "default-src 'self'";
 ~~~
+
+## Authors
+* [Cory Jacobsen](http://github.com/unrolled)
