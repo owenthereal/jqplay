@@ -9,8 +9,8 @@
     <title>jq play</title>
 
     <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="#{ .Asset "bower_components/bootstrap/dist/css/bootstrap.min.css" }">
-    <link rel="stylesheet" href="#{ .Asset "css/app.css" }">
+    <link rel="stylesheet" href="#{ .Asset "public/bower_components/bootstrap/dist/css/bootstrap.min.css" }">
+    <link rel="stylesheet" href="#{ .Asset "public/css/app.css" }">
 
     <!-- Just for debugging purposes. Don't actually copy this line! -->
     <!--[if lt IE 9]><script src="https://raw.githubusercontent.com/twbs/bootstrap/master/docs/assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
@@ -26,7 +26,7 @@
     <div class="page-wrap" ng-controller="JqplayCtrl">
       <header>
         <div class="brand">
-          <a href="/"><img src="images/logo.png" alt="jqplay" class="logo"></a>
+          <a href="/"><img src="public/images/logo.png" alt="jqplay" class="logo"></a>
         </div>
         <p>A playground for <a href="http://stedolan.github.io/jq/">jq</a> #{.JQVersion}</p>
       </header>
@@ -132,13 +132,13 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script type="text/javascript" src="#{ .Asset "bower_components/ace-builds/src-min-noconflict/ace.js" }"></script>
-    <script type="text/javascript" src="#{ .Asset "bower_components/angular/angular.min.js" }"></script>
-    <script type="text/javascript" src="#{ .Asset "bower_components/angular-ui-ace/ui-ace.js" }"></script>
-    <script type="text/javascript" src="#{ .Asset "js/app.js" }"></script>
-    <script type="text/javascript" src="#{ .Asset "js/controllers.js" }"></script>
-    <script type="text/javascript" src="#{ .Asset "js/services.js" }"></script>
-    <script type="text/javascript" src="#{ .Asset "js/filters.js" }"></script>
+    <script type="text/javascript" src="#{ .Asset "public/bower_components/ace-builds/src-min-noconflict/ace.js" }"></script>
+    <script type="text/javascript" src="#{ .Asset "public/bower_components/angular/angular.min.js" }"></script>
+    <script type="text/javascript" src="#{ .Asset "public/bower_components/angular-ui-ace/ui-ace.js" }"></script>
+    <script type="text/javascript" src="#{ .Asset "public/js/app.js" }"></script>
+    <script type="text/javascript" src="#{ .Asset "public/js/controllers.js" }"></script>
+    <script type="text/javascript" src="#{ .Asset "public/js/services.js" }"></script>
+    <script type="text/javascript" src="#{ .Asset "public/js/filters.js" }"></script>
     #{ if .IsProduction }
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
