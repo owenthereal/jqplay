@@ -7,8 +7,8 @@
 	"Deps": [
 		{
 			"ImportPath": "github.com/codegangsta/negroni",
-			"Comment": "v0.1-4-ga13766a",
-			"Rev": "a13766a8c2572caeb14341b7de158aff2fd00fa9"
+			"Comment": "v0.1-27-g46bd821",
+			"Rev": "46bd821940d86fb9777f7f86e9ae428132e110da"
 		},
 		{
 			"ImportPath": "github.com/jingweno/jqpipe-go",
@@ -19,25 +19,25 @@
 			"Rev": "0547cdd62f4b911984d435279bd46b4d1a580823"
 		},
 		{
-			"ImportPath": "github.com/unrolled/render",
-			"Rev": "f9c435989c42d76c061b645e5ba8beadbd1c90d6"
-		},
-		{
-			"ImportPath": "github.com/unrolled/secure",
-			"Rev": "8186d71f0ca905b8df15d41b1f48b68720ba7eb4"
-		},
-		{
 			"ImportPath": "github.com/yvasiyarov/go-metrics",
-			"Rev": "b23f8b043b6492e7aef34eb11aab268a5c89c14b"
+			"Rev": "6b08babe701f8de2481c8bc4c2c638d9c5867e41"
 		},
 		{
 			"ImportPath": "github.com/yvasiyarov/gorelic",
-			"Comment": "v0.0.6-3-g7273820",
-			"Rev": "72738204158f5f918ec897c91b3f88b8d5910613"
+			"Comment": "v0.0.6-6-ged461c0",
+			"Rev": "ed461c0552ffe5e4bee53eb23c0edacc13c82555"
 		},
 		{
 			"ImportPath": "github.com/yvasiyarov/newrelic_platform_go",
-			"Rev": "2d5b3d6e6db42e361ca5a5b6376a1368f7067236"
+			"Rev": "b21fdbd4370f3717f3bbd2bf41c223bc273068e6"
+		},
+		{
+			"ImportPath": "gopkg.in/unrolled/render.v1",
+			"Rev": "40ac5716c7e0bffcc440aac649ea4b880a5d7735"
+		},
+		{
+			"ImportPath": "gopkg.in/unrolled/secure.v1",
+			"Rev": "e5f5dae29182c4fb690db4b00b0773be2c9fce93"
 		}
 	]
 }

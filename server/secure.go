@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/codegangsta/negroni"
-	"github.com/unrolled/secure"
+	"gopkg.in/unrolled/secure.v1"
 )
 
 func secureMiddleware(c *Config) negroni.Handler {
