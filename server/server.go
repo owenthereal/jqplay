@@ -7,7 +7,7 @@ import (
 	"github.com/codegangsta/negroni"
 	"github.com/jingweno/jqplay/jq"
 	"github.com/jingweno/negroni-gorelic"
-	"github.com/unrolled/render"
+	"gopkg.in/unrolled/render.v1"
 )
 
 func New(c *Config) *Server {

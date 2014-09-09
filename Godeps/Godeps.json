@@ -19,14 +19,6 @@
 			"Rev": "0547cdd62f4b911984d435279bd46b4d1a580823"
 		},
 		{
-			"ImportPath": "github.com/unrolled/render",
-			"Rev": "f9c435989c42d76c061b645e5ba8beadbd1c90d6"
-		},
-		{
-			"ImportPath": "github.com/unrolled/secure",
-			"Rev": "8186d71f0ca905b8df15d41b1f48b68720ba7eb4"
-		},
-		{
 			"ImportPath": "github.com/yvasiyarov/go-metrics",
 			"Rev": "b23f8b043b6492e7aef34eb11aab268a5c89c14b"
 		},
@@ -38,6 +30,14 @@
 		{
 			"ImportPath": "github.com/yvasiyarov/newrelic_platform_go",
 			"Rev": "2d5b3d6e6db42e361ca5a5b6376a1368f7067236"
+		},
+		{
+			"ImportPath": "gopkg.in/unrolled/render.v1",
+			"Rev": "40ac5716c7e0bffcc440aac649ea4b880a5d7735"
+		},
+		{
+			"ImportPath": "gopkg.in/unrolled/secure.v1",
+			"Rev": "e5f5dae29182c4fb690db4b00b0773be2c9fce93"
 		}
 	]
 }
