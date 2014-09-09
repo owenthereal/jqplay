@@ -131,4 +131,10 @@ angular.module('jqplay.controllers', []).controller('JqplayCtrl', function Jqpla
     $scope.jq.q = samples[index].input_q;
     $scope.input.$valid = true;
   };
+
+  if (window.jq != null) {
+    $scope.jq.j = window.jq.j;
+    $scope.jq.q = window.jq.q;
+    $scope.run($scope.jq);
+  }
 });
