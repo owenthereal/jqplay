@@ -20,7 +20,10 @@ func TestJQEval(t *testing.T) {
 		t.Errorf("err should not be nil since it's invalid input")
 	}
 
-	jq = &JQ{J: "{}", Q: "def foo: foo; foo"}
+	jq = &JQ{
+		J: `{"dependencies":{"capnp":{"version":"0.1.4","dependencies":{"es6-promise":{"version":"1.0.0","dependencies":{"es6-promise":{"version":"1.0.0"}}}}}}}`,
+		Q: `.dependencies | recurse(to_entries | map(.values.dependencies))`,
+	}
 	_, err = jq.Eval()
 
 	if err == nil {

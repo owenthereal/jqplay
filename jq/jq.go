@@ -6,11 +6,6 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"os"
-	"os/exec"
-	"path/filepath"
-	"regexp"
-	"runtime"
 	"strings"
 	"time"
 
@@ -18,60 +13,6 @@ import (
 )
 
 const jqExecTimeout = 3
-
-var Path, Version string
-
-func Init() error {
-	pwd, err := os.Getwd()
-	if err != nil {
-		return err
-	}
-
-	err = SetPath(pwd)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func SetPath(binDir string) error {
-	jqPath := filepath.Join(binDir, "bin", fmt.Sprintf("%s_%s", runtime.GOOS, runtime.GOARCH))
-	Path = filepath.Join(jqPath, "jq")
-
-	_, err := os.Stat(Path)
-	if err != nil {
-		return err
-	}
-
-	os.Setenv("PATH", fmt.Sprintf("%s%c%s", jqPath, os.PathListSeparator, os.Getenv("PATH")))
-
-	err = setVersion()
-
-	return err
-}
-
-func setVersion() error {
-	// get version from `jq --help`
-	// since `jq --version` diffs between versions
-	// e.g., 1.3 & 1.4
-	var b bytes.Buffer
-	cmd := exec.Command(Path, "--help")
-	cmd.Stdout = &b
-	cmd.Stderr = &b
-	cmd.Run()
-
-	out := bytes.TrimSpace(b.Bytes())
-	r := regexp.MustCompile(`\[version (.+)\]`)
-	if r.Match(out) {
-		m := r.FindSubmatch(out)[1]
-		Version = string(m)
-
-		return nil
-	}
-
-	return fmt.Errorf("can't find jq version: %s", out)
-}
 
 type jqResult struct {
 	Seq []json.RawMessage
@@ -122,9 +63,10 @@ func (j *JQ) Eval() (string, error) {
 		return "", err
 	}
 
+	isFailed := new(AtomicBool)
 	rc := make(chan *jqResult, 1)
 	defer close(rc)
-	go run(jj, rc)
+	go run(jj, rc, isFailed)
 
 	select {
 	case r := <-rc:
@@ -132,6 +74,7 @@ func (j *JQ) Eval() (string, error) {
 	case <-time.After(time.Second * jqExecTimeout):
 		log.Printf("Error: JQ timeout - %s\n", j)
 
+		isFailed.Set(true)
 		err := jj.Close()
 		if err != nil {
 			return "", fmt.Errorf("jq execution timeout: %s", err)
@@ -163,7 +106,7 @@ func (j JQ) String() string {
 	return fmt.Sprintf("j=%s, q=%s, o=%v", j.J, j.Q, j.Opts())
 }
 
-func run(jq *jq.Pipe, rc chan *jqResult) {
+func run(jq *jq.Pipe, rc chan *jqResult, isFailed *AtomicBool) {
 	r := &jqResult{Seq: make([]json.RawMessage, 0, 16)}
 loop:
 	for {
@@ -179,5 +122,7 @@ loop:
 		}
 	}
 
-	rc <- r
+	if !isFailed.Get() {
+		rc <- r
+	}
 }
