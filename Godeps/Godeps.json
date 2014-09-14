@@ -7,8 +7,8 @@
 	"Deps": [
 		{
 			"ImportPath": "github.com/codegangsta/negroni",
-			"Comment": "v0.1-4-ga13766a",
-			"Rev": "a13766a8c2572caeb14341b7de158aff2fd00fa9"
+			"Comment": "v0.1-27-g46bd821",
+			"Rev": "46bd821940d86fb9777f7f86e9ae428132e110da"
 		},
 		{
 			"ImportPath": "github.com/jingweno/jqpipe-go",
@@ -20,12 +20,12 @@
 		},
 		{
 			"ImportPath": "github.com/yvasiyarov/go-metrics",
-			"Rev": "b23f8b043b6492e7aef34eb11aab268a5c89c14b"
+			"Rev": "6b08babe701f8de2481c8bc4c2c638d9c5867e41"
 		},
 		{
 			"ImportPath": "github.com/yvasiyarov/gorelic",
-			"Comment": "v0.0.6-3-g7273820",
-			"Rev": "72738204158f5f918ec897c91b3f88b8d5910613"
+			"Comment": "v0.0.6-6-ged461c0",
+			"Rev": "ed461c0552ffe5e4bee53eb23c0edacc13c82555"
 		},
 		{
 			"ImportPath": "github.com/yvasiyarov/newrelic_platform_go",

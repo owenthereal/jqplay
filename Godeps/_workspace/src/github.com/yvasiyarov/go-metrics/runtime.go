@@ -40,7 +40,10 @@ var (
 		NumGoroutine Gauge
 		ReadMemStats Timer
 	}
-	numGC uint32
+	numGC      uint32
+	numMallocs uint64
+	numFrees   uint64
+	numLookups uint64
 )
 
 // Capture new values for the Go runtime statistics exported in
@@ -56,9 +59,13 @@ func CaptureRuntimeMemStats(r Registry, d time.Duration) {
 // runtime.MemStats.  This is designed to be called in a background
 // goroutine.  Giving a registry which has not been given to
 // RegisterRuntimeMemStats will panic.
+//
+// Be very careful with this because runtime.ReadMemStats calls the C
+// functions runtime·semacquire(&runtime·worldsema) and runtime·stoptheworld()
+// and that last one does what it says on the tin.
 func CaptureRuntimeMemStatsOnce(r Registry) {
 	t := time.Now()
-	runtime.ReadMemStats(&memStats)
+	runtime.ReadMemStats(&memStats) // This takes 50-200us.
 	runtimeMetrics.ReadMemStats.UpdateSince(t)
 
 	runtimeMetrics.MemStats.Alloc.Update(int64(memStats.Alloc))
@@ -73,7 +80,8 @@ func CaptureRuntimeMemStatsOnce(r Registry) {
 	} else {
 		runtimeMetrics.MemStats.EnableGC.Update(0)
 	}
-	runtimeMetrics.MemStats.Frees.Update(int64(memStats.Frees))
+
+	runtimeMetrics.MemStats.Frees.Update(int64(memStats.Frees - numFrees))
 	runtimeMetrics.MemStats.HeapAlloc.Update(int64(memStats.HeapAlloc))
 	runtimeMetrics.MemStats.HeapIdle.Update(int64(memStats.HeapIdle))
 	runtimeMetrics.MemStats.HeapInuse.Update(int64(memStats.HeapInuse))
@@ -81,17 +89,38 @@ func CaptureRuntimeMemStatsOnce(r Registry) {
 	runtimeMetrics.MemStats.HeapReleased.Update(int64(memStats.HeapReleased))
 	runtimeMetrics.MemStats.HeapSys.Update(int64(memStats.HeapSys))
 	runtimeMetrics.MemStats.LastGC.Update(int64(memStats.LastGC))
-	runtimeMetrics.MemStats.Lookups.Update(int64(memStats.Lookups))
-	runtimeMetrics.MemStats.Mallocs.Update(int64(memStats.Mallocs))
+	runtimeMetrics.MemStats.Lookups.Update(int64(memStats.Lookups - numLookups))
+	runtimeMetrics.MemStats.Mallocs.Update(int64(memStats.Mallocs - numMallocs))
 	runtimeMetrics.MemStats.MCacheInuse.Update(int64(memStats.MCacheInuse))
 	runtimeMetrics.MemStats.MCacheSys.Update(int64(memStats.MCacheSys))
 	runtimeMetrics.MemStats.MSpanInuse.Update(int64(memStats.MSpanInuse))
 	runtimeMetrics.MemStats.MSpanSys.Update(int64(memStats.MSpanSys))
 	runtimeMetrics.MemStats.NextGC.Update(int64(memStats.NextGC))
-	runtimeMetrics.MemStats.NumGC.Update(int64(memStats.NumGC))
-	for i := uint32(1); i <= memStats.NumGC-numGC; i++ {
-		runtimeMetrics.MemStats.PauseNs.Update(int64(memStats.PauseNs[(memStats.NumGC%256-i)%256])) // <https://code.google.com/p/go/source/browse/src/pkg/runtime/mgc0.c>
+	runtimeMetrics.MemStats.NumGC.Update(int64(memStats.NumGC - numGC))
+
+	// <https://code.google.com/p/go/source/browse/src/pkg/runtime/mgc0.c>
+	i := numGC % uint32(len(memStats.PauseNs))
+	ii := memStats.NumGC % uint32(len(memStats.PauseNs))
+	if memStats.NumGC-numGC >= uint32(len(memStats.PauseNs)) {
+		for i = 0; i < uint32(len(memStats.PauseNs)); i++ {
+			runtimeMetrics.MemStats.PauseNs.Update(int64(memStats.PauseNs[i]))
+		}
+	} else {
+		if i > ii {
+			for ; i < uint32(len(memStats.PauseNs)); i++ {
+				runtimeMetrics.MemStats.PauseNs.Update(int64(memStats.PauseNs[i]))
+			}
+			i = 0
+		}
+		for ; i < ii; i++ {
+			runtimeMetrics.MemStats.PauseNs.Update(int64(memStats.PauseNs[i]))
+		}
 	}
+	numGC = memStats.NumGC
+	numMallocs = memStats.Mallocs
+	numFrees = memStats.Frees
+	numLookups = memStats.Lookups
+
 	runtimeMetrics.MemStats.PauseTotalNs.Update(int64(memStats.PauseTotalNs))
 	runtimeMetrics.MemStats.StackInuse.Update(int64(memStats.StackInuse))
 	runtimeMetrics.MemStats.StackSys.Update(int64(memStats.StackSys))
