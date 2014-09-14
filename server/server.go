@@ -39,6 +39,7 @@ func (s *Server) Start() {
 
 	n.Use(negroni.NewRecovery())
 	n.Use(negroni.NewLogger())
+	n.Use(robotsMiddleware())
 	n.Use(corsMiddleware("/public"))
 
 	static := negroni.NewStatic(http.Dir("public"))
