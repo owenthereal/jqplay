@@ -20,7 +20,7 @@ body {
 header {
   background: #22201e;
   color: #fff;
-  margin: 0 -1.5em;
+  margin: 0 -1.5em 1.5em;
   overflow: hidden;
   padding: 0.7em 1.5em;
 }
@@ -32,7 +32,7 @@ header .brand {
 
 header .logo {
   position: relative;
-  margin-bottom: -1px;
+  margin-top: 5px;
 }
 
 header p {
@@ -40,6 +40,10 @@ header p {
   font-size: 0.825em;
   margin-top: 0.7em;
   margin-bottom: 0;
+}
+
+header a {
+  color: #428bca;
 }
 
 
@@ -118,6 +122,15 @@ footer hr {
 }
 .ace_editor {
   border-radius: 3px;
+}
+
+/* ___ Override flat UI ___ */
+label {
+  font-weight: 700;
+}
+footer {
+  background: none;
+  color: inherit;
 }
 
 /* ___ Debugging Utilities ___ */
