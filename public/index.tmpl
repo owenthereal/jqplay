@@ -32,23 +32,20 @@
         <p>A playground for <a href="http://stedolan.github.io/jq/">jq</a> #{.JQVersion}</p>
       </header>
 
-        <div class="row main">
+        <div class="row">
           <div class="col-sm-12 col-md-6">
             <form name="input" role="form" novalidate>
-              <div id="filterGroup" class="form-group">
                 <label for="filter">Filter</label>
                 <input type="text" class="form-control" id="filter" name="q" ng-model="jq.q" autofocus required>
-              </div>
-              <div id="jsonGroup" class="form-group">
+                <br>
                 <label for="json">JSON</label>
                 <div ui-ace="{
                   theme:'github',
                   mode: 'jsoniq',
                   onLoad: editorLoaded
                 }" ng-model="jq.j" required class="json-editor"></div>
-              </div>
             </form>
-          </div>
+          </div> <!-- end col -->
 
           <div class="col-sm-12 col-md-6">
             <div id="optionsGroup" class="pull-right">
@@ -60,74 +57,78 @@
                 </span>
               </div>
             </div>
-            <label for="result">Result
-            </label>
+            <label for="result">Result</label>
             <div ui-ace="{
               theme:'github',
               mode: 'jsoniq',
               onLoad: editorLoaded
             }" readonly="true" ng-model="result" class="result-editor"></div>
-          </div>
-        </div>
+          </div> <!-- end col -->
+      </div> <!-- end row -->
 
-      <div class="col-sm-12">
-        <div class="row main panel panel-default">
-          <div class="panel-heading">
-            <h3 class="panel-title text-center">
-              Cheatsheet
-            </h3>
-            <em>
-              Click on the icons (
-              <span class="glyphicon glyphicon-list-alt"></span>
-              )
-              in the table below to see examples.
-            </em>
-          </div>
+      <div class="row main">
+        <div class="col-sm-12 col-md-12">
+          <div class="panel panel-default">
 
-          <div class="panel-body">
-            <div class="col-md-6">
-              <table class="table">
-                <tbody>
-                  <tr ng-repeat="sample in samplesLeft">
-                    <td>
-                      <code>{{sample.code}}</code>
-                    </td>
-                    <td>{{sample.text}}</td>
-                    <td>
-                      <a href="#" ng-click="loadSample(samplesLeft, $index)" title="Load Sample">
-                        <span class="glyphicon glyphicon-list-alt"></span>
-                      </a>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
+            <div class="panel-heading">
+              <h3 class="panel-title text-center">
+                Cheatsheet
+              </h3>
+              <em>
+                Click on the icons (
+                <span class="glyphicon glyphicon-list-alt"></span>
+                )
+                in the table below to see examples.
+              </em>
+            </div> <!-- end panel-heading-->
 
-            <div class="col-md-6">
-              <table class="table">
-                <tbody>
-                  <tr ng-repeat="sample in samplesRight">
-                    <td>
-                      <code>{{sample.code}}</code>
-                    </td>
-                    <td>{{sample.text}}</td>
-                    <td>
-                      <a href="#" ng-click="loadSample(samplesRight, $index)" title="Load Sample">
-                        <span class="glyphicon glyphicon-list-alt"></span>
-                      </a>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-  </div>
+            <div class="panel-body">
+              <div class="col-md-6">
+                <table class="table">
+                  <tbody>
+                    <tr ng-repeat="sample in samplesLeft">
+                      <td>
+                        <code>{{sample.code}}</code>
+                      </td>
+                      <td>{{sample.text}}</td>
+                      <td>
+                        <a href="#" ng-click="loadSample(samplesLeft, $index)" title="Load Sample">
+                          <span class="glyphicon glyphicon-list-alt"></span>
+                        </a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div> <!-- end col -->
+
+              <div class="col-md-6">
+                <table class="table">
+                  <tbody>
+                    <tr ng-repeat="sample in samplesRight">
+                      <td>
+                        <code>{{sample.code}}</code>
+                      </td>
+                      <td>{{sample.text}}</td>
+                      <td>
+                        <a href="#" ng-click="loadSample(samplesRight, $index)" title="Load Sample">
+                          <span class="glyphicon glyphicon-list-alt"></span>
+                        </a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div> <!-- end col -->
+          </div> <!-- end panel-body -->
+
+        </div> <!-- end panel -->
+      </div> <!-- end col -->
+    </div> <!-- end row -->
+
+  </div> <!-- end page-wrap -->
 
     <footer class="footer">
       <hr>
-      <p>Made with love by <a href="https://github.com/jingweno">@jingweno</a>, <a href="https://github.com/lokywin">@lokywin</a> &amp; <a href="https://github.com/leoping">@leoping</a>. View <a href="https://github.com/jingweno/jqplay">source</a> on GitHub</p>
+      <p><a href="https://github.com/jingweno/jqplay">View source</a> on GitHub</p>
     </footer>
 
     <!-- Bootstrap core JavaScript
