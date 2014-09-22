@@ -38,7 +38,7 @@ header .logo {
 header p {
   color: #888;
   font-size: 0.825em;
-  margin-top: 0.7em;
+  margin-top: 1.2em;
   margin-bottom: 0;
 }
 
@@ -75,7 +75,7 @@ header a {
 .json-editor {
   border: 1px solid #DDD;
   width: 100%;
-  height: 343px;
+  height: 340px;
 }
 
 .result-editor {
@@ -85,7 +85,7 @@ header a {
 }
 
 #optionsGroup input {
-  margin-left: 0.7em;
+  margin: -0.77em 0.1em 0 0.7em;
 }
 
 #optionsGroup label {
@@ -124,13 +124,24 @@ footer hr {
   border-radius: 3px;
 }
 
-/* ___ Override flat UI ___ */
-label {
-  font-weight: 700;
+/* ___ Make BS looks flat ___ */
+
+.form-control {
+  border-width: 2px;
+  height: 38px;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  transition: border .25s linear, color .25s linear, background-color .25s linear;
 }
-footer {
-  background: none;
-  color: inherit;
+
+.form-control:focus {
+  box-shadow: none;
+  border-color: #66afe9;
+}
+
+label {
+  font-size: 16px;
+  font-weight: 600;
 }
 
 /* ___ Debugging Utilities ___ */

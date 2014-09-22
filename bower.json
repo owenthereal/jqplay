@@ -4,7 +4,6 @@
   "dependencies": {
     "angular": "1.2.23",
     "bootstrap": "3.2.0",
-    "flat-ui": "2.2.0",
     "angular-ui-ace": "0.1.1"
   }
 }

@@ -11,7 +11,6 @@
     <link rel="icon" type="image/png" href="#{ .Asset "public/images/favicon.png" }">
     <!-- Bootstrap core CSS -->
     <link rel="stylesheet" href="#{ .Asset "public/bower_components/bootstrap/dist/css/bootstrap.min.css" }">
-    <link rel="stylesheet" href="#{ .Asset "public/bower_components/flat-ui/dist/css/flat-ui.min.css" }">
     <link rel="stylesheet" href="#{ .Asset "public/css/app.css" }">
 
     <!-- Just for debugging purposes. Don't actually copy this line! -->
@@ -38,6 +37,7 @@
             <form name="input" role="form" novalidate>
                 <label for="filter">Filter</label>
                 <input type="text" class="form-control" id="filter" name="q" ng-model="jq.q" autofocus required>
+                <br>
                 <label for="json">JSON</label>
                 <div ui-ace="{
                   theme:'github',
