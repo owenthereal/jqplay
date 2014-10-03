@@ -110,6 +110,10 @@ func run(jq *jq.Pipe, rc chan *jqResult, isFailed *AtomicBool) {
 	r := &jqResult{Seq: make([]json.RawMessage, 0, 16)}
 loop:
 	for {
+		if isFailed.Get() {
+			return
+		}
+
 		next, err := jq.Next()
 		switch err {
 		case nil:
