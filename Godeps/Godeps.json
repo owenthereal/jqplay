@@ -32,6 +32,10 @@
 			"Rev": "2d5b3d6e6db42e361ca5a5b6376a1368f7067236"
 		},
 		{
+			"ImportPath": "golang.org/x/net/context",
+			"Rev": "c84eff7014eba178f68bd4c05b86780efe0fbf35"
+		},
+		{
 			"ImportPath": "gopkg.in/unrolled/render.v1",
 			"Rev": "40ac5716c7e0bffcc440aac649ea4b880a5d7735"
 		},

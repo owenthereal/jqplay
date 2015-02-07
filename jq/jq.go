@@ -5,11 +5,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"strings"
 	"time"
 
 	"github.com/jingweno/jqpipe-go"
+	"golang.org/x/net/context"
 )
 
 const jqExecTimeout = 3
@@ -52,7 +52,6 @@ func (j *JQ) Opts() []string {
 	return opts
 }
 
-// eval `jq` expression with timeout support
 func (j *JQ) Eval() (string, error) {
 	if err := j.Validate(); err != nil {
 		return "", err
@@ -63,25 +62,15 @@ func (j *JQ) Eval() (string, error) {
 		return "", err
 	}
 
-	isFailed := new(AtomicBool)
-	rc := make(chan *jqResult, 1)
-	defer close(rc)
-	go run(jj, rc, isFailed)
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*jqExecTimeout)
+	defer cancel()
 
-	select {
-	case r := <-rc:
-		return r.Result()
-	case <-time.After(time.Second * jqExecTimeout):
-		log.Printf("Error: JQ timeout - %s\n", j)
-
-		isFailed.Set(true)
-		err := jj.Close()
-		if err != nil {
-			return "", fmt.Errorf("jq execution timeout: %s", err)
-		}
-
-		return "", fmt.Errorf("jq execution timeout")
+	r, err := eval(jj, ctx)
+	if err != nil {
+		return "", err
 	}
+
+	return r.Result()
 }
 
 func (j *JQ) Validate() error {
@@ -106,27 +95,43 @@ func (j JQ) String() string {
 	return fmt.Sprintf("j=%s, q=%s, o=%v", j.J, j.Q, j.Opts())
 }
 
-func run(jq *jq.Pipe, rc chan *jqResult, isFailed *AtomicBool) {
-	r := &jqResult{Seq: make([]json.RawMessage, 0, 16)}
-loop:
-	for {
-		if isFailed.Get() {
-			return
+// eval evaluates `jq` expression with timeout support
+func eval(j *jq.Pipe, ctx context.Context) (*jqResult, error) {
+	c := make(chan *jqResult, 1)
+
+	go func(j *jq.Pipe) {
+		r := &jqResult{
+			Seq: make([]json.RawMessage, 0, 16),
 		}
 
-		next, err := jq.Next()
-		switch err {
-		case nil:
-			r.Seq = append(r.Seq, next)
-		case io.EOF:
-			break loop
-		default:
-			r.Err = err
-			break loop
+	loop:
+		for {
+			next, err := j.Next()
+			switch err {
+			case nil:
+				r.Seq = append(r.Seq, next)
+			case io.EOF:
+				break loop
+			default:
+				r.Err = err
+				break loop
+			}
 		}
-	}
 
-	if !isFailed.Get() {
-		rc <- r
+		c <- r
+	}(j)
+
+	select {
+	case result := <-c:
+		return result, nil
+	case <-ctx.Done():
+		err := j.Close()
+		if err != nil {
+			return nil, fmt.Errorf("jq execution timeout: %s", err)
+		}
+
+		<-c // wait for canceled execution
+
+		return nil, fmt.Errorf("jq execution timeout")
 	}
 }
