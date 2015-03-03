@@ -5,4 +5,6 @@
 
 set -e
 
+npm install
+npm install -g grunt
 bower install && rm -rf public/bower_components/ace-builds/demo/kitchen-sink/docs

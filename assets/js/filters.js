@@ -1,5 +1,3 @@
-'use strict';
-
 angular.module('jqplay.filters', []).filter('capitalize', function() {
   return function(input, scope) {
     if (input == null) {

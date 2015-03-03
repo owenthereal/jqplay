@@ -2,7 +2,6 @@ language: go
 go:
 - 1.4.1
 install:
-- npm install -g bower
 - script/bootstrap
 script:
 - script/build

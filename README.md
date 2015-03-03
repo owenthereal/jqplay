@@ -10,11 +10,7 @@ Development
 -----------
 
 To develop `jqplay`, you need to have a [Go development environment](http://golang.org/doc/install).
-You also need to have `bower` installed:
-
-```
-npm install -g bower
-```
+You also need to have Node installed.
 
 To bootstrap development environment, run:
 

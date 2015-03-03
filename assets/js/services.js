@@ -1,5 +1,3 @@
-'use strict';
-
 angular.module('jqplay.services', []).factory('jqplayService', function ($http) {
   return {
     run: function (jq) {

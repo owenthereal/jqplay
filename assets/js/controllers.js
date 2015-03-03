@@ -1,5 +1,3 @@
-'use strict';
-
 angular.module('jqplay.controllers', []).controller('JqplayCtrl', function JqplayCtrl($scope, $timeout, jqplayService) {
   $scope.jq = {};
   $scope.jq.o = { "null-input": false, "slurp": false, "compact-output": false, "raw-input": false, "raw-output": false };
