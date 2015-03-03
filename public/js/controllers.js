@@ -13,11 +13,15 @@ angular.module('jqplay.controllers', []).controller('JqplayCtrl', function Jqpla
   };
 
   $scope.$watch('jq', function(newValue, oldValue) {
-    $scope.delayedRun($scope.jq)
+    if ( newValue !== oldValue ) {
+      $scope.delayedRun($scope.jq)
+    }
   }, true);
 
   $scope.$watch('jq.o', function(newValue, oldValue) {
-    $scope.delayedRun($scope.jq)
+    if ( newValue !== oldValue ) {
+      $scope.delayedRun($scope.jq)
+    }
   }, true);
 
   $scope.delayedRun = function(jq) {

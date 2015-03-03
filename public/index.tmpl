@@ -36,14 +36,14 @@
           <div class="col-sm-12 col-md-6">
             <form name="input" role="form" novalidate>
                 <label for="filter">Filter</label>
-                <input type="text" class="form-control" id="filter" name="q" ng-model="jq.q" autofocus required>
+                <input type="text" class="form-control" id="filter" name="q" ng-model="jq.q" autofocus ng-required="true">
                 <br>
                 <label for="json">JSON</label>
                 <div ui-ace="{
                   theme:'github',
                   mode: 'jsoniq',
                   onLoad: editorLoaded
-                }" ng-model="jq.j" required class="json-editor"></div>
+                }" ng-model="jq.j" ng-required="true" class="json-editor"></div>
             </form>
           </div> <!-- end col -->
 

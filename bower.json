@@ -2,8 +2,8 @@
   "name": "jqplay",
   "version": "0.0.0",
   "dependencies": {
-    "angular": "1.2.23",
-    "bootstrap": "3.2.0",
-    "angular-ui-ace": "0.1.1"
+    "angular": "1.3.14",
+    "bootstrap": "3.3.2",
+    "angular-ui-ace": "0.2.3"
   }
 }
