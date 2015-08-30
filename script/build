@@ -5,5 +5,5 @@
 
 set -e
 
-./script/godep go build -o ./bin/jqplay
+go build -o ./bin/jqplay
 grunt build

@@ -2,7 +2,7 @@ package gorelic
 
 import (
 	"fmt"
-	"github.com/yvasiyarov/newrelic_platform_go"
+	"github.com/jingweno/jqplay/Godeps/_workspace/src/github.com/yvasiyarov/newrelic_platform_go"
 	"io/ioutil"
 	"os"
 	"runtime"

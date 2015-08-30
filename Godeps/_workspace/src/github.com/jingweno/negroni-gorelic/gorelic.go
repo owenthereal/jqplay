@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/yvasiyarov/go-metrics"
-	"github.com/yvasiyarov/gorelic"
+	"github.com/jingweno/jqplay/Godeps/_workspace/src/github.com/yvasiyarov/go-metrics"
+	"github.com/jingweno/jqplay/Godeps/_workspace/src/github.com/yvasiyarov/gorelic"
 )
 
 type Gorelic struct {

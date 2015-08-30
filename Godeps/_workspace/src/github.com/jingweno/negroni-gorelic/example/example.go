@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/codegangsta/negroni"
-	"github.com/jingweno/negroni-gorelic"
+	"github.com/jingweno/jqplay/Godeps/_workspace/src/github.com/codegangsta/negroni"
+	"github.com/jingweno/jqplay/Godeps/_workspace/src/github.com/jingweno/negroni-gorelic"
 )
 
 func main() {
