@@ -3,7 +3,7 @@ package main
 import (
 	"expvar"
 	"flag"
-	"github.com/yvasiyarov/gorelic"
+	"github.com/jingweno/jqplay/Godeps/_workspace/src/github.com/yvasiyarov/gorelic"
 	"io"
 	"log"
 	"math/rand"

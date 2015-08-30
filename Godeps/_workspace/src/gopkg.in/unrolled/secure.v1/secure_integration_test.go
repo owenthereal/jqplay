@@ -8,7 +8,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/codegangsta/negroni"
+	"github.com/jingweno/jqplay/Godeps/_workspace/src/github.com/codegangsta/negroni"
 )
 
 func TestIntegration(t *testing.T) {

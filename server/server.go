@@ -4,10 +4,10 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/codegangsta/negroni"
+	"github.com/jingweno/jqplay/Godeps/_workspace/src/github.com/codegangsta/negroni"
+	"github.com/jingweno/jqplay/Godeps/_workspace/src/github.com/jingweno/negroni-gorelic"
+	"github.com/jingweno/jqplay/Godeps/_workspace/src/gopkg.in/unrolled/render.v1"
 	"github.com/jingweno/jqplay/jq"
-	"github.com/jingweno/negroni-gorelic"
-	"gopkg.in/unrolled/render.v1"
 )
 
 func New(c *Config) *Server {

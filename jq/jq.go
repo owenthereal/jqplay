@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/jingweno/jqpipe-go"
-	"golang.org/x/net/context"
+	"github.com/jingweno/jqplay/Godeps/_workspace/src/github.com/jingweno/jqpipe-go"
+	"github.com/jingweno/jqplay/Godeps/_workspace/src/golang.org/x/net/context"
 )
 
 const jqExecTimeout = 3

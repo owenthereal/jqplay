@@ -3,8 +3,8 @@ package server
 import (
 	"fmt"
 
-	"github.com/codegangsta/negroni"
-	"gopkg.in/unrolled/secure.v1"
+	"github.com/jingweno/jqplay/Godeps/_workspace/src/github.com/codegangsta/negroni"
+	"github.com/jingweno/jqplay/Godeps/_workspace/src/gopkg.in/unrolled/secure.v1"
 )
 
 func secureMiddleware(c *Config) negroni.Handler {

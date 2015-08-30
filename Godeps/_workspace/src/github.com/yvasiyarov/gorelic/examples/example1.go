@@ -2,7 +2,7 @@ package main
 
 import (
 	"flag"
-	"github.com/yvasiyarov/gorelic"
+	"github.com/jingweno/jqplay/Godeps/_workspace/src/github.com/yvasiyarov/gorelic"
 	"log"
 	"math/rand"
 	"runtime"
