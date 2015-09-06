@@ -11,10 +11,6 @@
 			"Rev": "46bd821940d86fb9777f7f86e9ae428132e110da"
 		},
 		{
-			"ImportPath": "github.com/jingweno/jqpipe-go",
-			"Rev": "babb52663fce6928d012c031ad353af7a3c6a725"
-		},
-		{
 			"ImportPath": "github.com/jingweno/negroni-gorelic",
 			"Rev": "0547cdd62f4b911984d435279bd46b4d1a580823"
 		},
@@ -30,10 +26,6 @@
 		{
 			"ImportPath": "github.com/yvasiyarov/newrelic_platform_go",
 			"Rev": "2d5b3d6e6db42e361ca5a5b6376a1368f7067236"
-		},
-		{
-			"ImportPath": "golang.org/x/net/context",
-			"Rev": "c84eff7014eba178f68bd4c05b86780efe0fbf35"
 		},
 		{
 			"ImportPath": "gopkg.in/unrolled/render.v1",
