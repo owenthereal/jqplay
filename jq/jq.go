@@ -4,12 +4,10 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io"
+	"os/exec"
 	"strings"
+	"sync/atomic"
 	"time"
-
-	"github.com/jingweno/jqplay/Godeps/_workspace/src/github.com/jingweno/jqpipe-go"
-	"github.com/jingweno/jqplay/Godeps/_workspace/src/golang.org/x/net/context"
 )
 
 const jqExecTimeout = 3
@@ -57,20 +55,38 @@ func (j *JQ) Eval() (string, error) {
 		return "", err
 	}
 
-	jj, err := jq.New(bytes.NewReader([]byte(j.J)), j.Q, j.Opts()...)
-	if err != nil {
-		return "", err
+	var (
+		out       bytes.Buffer
+		isTimeout atomic.Value
+	)
+
+	isTimeout.Store(false)
+
+	opts := j.Opts()
+	opts = append(opts, j.Q)
+	cmd := exec.Command("jq", opts...)
+	cmd.Stdin = bytes.NewReader([]byte(j.J))
+	cmd.Stdout = &out
+	cmd.Stderr = &out
+	cmd.Start()
+
+	go func() {
+		time.Sleep(time.Second * jqExecTimeout)
+		cmd.Process.Kill()
+		isTimeout.Store(true)
+	}()
+
+	err := cmd.Wait()
+
+	if isTimeout.Load().(bool) {
+		return "", fmt.Errorf("jq execution timeout")
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), time.Second*jqExecTimeout)
-	defer cancel()
-
-	r, err := eval(jj, ctx)
-	if err != nil {
-		return "", err
+	if err != nil && out.Len() == 0 {
+		return "", fmt.Errorf("unknown jq execution error: %s", err)
 	}
 
-	return r.Result()
+	return out.String(), nil
 }
 
 func (j *JQ) Validate() error {
@@ -93,45 +109,4 @@ func (j *JQ) Validate() error {
 
 func (j JQ) String() string {
 	return fmt.Sprintf("j=%s, q=%s, o=%v", j.J, j.Q, j.Opts())
-}
-
-// eval evaluates `jq` expression with timeout support
-func eval(j *jq.Pipe, ctx context.Context) (*jqResult, error) {
-	c := make(chan *jqResult, 1)
-
-	go func(j *jq.Pipe) {
-		r := &jqResult{
-			Seq: make([]json.RawMessage, 0, 16),
-		}
-
-	loop:
-		for {
-			next, err := j.Next()
-			switch err {
-			case nil:
-				r.Seq = append(r.Seq, next)
-			case io.EOF:
-				break loop
-			default:
-				r.Err = err
-				break loop
-			}
-		}
-
-		c <- r
-	}(j)
-
-	select {
-	case result := <-c:
-		return result, nil
-	case <-ctx.Done():
-		err := j.Close()
-		if err != nil {
-			return nil, fmt.Errorf("jq execution timeout: %s", err)
-		}
-
-		<-c // wait for canceled execution
-
-		return nil, fmt.Errorf("jq execution timeout")
-	}
 }

@@ -34,9 +34,13 @@ func TestJQEval(t *testing.T) {
 		J: `{ "foo": { "bar": { "baz": 123 } } }`,
 		Q: ".",
 	}
-	_, err = jq.Eval()
 
-	if err != nil {
-		t.Errorf("err should be nil: %s", err)
+	// execute many times to simulate race condition
+	for i := 0; i < 100; i++ {
+		_, err = jq.Eval()
+
+		if err != nil {
+			t.Errorf("err should be nil: %s", err)
+		}
 	}
 }
