@@ -6,7 +6,7 @@ import (
 
 	"github.com/jingweno/jqplay/Godeps/_workspace/src/github.com/codegangsta/negroni"
 	"github.com/jingweno/jqplay/Godeps/_workspace/src/github.com/jingweno/negroni-gorelic"
-	"github.com/jingweno/jqplay/Godeps/_workspace/src/gopkg.in/unrolled/render.v1"
+	render "github.com/jingweno/jqplay/Godeps/_workspace/src/gopkg.in/unrolled/render.v1"
 	"github.com/jingweno/jqplay/jq"
 )
 
@@ -26,7 +26,10 @@ func (s *Server) Start() {
 		AssetHost:          os.Getenv("ASSET_HOST"),
 	}
 	r := render.New(render.Options{
-		Delims:    render.Delims{"#{", "}"},
+		Delims: render.Delims{
+			Left:  "#{",
+			Right: "}",
+		},
 		Directory: "public",
 	})
 	h := &JQHandler{r, c}
