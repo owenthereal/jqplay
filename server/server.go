@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/jingweno/jqplay/Godeps/_workspace/src/github.com/codegangsta/negroni"
+	"github.com/jingweno/jqplay/Godeps/_workspace/src/github.com/facebookgo/grace/gracehttp"
 	"github.com/jingweno/jqplay/Godeps/_workspace/src/github.com/jingweno/negroni-gorelic"
 	render "github.com/jingweno/jqplay/Godeps/_workspace/src/gopkg.in/unrolled/render.v1"
 	"github.com/jingweno/jqplay/jq"
@@ -56,5 +57,10 @@ func (s *Server) Start() {
 	n.Use(secureMiddleware(c))
 	n.UseHandler(mux)
 
-	n.Run(":" + s.Config.Port)
+	gracehttp.Serve(
+		&http.Server{
+			Addr:    ":" + s.Config.Port,
+			Handler: n,
+		},
+	)
 }
