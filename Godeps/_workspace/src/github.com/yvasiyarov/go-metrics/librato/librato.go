@@ -7,6 +7,8 @@ import (
 	"math"
 	"regexp"
 	"time"
+
+	//"github.com/rcrowley/go-metrics"
 )
 
 // a regexp for extracting the unit from time.Duration.String
@@ -28,6 +30,7 @@ type Reporter struct {
 	Percentiles     []float64              // percentiles to report on histogram metrics
 	TimerAttributes map[string]interface{} // units in which timers will be displayed
 	MetricPrefix    string
+	QuietMode       bool
 }
 
 func NewReporter(r metrics.Registry, d time.Duration, e string, t string, s string, p []float64, u time.Duration) *Reporter {
@@ -54,11 +57,15 @@ func (self *Reporter) Run() {
 		var metrics Batch
 		var err error
 		if metrics, err = self.BuildRequest(now, self.Registry); err != nil {
-			log.Printf("ERROR constructing librato request body %s", err)
+			if self.QuietMode == false {
+				log.Printf("ERROR constructing librato request body %s", err)
+			}
 		}
 
 		if err := metricsApi.PostMetrics(metrics); err != nil {
-			log.Printf("ERROR sending metrics to librato %s", err)
+			if self.QuietMode == false {
+				log.Printf("ERROR sending metrics to librato %s", err)
+			}
 		}
 	}
 }
@@ -103,14 +110,16 @@ func (self *Reporter) BuildRequest(now time.Time, r metrics.Registry) (snapshot 
 
 		switch m := metric.(type) {
 		case metrics.Counter:
-			measurement[Name] = fmt.Sprintf("%s.%s", name, "count")
-			measurement[Value] = float64(m.Count())
-			measurement[Attributes] = map[string]interface{}{
-				DisplayUnitsLong:  Operations,
-				DisplayUnitsShort: OperationsShort,
-				DisplayMin:        "0",
+			if m.Count() > 0 {
+				measurement[Name] = fmt.Sprintf("%s.%s", name, "count")
+				measurement[Value] = float64(m.Count())
+				measurement[Attributes] = map[string]interface{}{
+					DisplayUnitsLong:  Operations,
+					DisplayUnitsShort: OperationsShort,
+					DisplayMin:        "0",
+				}
+				snapshot.Counters = append(snapshot.Counters, measurement)
 			}
-			snapshot.Counters = append(snapshot.Counters, measurement)
 		case metrics.Gauge:
 			measurement[Name] = name
 			measurement[Value] = float64(m.Value())

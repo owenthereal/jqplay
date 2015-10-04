@@ -36,7 +36,7 @@
 		},
 		{
 			"ImportPath": "github.com/yvasiyarov/go-metrics",
-			"Rev": "6b08babe701f8de2481c8bc4c2c638d9c5867e41"
+			"Rev": "c25f46c4b94079672242ec48a545e7ca9ebe3aec"
 		},
 		{
 			"ImportPath": "github.com/yvasiyarov/gorelic",
