@@ -70,11 +70,11 @@ func (j *JQ) Eval() (string, error) {
 	cmd.Stderr = &out
 	cmd.Start()
 
-	go func() {
-		time.Sleep(time.Second * jqExecTimeout)
+	go func(cmd *exec.Cmd, timeout int) {
+		time.Sleep(time.Second * time.Duration(timeout))
 		cmd.Process.Kill()
 		isTimeout.Store(true)
-	}()
+	}(cmd, jqExecTimeout)
 
 	err := cmd.Wait()
 

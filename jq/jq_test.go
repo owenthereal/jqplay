@@ -30,6 +30,10 @@ func TestJQEval(t *testing.T) {
 		t.Errorf("err should not be nil since the executation should timeout")
 	}
 
+	if err.Error() != "jq execution timeout" {
+		t.Errorf("err message should be jq execution timeout")
+	}
+
 	jq = &JQ{
 		J: `{ "foo": { "bar": { "baz": 123 } } }`,
 		Q: ".",
