@@ -70,6 +70,7 @@ func (h *JQHandler) handleJqPost(rw http.ResponseWriter, r *http.Request) {
 
 	re, err := jq.Eval()
 	if err != nil {
+		log.Printf("%s\n", jq)
 		h.r.JSON(rw, 422, map[string]string{"message": err.Error()})
 		return
 	}
