@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"log"
 	"os/exec"
 	"strings"
 	"sync/atomic"
@@ -70,11 +71,12 @@ func (j *JQ) Eval() (string, error) {
 	cmd.Stderr = &out
 	cmd.Start()
 
-	go func(cmd *exec.Cmd, timeout int) {
+	go func(j *JQ, cmd *exec.Cmd, timeout int) {
 		time.Sleep(time.Second * time.Duration(timeout))
+		log.Printf("%s\n", j)
 		cmd.Process.Kill()
 		isTimeout.Store(true)
-	}(cmd, jqExecTimeout)
+	}(j, cmd, jqExecTimeout)
 
 	err := cmd.Wait()
 
@@ -83,6 +85,7 @@ func (j *JQ) Eval() (string, error) {
 	}
 
 	if err != nil && out.Len() == 0 {
+		log.Printf("%s\n", err)
 		return "", fmt.Errorf("unknown jq execution error: %s", err)
 	}
 
