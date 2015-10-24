@@ -73,7 +73,6 @@ func (j *JQ) Eval() (string, error) {
 
 	go func(j *JQ, cmd *exec.Cmd, timeout int) {
 		time.Sleep(time.Second * time.Duration(timeout))
-		log.Printf("%s\n", j)
 		cmd.Process.Kill()
 		isTimeout.Store(true)
 	}(j, cmd, jqExecTimeout)
