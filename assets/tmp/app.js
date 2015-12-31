@@ -26525,6 +26525,7 @@ angular.module('jqplay.controllers', []).controller('JqplayCtrl', function Jqpla
     _editor.setFontSize(14);
     _editor.setShowPrintMargin(false);
     _editor.session.setUseWorker(false);
+    _editor.$blockScrolling = Infinity
   };
 
   $scope.$watch('jq', function(newValue, oldValue) {
