@@ -65,8 +65,9 @@ func (j *JQ) Eval() (string, error) {
 
 	opts := j.Opts()
 	opts = append(opts, j.Q)
-	cmd := exec.Command("jq", opts...)
+	cmd := exec.Command(Path, opts...)
 	cmd.Stdin = bytes.NewReader([]byte(j.J))
+	cmd.Env = make([]string, 0)
 	cmd.Stdout = &out
 	cmd.Stderr = &out
 	cmd.Start()
