@@ -1,0 +1,5 @@
+#!/bin/bash
+
+env
+echo "$@"
+exit 1
