@@ -1,0 +1,21 @@
+{
+  "name": "jqplay",
+  "scripts": {
+  },
+  "env": {
+  },
+  "formation": {
+    "web": {
+      "quantity": 1
+    }
+  },
+  "addons": [
+    "librato",
+    "newrelic",
+    "ssl",
+    "papertrail"
+  ],
+  "buildpacks": [
+
+  ]
+}
