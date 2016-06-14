@@ -1,6 +1,7 @@
 package jq
 
 import (
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"testing"
@@ -14,7 +15,7 @@ func TestJQEval(t *testing.T) {
 	}
 
 	jq := &JQ{}
-	_, err = jq.Eval()
+	err = jq.Eval(ioutil.Discard)
 
 	if err == nil {
 		t.Errorf("err should not be nil since it's invalid input")
@@ -24,7 +25,7 @@ func TestJQEval(t *testing.T) {
 		J: `{"dependencies":{"capnp":{"version":"0.1.4","dependencies":{"es6-promise":{"version":"1.0.0","dependencies":{"es6-promise":{"version":"1.0.0"}}}}}}}`,
 		Q: `.dependencies | recurse(to_entries | map(.values.dependencies))`,
 	}
-	_, err = jq.Eval()
+	err = jq.Eval(ioutil.Discard)
 
 	if err == nil {
 		t.Errorf("err should not be nil since the executation should timeout")
@@ -41,7 +42,7 @@ func TestJQEval(t *testing.T) {
 
 	// execute many times to simulate race condition
 	for i := 0; i < 100; i++ {
-		_, err = jq.Eval()
+		err = jq.Eval(ioutil.Discard)
 
 		if err != nil {
 			t.Errorf("err should be nil: %s", err)
