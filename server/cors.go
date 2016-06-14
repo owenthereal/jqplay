@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/jingweno/jqplay/Godeps/_workspace/src/github.com/codegangsta/negroni"
+	"github.com/codegangsta/negroni"
 )
 
 func corsMiddleware(pathPrefix string) negroni.Handler {

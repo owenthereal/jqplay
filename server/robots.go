@@ -3,7 +3,7 @@ package server
 import (
 	"net/http"
 
-	"github.com/jingweno/jqplay/Godeps/_workspace/src/github.com/codegangsta/negroni"
+	"github.com/codegangsta/negroni"
 )
 
 const robotsPath = "/robots.txt"

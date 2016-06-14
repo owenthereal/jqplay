@@ -2,14 +2,15 @@ sudo: false
 language: go
 os:
 - linux
-- osx
 go:
-- 1.5.2
+- 1.6.2
 install:
 - script/bootstrap
 script:
 - script/build
 - script/test
+notifications:
+  email: false
 deploy:
   provider: heroku
   buildpack: https://github.com/heroku/heroku-buildpack-go.git
