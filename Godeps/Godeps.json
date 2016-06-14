@@ -1,6 +1,7 @@
 {
 	"ImportPath": "github.com/jingweno/jqplay",
-	"GoVersion": "go1.5",
+	"GoVersion": "go1.6",
+	"GodepVersion": "v73",
 	"Packages": [
 		"./..."
 	],
