@@ -13,7 +13,7 @@ import (
 
 const (
 	JSONPayloadLimit   = JSONPayloadLimitMB * OneMB
-	JSONPayloadLimitMB = 5
+	JSONPayloadLimitMB = 10
 	OneMB              = 1024000
 )
 
@@ -47,15 +47,14 @@ func (h *JQHandler) handleJqPost(rw http.ResponseWriter, r *http.Request) {
 	if r.ContentLength > JSONPayloadLimit {
 		msg := fmt.Sprintf("JSON payload size is %.1fMB, larger than limit %dMB.", float64(r.ContentLength)/OneMB, JSONPayloadLimitMB)
 		log.Printf("Error: %s", msg)
-		rw.WriteHeader(403)
-		fmt.Fprint(rw, msg)
+		http.Error(rw, msg, http.StatusExpectationFailed)
 		return
 	}
 
+	r.Body = http.MaxBytesReader(rw, r.Body, JSONPayloadLimit)
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		rw.WriteHeader(422)
-		fmt.Fprint(rw, err.Error())
+		http.Error(rw, err.Error(), 422)
 		return
 	}
 	defer r.Body.Close()
@@ -63,8 +62,7 @@ func (h *JQHandler) handleJqPost(rw http.ResponseWriter, r *http.Request) {
 	var jq *jq.JQ
 	err = json.Unmarshal(b, &jq)
 	if err != nil {
-		rw.WriteHeader(422)
-		fmt.Fprint(rw, err.Error())
+		http.Error(rw, err.Error(), 422)
 		return
 	}
 
