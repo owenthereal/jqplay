@@ -41,12 +41,12 @@
 		},
 		{
 			"ImportPath": "github.com/yvasiyarov/gorelic",
-			"Comment": "v0.0.6-6-ged461c0",
-			"Rev": "ed461c0552ffe5e4bee53eb23c0edacc13c82555"
+			"Comment": "v0.0.6-42-g62638bf",
+			"Rev": "62638bfdaebd09d74b8b07366c23bdc5654866ca"
 		},
 		{
 			"ImportPath": "github.com/yvasiyarov/newrelic_platform_go",
-			"Rev": "2d5b3d6e6db42e361ca5a5b6376a1368f7067236"
+			"Rev": "9c099fbc30e90de5bb5c5f94aa5fd08f2daeaacd"
 		},
 		{
 			"ImportPath": "gopkg.in/unrolled/render.v1",
