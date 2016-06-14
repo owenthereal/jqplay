@@ -56,7 +56,8 @@ func (h *JQHandler) handleJqPost(rw http.ResponseWriter, r *http.Request) {
 
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		h.r.JSON(rw, 422, map[string]string{"message": err.Error()})
+		rw.WriteHeader(422)
+		fmt.Fprint(rw, err.Error())
 		return
 	}
 	defer r.Body.Close()
@@ -64,17 +65,17 @@ func (h *JQHandler) handleJqPost(rw http.ResponseWriter, r *http.Request) {
 	var jq *jq.JQ
 	err = json.Unmarshal(b, &jq)
 	if err != nil {
-		h.r.JSON(rw, 422, map[string]string{"message": err.Error()})
+		rw.WriteHeader(422)
+		fmt.Fprint(rw, err.Error())
 		return
 	}
 
-	re, err := jq.Eval()
+	err = jq.Eval(rw)
 	if err != nil {
-		h.r.JSON(rw, 422, map[string]string{"message": err.Error()})
+		rw.WriteHeader(422)
+		fmt.Fprint(rw, err.Error())
 		return
 	}
-
-	h.r.JSON(rw, 200, map[string]string{"result": re})
 }
 
 func (h *JQHandler) handleJqGet(rw http.ResponseWriter, r *http.Request) {
@@ -106,5 +107,5 @@ func (h *JQHandler) handleJq(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	h.r.JSON(rw, 500, nil)
+	rw.WriteHeader(500)
 }

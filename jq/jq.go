@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"log"
+	"io"
 	"os/exec"
 	"strings"
 	"sync/atomic"
@@ -51,13 +51,12 @@ func (j *JQ) Opts() []string {
 	return opts
 }
 
-func (j *JQ) Eval() (string, error) {
+func (j *JQ) Eval(w io.Writer) error {
 	if err := j.Validate(); err != nil {
-		return "", err
+		return err
 	}
 
 	var (
-		out       bytes.Buffer
 		isTimeout atomic.Value
 	)
 
@@ -68,8 +67,8 @@ func (j *JQ) Eval() (string, error) {
 	cmd := exec.Command(Path, opts...)
 	cmd.Stdin = bytes.NewReader([]byte(j.J))
 	cmd.Env = make([]string, 0)
-	cmd.Stdout = &out
-	cmd.Stderr = &out
+	cmd.Stdout = w
+	cmd.Stderr = w
 	cmd.Start()
 
 	go func(j *JQ, cmd *exec.Cmd, timeout int) {
@@ -81,15 +80,10 @@ func (j *JQ) Eval() (string, error) {
 	err := cmd.Wait()
 
 	if isTimeout.Load().(bool) {
-		return "", fmt.Errorf("jq execution timeout")
+		return fmt.Errorf("jq execution timeout")
 	}
 
-	if err != nil && out.Len() == 0 {
-		log.Printf("%s\n", err)
-		return "", fmt.Errorf("unknown jq execution error: %s", err)
-	}
-
-	return out.String(), nil
+	return err
 }
 
 func (j *JQ) Validate() error {
