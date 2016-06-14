@@ -47,10 +47,8 @@ func (h *JQHandler) handleJqPost(rw http.ResponseWriter, r *http.Request) {
 	if r.ContentLength > JSONPayloadLimit {
 		msg := fmt.Sprintf("JSON payload size is %.1fMB, larger than limit %dMB.", float64(r.ContentLength)/OneMB, JSONPayloadLimitMB)
 		log.Printf("Error: %s", msg)
-		h.r.JSON(rw, 403, map[string]string{
-			"message": msg,
-		})
-
+		rw.WriteHeader(403)
+		fmt.Fprint(rw, msg)
 		return
 	}
 
@@ -70,11 +68,11 @@ func (h *JQHandler) handleJqPost(rw http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Evaling into ResponseWriter sets the status code to 200
+	// appending error message in the end if there's any
 	err = jq.Eval(rw)
 	if err != nil {
-		rw.WriteHeader(422)
 		fmt.Fprint(rw, err.Error())
-		return
 	}
 }
 
