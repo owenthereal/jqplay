@@ -2,7 +2,6 @@ sudo: false
 language: go
 os:
 - linux
-- osx
 go:
 - 1.6.2
 install:
