@@ -42,10 +42,8 @@ angular.module('jqplay.controllers', []).controller('JqplayCtrl', function Jqpla
     $scope.result = "Loading...";
 
     jqplayService.run(jq).then(function successCallback(response) {
-      console.log(response.data);
       $scope.result = response.data;
     }, function errorCallback(response) {
-      console.log(response.data);
       $scope.result = response.data;
     });
   };
