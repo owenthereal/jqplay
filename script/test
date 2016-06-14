@@ -5,4 +5,4 @@
 
 set -e
 
-go test ./... && go vet ./...
+go test $(go list ./... | grep -v /vendor/) && go vet $(go list ./... | grep -v /vendor/)
