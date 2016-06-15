@@ -3,9 +3,9 @@ package server
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 
+	"github.com/Sirupsen/logrus"
 	"github.com/gin-gonic/gin"
 	"github.com/jingweno/jqplay/jq"
 )
@@ -38,10 +38,14 @@ func (h *JQHandler) handleIndex(c *gin.Context) {
 }
 
 func (h *JQHandler) handleJqPost(c *gin.Context) {
+	l, _ := c.Get("logger")
+	logger := l.(logrus.Entry)
+
 	if c.Request.ContentLength > JSONPayloadLimit {
-		msg := fmt.Sprintf("JSON payload size is %.1fMB, larger than limit %dMB.", float64(c.Request.ContentLength)/OneMB, JSONPayloadLimitMB)
-		log.Println(msg)
-		c.String(http.StatusExpectationFailed, msg)
+		size := float64(c.Request.ContentLength) / OneMB
+		err := fmt.Errorf("JSON payload size is %.1fMB, larger than limit %dMB.", size, JSONPayloadLimitMB)
+		logger.WithError(err).WithField("size", size).Infof(err.Error())
+		c.String(http.StatusExpectationFailed, err.Error())
 		return
 	}
 
@@ -51,6 +55,7 @@ func (h *JQHandler) handleJqPost(c *gin.Context) {
 	err := c.BindJSON(&jq)
 	if err != nil {
 		err = fmt.Errorf("error parsing JSON: %s", err)
+		logger.WithError(err).Infof("error parsing JSON: %s", err)
 		c.String(422, err.Error())
 		return
 	}
@@ -59,6 +64,7 @@ func (h *JQHandler) handleJqPost(c *gin.Context) {
 	// appending error message in the end if there's any
 	err = jq.Eval(c.Writer)
 	if err != nil {
+		logger.WithError(err).Infof("error evaluating jq query: %s", err)
 		fmt.Fprint(c.Writer, err.Error())
 	}
 }
