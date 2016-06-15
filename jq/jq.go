@@ -35,7 +35,7 @@ func (j *JQ) Eval(ctx context.Context, w io.Writer) error {
 	opts := j.Opts()
 	opts = append(opts, j.Q)
 	cmd := exec.Command(Path, opts...)
-	cmd.Stdin = bytes.NewReader([]byte(j.J))
+	cmd.Stdin = bytes.NewBufferString(j.J)
 	cmd.Env = make([]string, 0)
 	cmd.Stdout = w
 	cmd.Stderr = w
