@@ -36,8 +36,8 @@ func (s *Server) Start() {
 		log.Fatal(err)
 	}
 
-	router := gin.Default()
-	router.Use(secureMiddleware(c))
+	router := gin.New()
+	router.Use(secureMiddleware(c), requestID(), logger(), gin.Recovery())
 	router.SetHTMLTemplate(tmpl)
 	router.Static("/public", "public")
 	router.StaticFile("/robots.txt", "public/robots.txt")
