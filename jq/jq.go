@@ -7,8 +7,8 @@ import (
 	"io"
 	"os/exec"
 	"strings"
-	"sync/atomic"
-	"time"
+
+	"golang.org/x/net/context"
 )
 
 const jqExecTimeout = 3
@@ -51,16 +51,10 @@ func (j *JQ) Opts() []string {
 	return opts
 }
 
-func (j *JQ) Eval(w io.Writer) error {
+func (j *JQ) Eval(ctx context.Context, w io.Writer) error {
 	if err := j.Validate(); err != nil {
 		return err
 	}
-
-	var (
-		isTimeout atomic.Value
-	)
-
-	isTimeout.Store(false)
 
 	opts := j.Opts()
 	opts = append(opts, j.Q)
@@ -69,21 +63,21 @@ func (j *JQ) Eval(w io.Writer) error {
 	cmd.Env = make([]string, 0)
 	cmd.Stdout = w
 	cmd.Stderr = w
-	cmd.Start()
-
-	go func(j *JQ, cmd *exec.Cmd, timeout int) {
-		time.Sleep(time.Second * time.Duration(timeout))
-		cmd.Process.Kill()
-		isTimeout.Store(true)
-	}(j, cmd, jqExecTimeout)
-
-	err := cmd.Wait()
-
-	if isTimeout.Load().(bool) {
-		return fmt.Errorf("jq execution timeout")
+	err := cmd.Start()
+	if err != nil {
+		return err
 	}
 
-	return err
+	c := make(chan error, 1)
+	go func() { c <- cmd.Wait() }()
+	select {
+	case err := <-c:
+		return err
+	case <-ctx.Done():
+		cmd.Process.Kill()
+		<-c // Wait for it to return.
+		return fmt.Errorf("jq execution timeout")
+	}
 }
 
 func (j *JQ) Validate() error {

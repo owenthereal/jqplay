@@ -4,10 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/Sirupsen/logrus"
 	"github.com/gin-gonic/gin"
 	"github.com/jingweno/jqplay/jq"
+	"golang.org/x/net/context"
 )
 
 const (
@@ -38,6 +40,9 @@ func (h *JQHandler) handleIndex(c *gin.Context) {
 }
 
 func (h *JQHandler) handleJqPost(c *gin.Context) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
 	l, _ := c.Get("logger")
 	logger := l.(*logrus.Entry)
 
@@ -62,7 +67,7 @@ func (h *JQHandler) handleJqPost(c *gin.Context) {
 
 	// Evaling into ResponseWriter sets the status code to 200
 	// appending error message in the end if there's any
-	err = jq.Eval(c.Writer)
+	err = jq.Eval(ctx, c.Writer)
 	if err != nil {
 		logger.WithError(err).Infof("error evaluating jq query: %s", err)
 		fmt.Fprint(c.Writer, err.Error())
