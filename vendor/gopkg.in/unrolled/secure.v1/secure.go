@@ -9,6 +9,7 @@ import (
 const (
 	stsHeader           = "Strict-Transport-Security"
 	stsSubdomainString  = "; includeSubdomains"
+	stsPreloadString    = "; preload"
 	frameOptionsHeader  = "X-Frame-Options"
 	frameOptionsValue   = "DENY"
 	contentTypeHeader   = "X-Content-Type-Options"
@@ -16,6 +17,7 @@ const (
 	xssProtectionHeader = "X-XSS-Protection"
 	xssProtectionValue  = "1; mode=block"
 	cspHeader           = "Content-Security-Policy"
+	hpkpHeader          = "Public-Key-Pins"
 )
 
 func defaultBadHostHandler(w http.ResponseWriter, r *http.Request) {
@@ -38,6 +40,10 @@ type Options struct {
 	STSSeconds int64
 	// If STSIncludeSubdomains is set to true, the `includeSubdomains` will be appended to the Strict-Transport-Security header. Default is false.
 	STSIncludeSubdomains bool
+	// If STSPreload is set to true, the `preload` flag will be appended to the Strict-Transport-Security header. Default is false.
+	STSPreload bool
+	// If ForceSTSHeader is set to true, the STS header will be added even when the connection is HTTP. Default is false.
+	ForceSTSHeader bool
 	// If FrameDeny is set to true, adds the X-Frame-Options header with the value of `DENY`. Default is false.
 	FrameDeny bool
 	// CustomFrameOptionsValue allows the X-Frame-Options header value to be set with a custom value. This overrides the FrameDeny option.
@@ -48,6 +54,8 @@ type Options struct {
 	BrowserXssFilter bool
 	// ContentSecurityPolicy allows the Content-Security-Policy header value to be set with a custom value. Default is "".
 	ContentSecurityPolicy string
+	// PublicKey implements HPKP to prevent MITM attacks with forged certificates. Default is "".
+	PublicKey string
 	// When developing, the AllowedHosts, SSL, and STS options can cause some unwanted effects. Usually testing happens on http, not https, and on localhost, not your production domain... so set this to true for dev environment.
 	// If you would like your development environment to mimic production with complete Host blocking, SSL redirects, and STS headers, leave this as false. Default if false.
 	IsDevelopment bool
@@ -64,11 +72,23 @@ type Secure struct {
 }
 
 // New constructs a new Secure instance with supplied options.
-func New(options Options) *Secure {
+func New(options ...Options) *Secure {
+	var o Options
+	if len(options) == 0 {
+		o = Options{}
+	} else {
+		o = options[0]
+	}
+
 	return &Secure{
-		opt:            options,
+		opt:            o,
 		badHostHandler: http.HandlerFunc(defaultBadHostHandler),
 	}
+}
+
+// SetBadHostHandler sets the handler to call when secure rejects the host name.
+func (s *Secure) SetBadHostHandler(handler http.Handler) {
+	s.badHostHandler = handler
 }
 
 // Handler implements the http.HandlerFunc for integration with the standard net/http lib.
@@ -76,7 +96,7 @@ func (s *Secure) Handler(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Let secure process the request. If it returns an error,
 		// that indicates the request should not continue.
-		err := s.process(w, r)
+		err := s.Process(w, r)
 
 		// If there was an error, do not continue.
 		if err != nil {
@@ -87,7 +107,18 @@ func (s *Secure) Handler(h http.Handler) http.Handler {
 	})
 }
 
-func (s *Secure) process(w http.ResponseWriter, r *http.Request) error {
+// HandlerFuncWithNext is a special implementation for Negroni, but could be used elsewhere.
+func (s *Secure) HandlerFuncWithNext(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
+	err := s.Process(w, r)
+
+	// If there was an error, do not call next.
+	if err == nil && next != nil {
+		next(w, r)
+	}
+}
+
+// Process runs the actual checks and returns an error if the middleware chain should stop.
+func (s *Secure) Process(w http.ResponseWriter, r *http.Request) error {
 	// Allowed hosts check.
 	if len(s.opt.AllowedHosts) > 0 && !s.opt.IsDevelopment {
 		isGoodHost := false
@@ -104,44 +135,46 @@ func (s *Secure) process(w http.ResponseWriter, r *http.Request) error {
 		}
 	}
 
-	// SSL check.
-	if s.opt.SSLRedirect && s.opt.IsDevelopment == false {
-		isSSL := false
-		if strings.EqualFold(r.URL.Scheme, "https") || r.TLS != nil {
-			isSSL = true
-		} else {
-			for k, v := range s.opt.SSLProxyHeaders {
-				if r.Header.Get(k) == v {
-					isSSL = true
-					break
-				}
+	// Determine if we are on HTTPS.
+	isSSL := strings.EqualFold(r.URL.Scheme, "https") || r.TLS != nil
+	if !isSSL {
+		for k, v := range s.opt.SSLProxyHeaders {
+			if r.Header.Get(k) == v {
+				isSSL = true
+				break
 			}
-		}
-
-		if isSSL == false {
-			url := r.URL
-			url.Scheme = "https"
-			url.Host = r.Host
-
-			if len(s.opt.SSLHost) > 0 {
-				url.Host = s.opt.SSLHost
-			}
-
-			status := http.StatusMovedPermanently
-			if s.opt.SSLTemporaryRedirect {
-				status = http.StatusTemporaryRedirect
-			}
-
-			http.Redirect(w, r, url.String(), status)
-			return fmt.Errorf("Redirecting to HTTPS")
 		}
 	}
 
-	// Strict Transport Security header.
-	if s.opt.STSSeconds != 0 && !s.opt.IsDevelopment {
+	// SSL check.
+	if s.opt.SSLRedirect && !isSSL && !s.opt.IsDevelopment {
+		url := r.URL
+		url.Scheme = "https"
+		url.Host = r.Host
+
+		if len(s.opt.SSLHost) > 0 {
+			url.Host = s.opt.SSLHost
+		}
+
+		status := http.StatusMovedPermanently
+		if s.opt.SSLTemporaryRedirect {
+			status = http.StatusTemporaryRedirect
+		}
+
+		http.Redirect(w, r, url.String(), status)
+		return fmt.Errorf("Redirecting to HTTPS")
+	}
+
+	// Strict Transport Security header. Only add header when we know it's an SSL connection.
+	// See https://tools.ietf.org/html/rfc6797#section-7.2 for details.
+	if s.opt.STSSeconds != 0 && (isSSL || s.opt.ForceSTSHeader) && !s.opt.IsDevelopment {
 		stsSub := ""
 		if s.opt.STSIncludeSubdomains {
 			stsSub = stsSubdomainString
+		}
+
+		if s.opt.STSPreload {
+			stsSub += stsPreloadString
 		}
 
 		w.Header().Add(stsHeader, fmt.Sprintf("max-age=%d%s", s.opt.STSSeconds, stsSub))
@@ -164,29 +197,15 @@ func (s *Secure) process(w http.ResponseWriter, r *http.Request) error {
 		w.Header().Add(xssProtectionHeader, xssProtectionValue)
 	}
 
+	// HPKP header.
+	if len(s.opt.PublicKey) > 0 && isSSL && !s.opt.IsDevelopment {
+		w.Header().Add(hpkpHeader, s.opt.PublicKey)
+	}
+
 	// Content Security Policy header.
 	if len(s.opt.ContentSecurityPolicy) > 0 {
 		w.Header().Add(cspHeader, s.opt.ContentSecurityPolicy)
 	}
 
 	return nil
-}
-
-// SetBadHostHandler sets the handler to call when secure rejects the host name.
-func (s *Secure) SetBadHostHandler(handler http.Handler) {
-	s.badHostHandler = handler
-}
-
-// HandlerFuncWithNext is a special implementation for Negroni, but could be used elsewhere.
-func (s *Secure) HandlerFuncWithNext(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
-	err := s.process(w, r)
-
-	// If there was an error, do not continue.
-	if err != nil {
-		return
-	}
-
-	if next != nil {
-		next(w, r)
-	}
 }

@@ -9,5 +9,5 @@ type Config struct {
 }
 
 func (c *Config) IsProduction() bool {
-	return c.Env == "production"
+	return c.Env == "release"
 }
