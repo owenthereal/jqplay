@@ -7,6 +7,11 @@
 	],
 	"Deps": [
 		{
+			"ImportPath": "github.com/Sirupsen/logrus",
+			"Comment": "v0.10.0-19-gf3cfb45",
+			"Rev": "f3cfb454f4c209e6668c95216c4744b8fddb2356"
+		},
+		{
 			"ImportPath": "github.com/gin-gonic/gin",
 			"Comment": "v1.0rc1-262-g5caaac4",
 			"Rev": "5caaac4c5c712a9e7a7de29e6c24ef46c753017f"
@@ -30,6 +35,11 @@
 			"Rev": "ee05b128a739a0fb76c7ebd3ae4810c1de808d6d"
 		},
 		{
+			"ImportPath": "github.com/satori/go.uuid",
+			"Comment": "v1.1.0",
+			"Rev": "879c5887cd475cd7864858769793b2ceb0d44feb"
+		},
+		{
 			"ImportPath": "github.com/tylerb/graceful",
 			"Comment": "v1-9-g49b853e",
 			"Rev": "49b853e77ab58c31be0d3ee87db62909b90ac93e"
@@ -41,6 +51,10 @@
 		{
 			"ImportPath": "golang.org/x/net/netutil",
 			"Rev": "3f122ce3dbbe488b7e6a8bdb26f41edec852a40b"
+		},
+		{
+			"ImportPath": "golang.org/x/sys/unix",
+			"Rev": "62bee037599929a6e9146f29d10dd5208c43507d"
 		},
 		{
 			"ImportPath": "gopkg.in/go-playground/validator.v8",
