@@ -2,7 +2,6 @@ package jq
 
 import (
 	"bytes"
-	"encoding/json"
 	"fmt"
 	"io"
 	"os/exec"
@@ -10,29 +9,6 @@ import (
 
 	"golang.org/x/net/context"
 )
-
-const jqExecTimeout = 3
-
-type jqResult struct {
-	Seq []json.RawMessage
-	Err error
-}
-
-func (r *jqResult) Result() (string, error) {
-	if r.Err != nil {
-		return "", r.Err
-	}
-
-	result := []string{}
-	for _, s := range r.Seq {
-		ss := string(s)
-		if ss != "" && ss != "null" {
-			result = append(result, ss)
-		}
-	}
-
-	return strings.Join(result, "\n"), nil
-}
 
 type JQ struct {
 	J string          `json:"j"`
