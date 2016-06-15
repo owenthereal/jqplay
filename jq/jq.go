@@ -2,37 +2,13 @@ package jq
 
 import (
 	"bytes"
-	"encoding/json"
 	"fmt"
 	"io"
 	"os/exec"
 	"strings"
-	"sync/atomic"
-	"time"
+
+	"golang.org/x/net/context"
 )
-
-const jqExecTimeout = 3
-
-type jqResult struct {
-	Seq []json.RawMessage
-	Err error
-}
-
-func (r *jqResult) Result() (string, error) {
-	if r.Err != nil {
-		return "", r.Err
-	}
-
-	result := []string{}
-	for _, s := range r.Seq {
-		ss := string(s)
-		if ss != "" && ss != "null" {
-			result = append(result, ss)
-		}
-	}
-
-	return strings.Join(result, "\n"), nil
-}
 
 type JQ struct {
 	J string          `json:"j"`
@@ -51,39 +27,33 @@ func (j *JQ) Opts() []string {
 	return opts
 }
 
-func (j *JQ) Eval(w io.Writer) error {
+func (j *JQ) Eval(ctx context.Context, w io.Writer) error {
 	if err := j.Validate(); err != nil {
 		return err
 	}
 
-	var (
-		isTimeout atomic.Value
-	)
-
-	isTimeout.Store(false)
-
 	opts := j.Opts()
 	opts = append(opts, j.Q)
 	cmd := exec.Command(Path, opts...)
-	cmd.Stdin = bytes.NewReader([]byte(j.J))
+	cmd.Stdin = bytes.NewBufferString(j.J)
 	cmd.Env = make([]string, 0)
 	cmd.Stdout = w
 	cmd.Stderr = w
-	cmd.Start()
-
-	go func(j *JQ, cmd *exec.Cmd, timeout int) {
-		time.Sleep(time.Second * time.Duration(timeout))
-		cmd.Process.Kill()
-		isTimeout.Store(true)
-	}(j, cmd, jqExecTimeout)
-
-	err := cmd.Wait()
-
-	if isTimeout.Load().(bool) {
-		return fmt.Errorf("jq execution timeout")
+	err := cmd.Start()
+	if err != nil {
+		return err
 	}
 
-	return err
+	c := make(chan error, 1)
+	go func() { c <- cmd.Wait() }()
+	select {
+	case err := <-c:
+		return err
+	case <-ctx.Done():
+		cmd.Process.Kill()
+		<-c // Wait for it to return.
+		return fmt.Errorf("jq execution timeout")
+	}
 }
 
 func (j *JQ) Validate() error {
