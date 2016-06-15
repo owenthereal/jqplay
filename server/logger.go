@@ -20,15 +20,13 @@ func logger() gin.HandlerFunc {
 		method := c.Request.Method
 		path := c.Request.URL.Path
 		latency := end.Sub(start)
-		logger = logger.WithFields(log.Fields{
+		logger.WithFields(log.Fields{
 			"method":    method,
 			"path":      path,
 			"status":    c.Writer.Status(),
 			"client_ip": c.ClientIP(),
 			"latency":   latency,
 			"bytes":     c.Writer.Size(),
-		})
-
-		logger.Infof("[jqplay] %s %s", method, path)
+		}).Infof("[jqplay] %s %s", method, path)
 	}
 }
