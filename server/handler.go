@@ -39,7 +39,7 @@ func (h *JQHandler) handleIndex(c *gin.Context) {
 
 func (h *JQHandler) handleJqPost(c *gin.Context) {
 	l, _ := c.Get("logger")
-	logger := l.(logrus.Entry)
+	logger := l.(*logrus.Entry)
 
 	if c.Request.ContentLength > JSONPayloadLimit {
 		size := float64(c.Request.ContentLength) / OneMB
