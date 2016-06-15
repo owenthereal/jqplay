@@ -1,14 +1,15 @@
 package server
 
 import (
-	"net/http"
+	"log"
 	"os"
+	"time"
 
-	"github.com/codegangsta/negroni"
-	"github.com/facebookgo/grace/gracehttp"
+	"html/template"
+
+	"github.com/gin-gonic/gin"
 	"github.com/jingweno/jqplay/jq"
-	"github.com/jingweno/negroni-gorelic"
-	render "gopkg.in/unrolled/render.v1"
+	"github.com/tylerb/graceful"
 )
 
 func New(c *Config) *Server {
@@ -22,45 +23,27 @@ type Server struct {
 func (s *Server) Start() {
 	c := &Config{
 		JQVersion:          jq.Version,
-		Env:                os.Getenv("JQPLAY_ENV"),
+		Env:                os.Getenv("GIN_MODE"),
 		NewRelicLicenseKey: os.Getenv("NEW_RELIC_LICENSE_KEY"),
 		AssetHost:          os.Getenv("ASSET_HOST"),
 	}
-	r := render.New(render.Options{
-		Delims: render.Delims{
-			Left:  "#{",
-			Right: "}",
-		},
-		Directory: "public",
-	})
-	h := &JQHandler{r, c}
+	h := &JQHandler{c}
 
-	mux := http.NewServeMux()
-	mux.HandleFunc("/", h.handleIndex)
-	mux.HandleFunc("/jq", h.handleJq)
-
-	n := negroni.New()
-
-	n.Use(negroni.NewRecovery())
-	n.Use(negroni.NewLogger())
-	n.Use(robotsMiddleware())
-	n.Use(corsMiddleware("/public"))
-
-	static := negroni.NewStatic(http.Dir("public"))
-	static.Prefix = "/public"
-	n.Use(static)
-
-	if nwk := c.NewRelicLicenseKey; nwk != "" {
-		n.Use(negronigorelic.New(nwk, "jqplay", false))
+	tmpl := template.New("index.tmpl")
+	tmpl.Delims("#{", "}")
+	tmpl, err := tmpl.ParseFiles("public/index.tmpl")
+	if err != nil {
+		log.Fatal(err)
 	}
 
-	n.Use(secureMiddleware(c))
-	n.UseHandler(mux)
+	router := gin.Default()
+	router.Use(secureMiddleware(c))
+	router.SetHTMLTemplate(tmpl)
+	router.Static("/public", "public")
+	router.StaticFile("/robots.txt", "public/robots.txt")
+	router.GET("/", h.handleIndex)
+	router.GET("/jq", h.handleJqGet)
+	router.POST("/jq", h.handleJqPost)
 
-	gracehttp.Serve(
-		&http.Server{
-			Addr:    ":" + s.Config.Port,
-			Handler: n,
-		},
-	)
+	graceful.Run(":"+s.Config.Port, 10*time.Second, router)
 }

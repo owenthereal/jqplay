@@ -7,54 +7,53 @@
 	],
 	"Deps": [
 		{
-			"ImportPath": "github.com/codegangsta/negroni",
-			"Comment": "v0.1-27-g46bd821",
-			"Rev": "46bd821940d86fb9777f7f86e9ae428132e110da"
+			"ImportPath": "github.com/gin-gonic/gin",
+			"Comment": "v1.0rc1-262-g5caaac4",
+			"Rev": "5caaac4c5c712a9e7a7de29e6c24ef46c753017f"
 		},
 		{
-			"ImportPath": "github.com/facebookgo/clock",
-			"Rev": "600d898af40aa09a7a93ecb9265d87b0504b6f03"
+			"ImportPath": "github.com/gin-gonic/gin/binding",
+			"Comment": "v1.0rc1-262-g5caaac4",
+			"Rev": "5caaac4c5c712a9e7a7de29e6c24ef46c753017f"
 		},
 		{
-			"ImportPath": "github.com/facebookgo/grace/gracehttp",
-			"Rev": "053ab5d25436faedf3fe76fbf3da797c8c27c659"
+			"ImportPath": "github.com/gin-gonic/gin/render",
+			"Comment": "v1.0rc1-262-g5caaac4",
+			"Rev": "5caaac4c5c712a9e7a7de29e6c24ef46c753017f"
 		},
 		{
-			"ImportPath": "github.com/facebookgo/grace/gracenet",
-			"Rev": "053ab5d25436faedf3fe76fbf3da797c8c27c659"
+			"ImportPath": "github.com/golang/protobuf/proto",
+			"Rev": "0c1f6d65b5a189c2250d10e71a5506f06f9fa0a0"
 		},
 		{
-			"ImportPath": "github.com/facebookgo/httpdown",
-			"Rev": "1fa03998d20119dfe4ef73f56a638d83048052e2"
+			"ImportPath": "github.com/manucorporat/sse",
+			"Rev": "ee05b128a739a0fb76c7ebd3ae4810c1de808d6d"
 		},
 		{
-			"ImportPath": "github.com/facebookgo/stats",
-			"Rev": "31fb71caf5a4f04c9f8bb3fa8e7c2597ba6eb50a"
+			"ImportPath": "github.com/tylerb/graceful",
+			"Comment": "v1-9-g49b853e",
+			"Rev": "49b853e77ab58c31be0d3ee87db62909b90ac93e"
 		},
 		{
-			"ImportPath": "github.com/jingweno/negroni-gorelic",
-			"Rev": "0547cdd62f4b911984d435279bd46b4d1a580823"
+			"ImportPath": "golang.org/x/net/context",
+			"Rev": "3f122ce3dbbe488b7e6a8bdb26f41edec852a40b"
 		},
 		{
-			"ImportPath": "github.com/yvasiyarov/go-metrics",
-			"Rev": "c25f46c4b94079672242ec48a545e7ca9ebe3aec"
+			"ImportPath": "golang.org/x/net/netutil",
+			"Rev": "3f122ce3dbbe488b7e6a8bdb26f41edec852a40b"
 		},
 		{
-			"ImportPath": "github.com/yvasiyarov/gorelic",
-			"Comment": "v0.0.6-42-g62638bf",
-			"Rev": "62638bfdaebd09d74b8b07366c23bdc5654866ca"
-		},
-		{
-			"ImportPath": "github.com/yvasiyarov/newrelic_platform_go",
-			"Rev": "9c099fbc30e90de5bb5c5f94aa5fd08f2daeaacd"
-		},
-		{
-			"ImportPath": "gopkg.in/unrolled/render.v1",
-			"Rev": "40ac5716c7e0bffcc440aac649ea4b880a5d7735"
+			"ImportPath": "gopkg.in/go-playground/validator.v8",
+			"Comment": "v8.17.1",
+			"Rev": "014792cf3e266caff1e916876be12282b33059e0"
 		},
 		{
 			"ImportPath": "gopkg.in/unrolled/secure.v1",
-			"Rev": "e5f5dae29182c4fb690db4b00b0773be2c9fce93"
+			"Rev": "4b41e52ab568cbfd31eda3612d98192da1575c77"
+		},
+		{
+			"ImportPath": "gopkg.in/yaml.v2",
+			"Rev": "a83829b6f1293c91addabc89d0571c246397bbf4"
 		}
 	]
 }

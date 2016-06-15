@@ -3,12 +3,11 @@ package server
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 
+	"github.com/gin-gonic/gin"
 	"github.com/jingweno/jqplay/jq"
-	"gopkg.in/unrolled/render.v1"
 )
 
 const (
@@ -31,54 +30,43 @@ func (c *JQHandlerContext) ShouldInitJQ() bool {
 }
 
 type JQHandler struct {
-	r *render.Render
 	c *Config
 }
 
-func (h *JQHandler) handleIndex(rw http.ResponseWriter, r *http.Request) {
-	h.r.HTML(rw, 200, "index", &JQHandlerContext{Config: h.c})
+func (h *JQHandler) handleIndex(c *gin.Context) {
+	c.HTML(200, "index.tmpl", &JQHandlerContext{Config: h.c})
 }
 
-func (h *JQHandler) handleJqPost(rw http.ResponseWriter, r *http.Request) {
-	if r.ContentLength == -1 {
-		log.Printf("Error: Content length is unknown")
-	}
-
-	if r.ContentLength > JSONPayloadLimit {
-		msg := fmt.Sprintf("JSON payload size is %.1fMB, larger than limit %dMB.", float64(r.ContentLength)/OneMB, JSONPayloadLimitMB)
-		log.Printf("Error: %s", msg)
-		http.Error(rw, msg, http.StatusExpectationFailed)
+func (h *JQHandler) handleJqPost(c *gin.Context) {
+	if c.Request.ContentLength > JSONPayloadLimit {
+		msg := fmt.Sprintf("JSON payload size is %.1fMB, larger than limit %dMB.", float64(c.Request.ContentLength)/OneMB, JSONPayloadLimitMB)
+		log.Println(msg)
+		c.String(http.StatusExpectationFailed, msg)
 		return
 	}
 
-	r.Body = http.MaxBytesReader(rw, r.Body, JSONPayloadLimit)
-	b, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		http.Error(rw, err.Error(), 422)
-		return
-	}
-	defer r.Body.Close()
+	c.Request.Body = http.MaxBytesReader(c.Writer, c.Request.Body, JSONPayloadLimit)
 
 	var jq *jq.JQ
-	err = json.Unmarshal(b, &jq)
+	err := c.BindJSON(&jq)
 	if err != nil {
-		http.Error(rw, err.Error(), 422)
+		err = fmt.Errorf("error parsing JSON: %s", err)
+		c.String(422, err.Error())
 		return
 	}
 
 	// Evaling into ResponseWriter sets the status code to 200
 	// appending error message in the end if there's any
-	err = jq.Eval(rw)
+	err = jq.Eval(c.Writer)
 	if err != nil {
-		fmt.Fprint(rw, err.Error())
+		fmt.Fprint(c.Writer, err.Error())
 	}
 }
 
-func (h *JQHandler) handleJqGet(rw http.ResponseWriter, r *http.Request) {
-	q := r.URL.Query()
+func (h *JQHandler) handleJqGet(c *gin.Context) {
 	jq := &jq.JQ{
-		J: q.Get("j"),
-		Q: q.Get("q"),
+		J: c.Query("j"),
+		Q: c.Query("q"),
 	}
 
 	var jqData string
@@ -89,19 +77,5 @@ func (h *JQHandler) handleJqGet(rw http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	h.r.HTML(rw, 200, "index", &JQHandlerContext{Config: h.c, JQ: jqData})
-}
-
-func (h *JQHandler) handleJq(rw http.ResponseWriter, r *http.Request) {
-	if r.Method == "POST" {
-		h.handleJqPost(rw, r)
-		return
-	}
-
-	if r.Method == "GET" {
-		h.handleJqGet(rw, r)
-		return
-	}
-
-	rw.WriteHeader(500)
+	c.HTML(200, "index.tmpl", &JQHandlerContext{Config: h.c, JQ: jqData})
 }
