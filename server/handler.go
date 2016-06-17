@@ -69,7 +69,6 @@ func (h *JQHandler) handleJqPost(c *gin.Context) {
 	// appending error message in the end if there's any
 	err = jq.Eval(ctx, c.Writer)
 	if err != nil {
-		logger.WithError(err).Infof("error evaluating jq query: %s", err)
 		fmt.Fprint(c.Writer, err.Error())
 	}
 }
