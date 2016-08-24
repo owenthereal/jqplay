@@ -3,12 +3,12 @@ language: go
 os:
 - linux
 go:
-- 1.6.2
+- 1.7
 install:
-- script/bootstrap
+- bin/bootstrap
 script:
-- script/build
-- script/test
+- bin/build
+- bin/test
 notifications:
   email: false
 deploy:
