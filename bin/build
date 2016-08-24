@@ -5,5 +5,5 @@
 
 set -e
 
-go build -o ./bin/jqplay
+go build -o ./bin/jqplay ./cmd/jqplay
 grunt build

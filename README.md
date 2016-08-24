@@ -15,14 +15,14 @@ You also need to have Node installed.
 To bootstrap development environment, run:
 
 ```
-$ ./script/bootstrap
+$ ./bin/bootstrap
 ```
 
-### ./script/build
+### ./bin/build
 
 This script will build `jqplay`.
 
-### ./script/start
+### ./bin/start
 
 This script will build and start the `jqplay` server.
 
