@@ -23,6 +23,6 @@
     "grunt": "^0.4.5"
   },
   "scripts": {
-    "postinstall": "bower install && rm -rf public/bower_components/ace-builds/demo/kitchen-sink/docs && grunt build"
+    "postinstall": "npm run bower install && rm -rf public/bower_components/ace-builds/demo/kitchen-sink/docs && npm run grunt build"
   }
 }
