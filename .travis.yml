@@ -4,20 +4,8 @@ os:
 - linux
 go:
 - 1.7
-install:
-- bin/bootstrap
 script:
 - bin/build
 - bin/test
 notifications:
   email: false
-deploy:
-  provider: heroku
-  buildpack: https://github.com/heroku/heroku-buildpack-go.git
-  api_key:
-    secure: LVlrZSSqKzdlbiv3sWoHfW1ed+rmN6Q+O1CWE6nEsxztPI9hIock0TxMWUrOWghDKgN8UKefMvHgXs8HusyX/3K4qSoeZ77CFvN0rZ/k2mZ0xWxu4xYu2/fUupwuA+N6H6DTXqV7w+4syrgrxJG8fv/17GARl2fnYL3qWljTX2E=
-  app:
-    master: jqplay
-  on:
-    condition: "$TRAVIS_OS_NAME == linux"
-  skip_cleanup: true
