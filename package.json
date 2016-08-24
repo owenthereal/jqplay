@@ -18,10 +18,11 @@
     "grunt-contrib-copy": "^0.8.0",
     "grunt-contrib-cssmin": "^0.12.2",
     "grunt-contrib-uglify": "^0.8.0",
-    "grunt-contrib-watch": "^0.6.1"
+    "grunt-contrib-watch": "^0.6.1",
+    "bower": "^1.7.9",
+    "grunt": "^0.4.5"
   },
   "scripts": {
-    "preinstall": "npm install -g grunt-cli bower",
     "postinstall": "bower install && rm -rf public/bower_components/ace-builds/demo/kitchen-sink/docs && grunt build"
   }
 }
