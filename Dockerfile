@@ -1,4 +1,4 @@
-FROM golang:1.6
+FROM golang:1.7
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
 		nodejs \
@@ -7,23 +7,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	&& rm -rf /vr/lib/apt/lists/* \
 	&& ln -s "$(which nodejs)" /usr/bin/node
 
-RUN mkdir -p /go/src/app
-WORKDIR /go/src/app
+ENV PORT 80
 
-COPY package.json /go/src/app
-RUN npm install
+ADD . $GOPATH/src/github.com/jingweno/jqplay
+WORKDIR $GOPATH/src/github.com/jingweno/jqplay
+RUN bin/build
+EXPOSE 80
 
-COPY bower.json /go/src/app
-RUN bower --allow-root install \
-  && rm -rf public/bower_components/ace-builds/demo/kitchen-sink/docs
-
-COPY . /go/src/app
-
-RUN go-wrapper download
-RUN go-wrapper install
-
-RUN grunt build
-
-EXPOSE 3000
-
-CMD ["go-wrapper", "run"]
+CMD ["bin/jqplay"]
