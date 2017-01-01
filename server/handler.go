@@ -47,7 +47,7 @@ func (h *JQHandler) handleJqPost(c *gin.Context) {
 	if c.Request.ContentLength > JSONPayloadLimit {
 		size := float64(c.Request.ContentLength) / OneMB
 		err := fmt.Errorf("JSON payload size is %.1fMB, larger than limit %dMB.", size, JSONPayloadLimitMB)
-		logger.WithError(err).WithField("size", size).Infof(err.Error())
+		logger.WithField("size", size).WithError(err)
 		c.String(http.StatusExpectationFailed, err.Error())
 		return
 	}
@@ -61,7 +61,7 @@ func (h *JQHandler) handleJqPost(c *gin.Context) {
 	err := c.BindJSON(&jq)
 	if err != nil {
 		err = fmt.Errorf("error parsing JSON: %s", err)
-		logger.WithError(err).Infof("error parsing JSON: %s", err)
+		logger.WithError(err).Infof("error parsing JSON")
 		c.String(422, err.Error())
 		return
 	}
@@ -70,7 +70,7 @@ func (h *JQHandler) handleJqPost(c *gin.Context) {
 	// appending error message in the end if there's any
 	err = jq.Eval(ctx, c.Writer)
 	if err != nil {
-		logger.WithError(err).Infof("jq error: %s", err)
+		logger.WithError(err).Infof("jq error")
 		fmt.Fprint(c.Writer, err.Error())
 	}
 }
