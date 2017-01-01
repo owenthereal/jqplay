@@ -81,5 +81,8 @@
 			"revisionTime": "2016-09-28T15:37:09Z"
 		}
 	],
-	"rootPath": "github.com/jingweno/jqplay"
+  "rootPath": "github.com/jingweno/jqplay",
+  "heroku": {
+    "install": [ "github.com/jingweno/jqplay/cmd/jqplay" ]
+  }
 }
