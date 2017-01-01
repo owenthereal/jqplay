@@ -7,9 +7,10 @@ import (
 	"time"
 
 	"github.com/Sirupsen/logrus"
-	"github.com/gin-gonic/gin"
+	"github.com/jingweno/jqplay/config"
 	"github.com/jingweno/jqplay/jq"
 	"golang.org/x/net/context"
+	"gopkg.in/gin-gonic/gin.v1"
 )
 
 const (
@@ -19,12 +20,12 @@ const (
 )
 
 type JQHandlerContext struct {
-	*Config
+	*config.Config
 	JQ string
 }
 
 func (c *JQHandlerContext) Asset(path string) string {
-	return fmt.Sprintf("%s/%s", c.Config.AssetHost, path)
+	return fmt.Sprintf("%s/%s", c.AssetHost, path)
 }
 
 func (c *JQHandlerContext) ShouldInitJQ() bool {
@@ -32,17 +33,14 @@ func (c *JQHandlerContext) ShouldInitJQ() bool {
 }
 
 type JQHandler struct {
-	c *Config
+	Config *config.Config
 }
 
 func (h *JQHandler) handleIndex(c *gin.Context) {
-	c.HTML(200, "index.tmpl", &JQHandlerContext{Config: h.c})
+	c.HTML(200, "index.tmpl", &JQHandlerContext{Config: h.Config})
 }
 
 func (h *JQHandler) handleJqPost(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
-	defer cancel()
-
 	l, _ := c.Get("logger")
 	logger := l.(*logrus.Entry)
 
@@ -53,6 +51,9 @@ func (h *JQHandler) handleJqPost(c *gin.Context) {
 		c.String(http.StatusExpectationFailed, err.Error())
 		return
 	}
+
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 3*time.Second)
+	defer cancel()
 
 	c.Request.Body = http.MaxBytesReader(c.Writer, c.Request.Body, JSONPayloadLimit)
 
@@ -87,5 +88,5 @@ func (h *JQHandler) handleJqGet(c *gin.Context) {
 		}
 	}
 
-	c.HTML(200, "index.tmpl", &JQHandlerContext{Config: h.c, JQ: jqData})
+	c.HTML(200, "index.tmpl", &JQHandlerContext{Config: h.Config, JQ: jqData})
 }

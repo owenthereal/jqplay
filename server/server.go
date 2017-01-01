@@ -1,33 +1,26 @@
 package server
 
 import (
+	"html/template"
 	"log"
-	"os"
 	"time"
 
-	"html/template"
-
-	"github.com/gin-gonic/gin"
-	"github.com/jingweno/jqplay/jq"
+	"github.com/jingweno/jqplay/config"
+	"github.com/jingweno/jqplay/server/middleware"
 	"github.com/tylerb/graceful"
+	"gopkg.in/gin-gonic/gin.v1"
 )
 
-func New(c *Config) *Server {
+func New(c *config.Config) *Server {
 	return &Server{c}
 }
 
 type Server struct {
-	Config *Config
+	Config *config.Config
 }
 
 func (s *Server) Start() {
-	c := &Config{
-		JQVersion:          jq.Version,
-		Env:                os.Getenv("GIN_MODE"),
-		NewRelicLicenseKey: os.Getenv("NEW_RELIC_LICENSE_KEY"),
-		AssetHost:          os.Getenv("ASSET_HOST"),
-	}
-	h := &JQHandler{c}
+	h := &JQHandler{s.Config}
 
 	tmpl := template.New("index.tmpl")
 	tmpl.Delims("#{", "}")
@@ -37,7 +30,7 @@ func (s *Server) Start() {
 	}
 
 	router := gin.New()
-	router.Use(secureMiddleware(c), requestID(), logger(), gin.Recovery())
+	router.Use(middleware.Secure(s.Config.IsProd()), middleware.RequestID(), middleware.Logger(), gin.Recovery())
 	router.SetHTMLTemplate(tmpl)
 	router.Static("/public", "public")
 	router.StaticFile("/robots.txt", "public/robots.txt")

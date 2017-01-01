@@ -1,9 +1,8 @@
 package main
 
 import (
-	"log"
-	"os"
-
+	log "github.com/Sirupsen/logrus"
+	"github.com/jingweno/jqplay/config"
 	"github.com/jingweno/jqplay/jq"
 	"github.com/jingweno/jqplay/server"
 )
@@ -14,21 +13,20 @@ func main() {
 		log.Fatal(err)
 	}
 
-	log.Printf("jq version=%s path=%s\n", jq.Version, jq.Path)
+	log.WithFields(log.Fields{
+		"version": jq.Version,
+		"path":    jq.Path,
+	}).Info("initialized jq")
 
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "3000"
+	conf, err := config.Load()
+	if err != nil {
+		log.Fatal(err)
 	}
 
-	c := &server.Config{
-		Port:               port,
-		Env:                os.Getenv("JQPLAY_ENV"),
-		NewRelicLicenseKey: os.Getenv("NEW_RELIC_LICENSE_KEY"),
-		JQVersion:          jq.Version,
-	}
-
-	log.Printf("Starting server at %s\n", c.Port)
-	s := server.New(c)
-	s.Start()
+	log.WithFields(log.Fields{
+		"host": conf.Host,
+		"port": conf.Port,
+	}).Infof("Starting server at %s:%s", conf.Host, conf.Port)
+	srv := server.New(conf)
+	srv.Start()
 }
