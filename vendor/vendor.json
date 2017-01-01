@@ -1,5 +1,10 @@
 {
 	"comment": "",
+	"heroku": {
+		"install": [
+			"github.com/jingweno/jqplay/cmd/jqplay"
+		]
+	},
 	"ignore": "test",
 	"package": [
 		{
@@ -45,6 +50,18 @@
 			"revisionTime": "2016-11-23T14:36:37Z"
 		},
 		{
+			"checksumSHA1": "zmC8/3V4ls53DJlNTKDZwPSC/dA=",
+			"path": "github.com/satori/go.uuid",
+			"revision": "b061729afc07e77a8aa4fad0a2fd840958f1942a",
+			"revisionTime": "2016-09-27T10:08:44Z"
+		},
+		{
+			"checksumSHA1": "9MBZGLtzg4VbsvcYLwm/6g9bB2M=",
+			"path": "github.com/tylerb/graceful",
+			"revision": "4df1190835320af7076dfcf27b3d071fd3612caf",
+			"revisionTime": "2016-11-17T16:53:25Z"
+		},
+		{
 			"checksumSHA1": "WROgFE38118k7HpHbtas4F5wqmA=",
 			"path": "github.com/unrolled/secure",
 			"revision": "a60f385df7d2b42d3562114b25eb4a71884f62d2",
@@ -81,8 +98,5 @@
 			"revisionTime": "2016-09-28T15:37:09Z"
 		}
 	],
-  "rootPath": "github.com/jingweno/jqplay",
-  "heroku": {
-    "install": [ "github.com/jingweno/jqplay/cmd/jqplay" ]
-  }
+	"rootPath": "github.com/jingweno/jqplay"
 }
