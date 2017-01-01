@@ -29,7 +29,7 @@
         <div class="brand">
           <a href="/"><img src="#{ .Asset "public/images/logo.png" }" alt="jqplay" class="logo"></a>
         </div>
-        <p>A playground for <a href="https://stedolan.github.io/jq/">jq</a> #{.JQVersion}</p>
+        <p>A playground for <a href="https://stedolan.github.io/jq/">jq</a> #{.JQVer}</p>
       </header>
 
         <div class="row">
@@ -143,7 +143,7 @@
     <script type="text/javascript" src="#{ .Asset "public/bower_components/ace-builds/src-min-noconflict/theme-github.js" }"></script>
     <script type="text/javascript" src="#{ .Asset "public/bower_components/ace-builds/src-min-noconflict/mode-jsoniq.js" }"></script>
     <script type="text/javascript" src="#{ .Asset "public/js/app.js" }"></script>
-    #{ if .IsProduction }
+    #{ if .IsProd }
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
