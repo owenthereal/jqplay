@@ -41,9 +41,6 @@ func (h *JQHandler) handleIndex(c *gin.Context) {
 }
 
 func (h *JQHandler) handleJqPost(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
-	defer cancel()
-
 	l, _ := c.Get("logger")
 	logger := l.(*logrus.Entry)
 
@@ -54,6 +51,9 @@ func (h *JQHandler) handleJqPost(c *gin.Context) {
 		c.String(http.StatusExpectationFailed, err.Error())
 		return
 	}
+
+	ctx, cancel := context.WithTimeout(c.Request.Context(), 3*time.Second)
+	defer cancel()
 
 	c.Request.Body = http.MaxBytesReader(c.Writer, c.Request.Body, JSONPayloadLimit)
 
