@@ -3,7 +3,7 @@ language: go
 os:
 - linux
 go:
-- 1.7
+- 1.7.4
 script:
 - bin/build
 - bin/test
