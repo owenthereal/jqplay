@@ -10,16 +10,15 @@ Development
 -----------
 
 To develop `jqplay`, you need to have a [Go development environment](http://golang.org/doc/install).
-You also need to have Node installed.
+You also need to have Node & Postgresql installed.
 
-### ./bin/build
+### ./bin/setup
 
-This script will build `jqplay`.
+This script will setup Postgresql for `jqplay`.
 
 ### ./bin/start
 
 This script will build and start the `jqplay` server.
-
 
 License
 -------

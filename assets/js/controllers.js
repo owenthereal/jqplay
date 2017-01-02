@@ -1,12 +1,12 @@
 angular.module('jqplay.controllers', []).controller('JqplayCtrl', function JqplayCtrl($scope, $timeout, $window, jqplayService) {
   $scope.jq = {};
-  $scope.jq.o = {
-    "slurp": false,
-    "null-input": false,
-    "compact-output": false,
-    "raw-input": false,
-    "raw-output": false,
-  };
+  $scope.jq.o = [
+    { name: "slurp", enabled: false },
+    { name: "null-input", enabled: false },
+    { name: "compact-output", enabled: false },
+    { name: "raw-input", enabled: false },
+    { name: "raw-output", enabled: false },
+  ];
   $scope.result = "";
 
   $scope.editorLoaded = function(_editor) {
@@ -34,7 +34,7 @@ angular.module('jqplay.controllers', []).controller('JqplayCtrl', function Jqpla
         $window.location.href = '/s/' + response.data;
       },
       function errorCallback(response) {
-        alert("error sharing snippet");
+        $scope.result = response.data;
       });
   };
 
@@ -148,9 +148,17 @@ angular.module('jqplay.controllers', []).controller('JqplayCtrl', function Jqpla
     $scope.input.$valid = true;
   };
 
+  $scope.compareOption = function() {
+    return function(opt) {
+      console.log(opt);
+      return opt.key;
+    }
+  }
+
   if (window.jq != null) {
     $scope.jq.j = window.jq.j;
     $scope.jq.q = window.jq.q;
+    $scope.jq.o = window.jq.o;
     $scope.run($scope.jq);
   }
 });

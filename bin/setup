@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Usage: script/build
+#
+# Builds jqplay
+
+set -e
+
+dropdb --if-exists jqplay
+createdb jqplay
+psql -d jqplay -f server/db.sql

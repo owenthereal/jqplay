@@ -6,7 +6,8 @@ angular.module('jqplay.services', []).factory('jqplayService', function ($http) 
         url: "/s",
         data: {
           j: jq.j,
-          q: jq.q
+          q: jq.q,
+          o: jq.o
         }
       });
     },
