@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Usage: script/build
+# Usage: script/setup
 #
 # Builds jqplay
 
