@@ -105,9 +105,14 @@ func (h *JQHandler) handleJqSharePost(c *gin.Context) {
 	}
 
 	var jq *jq.JQ
-	err := c.BindJSON(&jq)
-	if err != nil {
+	if err := c.BindJSON(&jq); err != nil {
 		err = fmt.Errorf("error parsing JSON: %s", err)
+		h.logger(c).WithError(err)
+		c.String(http.StatusUnprocessableEntity, err.Error())
+		return
+	}
+
+	if err := jq.Validate(); err != nil {
 		h.logger(c).WithError(err)
 		c.String(http.StatusUnprocessableEntity, err.Error())
 		return
