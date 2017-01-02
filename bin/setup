@@ -10,3 +10,5 @@ createdb jqplay
 psql -d jqplay -f server/db.sql
 
 go get github.com/ddollar/forego
+
+cp .env.sample .env
