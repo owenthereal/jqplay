@@ -19,12 +19,17 @@ type Server struct {
 	Config *config.Config
 }
 
-func (s *Server) Start() {
-	h := &JQHandler{s.Config}
+func (s *Server) Start() error {
+	db, err := ConnectDB(s.Config.DatabaseURL, s.Config.SnippetSalt)
+	if err != nil {
+		return err
+	}
+
+	h := &JQHandler{Config: s.Config, DB: db}
 
 	tmpl := template.New("index.tmpl")
 	tmpl.Delims("#{", "}")
-	tmpl, err := tmpl.ParseFiles("public/index.tmpl")
+	tmpl, err = tmpl.ParseFiles("public/index.tmpl")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -37,6 +42,10 @@ func (s *Server) Start() {
 	router.GET("/", h.handleIndex)
 	router.GET("/jq", h.handleJqGet)
 	router.POST("/jq", h.handleJqPost)
+	router.POST("/s", h.handleJqSharePost)
+	router.GET("/s/:id", h.handleJqShareGet)
 
 	graceful.Run(":"+s.Config.Port, 10*time.Second, router)
+
+	return nil
 }

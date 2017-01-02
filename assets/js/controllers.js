@@ -1,6 +1,12 @@
-angular.module('jqplay.controllers', []).controller('JqplayCtrl', function JqplayCtrl($scope, $timeout, jqplayService) {
+angular.module('jqplay.controllers', []).controller('JqplayCtrl', function JqplayCtrl($scope, $timeout, $window, jqplayService) {
   $scope.jq = {};
-  $scope.jq.o = { "null-input": false, "slurp": false, "compact-output": false, "raw-input": false, "raw-output": false };
+  $scope.jq.o = {
+    "slurp": false,
+    "null-input": false,
+    "compact-output": false,
+    "raw-input": false,
+    "raw-output": false,
+  };
   $scope.result = "";
 
   $scope.editorLoaded = function(_editor) {
@@ -21,6 +27,16 @@ angular.module('jqplay.controllers', []).controller('JqplayCtrl', function Jqpla
       $scope.delayedRun($scope.jq)
     }
   }, true);
+
+  $scope.shareSnippet = function() {
+    jqplayService.share($scope.jq).then(
+      function successCallback(response) {
+        $window.location.href = '/s/' + response.data.id;
+      },
+      function errorCallback(response) {
+        alert("error sharing snippet");
+      });
+  };
 
   $scope.delayedRun = function(jq) {
     if ($scope.input.$valid) {

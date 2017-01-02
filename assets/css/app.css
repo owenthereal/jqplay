@@ -30,11 +30,6 @@ header .brand {
   margin-right: 0.5em
 }
 
-header .logo {
-  position: relative;
-  margin-top: 5px;
-}
-
 header p {
   color: #888;
   font-size: 0.825em;

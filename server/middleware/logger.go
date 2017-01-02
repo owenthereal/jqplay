@@ -27,6 +27,6 @@ func Logger() gin.HandlerFunc {
 			"client_ip": c.ClientIP(),
 			"latency":   latency,
 			"bytes":     c.Writer.Size(),
-		}).Infof("[jqplay] %s %s", method, path)
+		}).Infof("%s %s", method, path)
 	}
 }

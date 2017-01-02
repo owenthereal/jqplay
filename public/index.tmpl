@@ -24,14 +24,20 @@
   </head>
 
   <body>
-    <div class="page-wrap" ng-controller="JqplayCtrl">
-      <header>
-        <div class="brand">
-          <a href="/"><img src="#{ .Asset "public/images/logo.png" }" alt="jqplay" class="logo"></a>
+    <div ng-controller="JqplayCtrl">
+      <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <a href="/" class="navbar-brand"><img src="#{ .Asset "public/images/logo.png" }" alt="jqplay"></a>
+          </div>
+          <p class="navbar-text">A playground for <a href="https://stedolan.github.io/jq/" class="navbar-link">jq</a> #{.JQVer}</p>
+          <button type="button" class="btn btn-default navbar-btn pull-right" ng-click="shareSnippet()">
+            <span class="glyphicon glyphicon-share" aria-hidden="true"></span>Share snippet
+          </button>
         </div>
-        <p>A playground for <a href="https://stedolan.github.io/jq/">jq</a> #{.JQVer}</p>
-      </header>
+      </nav>
 
+      <div class="page-wrap">
         <div class="row">
           <div class="col-sm-12 col-md-6">
             <form name="input" role="form" novalidate>
@@ -123,8 +129,8 @@
         </div> <!-- end panel -->
       </div> <!-- end col -->
     </div> <!-- end row -->
-
-  </div> <!-- end page-wrap -->
+    </div> <!-- end page-wrap -->
+  </div>
 
     <footer class="footer">
       <hr>
