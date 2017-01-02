@@ -148,17 +148,12 @@ angular.module('jqplay.controllers', []).controller('JqplayCtrl', function Jqpla
     $scope.input.$valid = true;
   };
 
-  $scope.compareOption = function() {
-    return function(opt) {
-      console.log(opt);
-      return opt.key;
-    }
-  }
-
   if (window.jq != null) {
     $scope.jq.j = window.jq.j;
     $scope.jq.q = window.jq.q;
-    $scope.jq.o = window.jq.o;
+    if (!!window.jq.o) {
+      $scope.jq.o = window.jq.o;
+    }
     $scope.run($scope.jq);
   }
 });
