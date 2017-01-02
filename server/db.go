@@ -48,22 +48,21 @@ func ToJQ(s *Snippet) *jq.JQ {
 	}
 }
 
-func ConnectDB(url, salt string) (*DB, error) {
+func ConnectDB(url string) (*DB, error) {
 	db, err := sqlx.Connect("postgres", url)
 	if err != nil {
 		return nil, err
 	}
 
-	return &DB{DB: db, salt: salt}, nil
+	return &DB{db}, nil
 }
 
 type DB struct {
 	*sqlx.DB
-	salt string
 }
 
 func (db *DB) UpsertSnippet(s *Snippet) (string, error) {
-	slug := db.slug(s)
+	slug := slug(s)
 	_, err := db.NamedExec(upsertSnippetQuery,
 		map[string]interface{}{
 			"slug": slug,
@@ -82,9 +81,8 @@ func (db *DB) GetSnippet(id string) (*Snippet, error) {
 	return &s, err
 }
 
-func (db *DB) slug(s *Snippet) string {
+func slug(s *Snippet) string {
 	h := sha1.New()
-	io.WriteString(h, db.salt)
 	io.WriteString(h, s.J)
 	io.WriteString(h, s.Q)
 	io.WriteString(h, s.O)

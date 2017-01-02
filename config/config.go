@@ -10,7 +10,6 @@ type Config struct {
 	Port        string `env:"PORT,default=3000"`
 	GinMode     string `env:"GIN_MODE,default=debug"`
 	DatabaseURL string `env:"DATABASE_URL,required"`
-	SnippetSalt string `env:"SNIPPET_SALT,required"`
 	AssetHost   string `env:"ASSET_HOST"`
 	JQVer       string
 }

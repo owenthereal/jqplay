@@ -20,7 +20,7 @@ type Server struct {
 }
 
 func (s *Server) Start() error {
-	db, err := ConnectDB(s.Config.DatabaseURL, s.Config.SnippetSalt)
+	db, err := ConnectDB(s.Config.DatabaseURL)
 	if err != nil {
 		return err
 	}
