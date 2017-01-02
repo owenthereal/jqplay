@@ -17,6 +17,7 @@ const (
 	JSONPayloadLimit   = JSONPayloadLimitMB * OneMB
 	JSONPayloadLimitMB = 10
 	OneMB              = 1024000
+	JQExecTimeout      = 15 * time.Second
 )
 
 type JQHandlerContext struct {
@@ -57,7 +58,7 @@ func (h *JQHandler) handleJqPost(c *gin.Context) {
 		return
 	}
 
-	ctx, cancel := context.WithTimeout(c.Request.Context(), 3*time.Second)
+	ctx, cancel := context.WithTimeout(c.Request.Context(), JQExecTimeout)
 	defer cancel()
 
 	c.Request.Body = http.MaxBytesReader(c.Writer, c.Request.Body, JSONPayloadLimit)
