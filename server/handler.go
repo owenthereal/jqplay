@@ -58,9 +58,6 @@ func (h *JQHandler) handleJqPost(c *gin.Context) {
 		return
 	}
 
-	ctx, cancel := context.WithTimeout(c.Request.Context(), JQExecTimeout)
-	defer cancel()
-
 	c.Request.Body = http.MaxBytesReader(c.Writer, c.Request.Body, JSONPayloadLimit)
 
 	var jq *jq.JQ
@@ -68,9 +65,12 @@ func (h *JQHandler) handleJqPost(c *gin.Context) {
 	if err != nil {
 		err = fmt.Errorf("error parsing JSON: %s", err)
 		h.logger(c).WithError(err).Infof("error parsing JSON")
-		c.String(422, err.Error())
+		c.String(http.StatusUnprocessableEntity, err.Error())
 		return
 	}
+
+	ctx, cancel := context.WithTimeout(c.Request.Context(), JQExecTimeout)
+	defer cancel()
 
 	// Evaling into ResponseWriter sets the status code to 200
 	// appending error message in the end if there's any
@@ -95,7 +95,7 @@ func (h *JQHandler) handleJqGet(c *gin.Context) {
 		}
 	}
 
-	c.HTML(200, "index.tmpl", &JQHandlerContext{Config: h.Config, JQ: jqData})
+	c.HTML(http.StatusOK, "index.tmpl", &JQHandlerContext{Config: h.Config, JQ: jqData})
 }
 
 func (h *JQHandler) handleJqSharePost(c *gin.Context) {
@@ -104,6 +104,8 @@ func (h *JQHandler) handleJqSharePost(c *gin.Context) {
 		c.String(http.StatusExpectationFailed, err.Error())
 		return
 	}
+
+	c.Request.Body = http.MaxBytesReader(c.Writer, c.Request.Body, JSONPayloadLimit)
 
 	var jq *jq.JQ
 	if err := c.BindJSON(&jq); err != nil {
