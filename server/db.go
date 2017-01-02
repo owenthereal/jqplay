@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/jingweno/jqplay/jq"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 )
@@ -19,42 +20,36 @@ func ConnectDB(url, salt string) (*DB, error) {
 	return &DB{DB: db, salt: salt}, nil
 }
 
-type Snippet struct {
-	ID string `json:"id" db:"slug"`
-	J  string `json:"j" db:"j"`
-	Q  string `json:"q" db:"q"`
-}
-
 type DB struct {
 	*sqlx.DB
 	salt string
 }
 
-func (db *DB) UpsertSnippet(s *Snippet) error {
-	s.ID = db.slug(s)
+func (db *DB) UpsertSnippet(jq *jq.JQ) (string, error) {
+	slug := db.slug(jq)
 	_, err := db.NamedExec(`INSERT INTO snippets (slug, j, q) VALUES (:slug, :j, :q) ON CONFLICT (slug) DO UPDATE SET j = :j, q = :q`,
 		map[string]interface{}{
-			"slug": s.ID,
-			"j":    s.J,
-			"q":    s.Q,
+			"slug": slug,
+			"j":    jq.J,
+			"q":    jq.Q,
 		})
 
-	return err
+	return slug, err
 }
 
-func (db *DB) GetSnippet(id string) (*Snippet, error) {
+func (db *DB) GetSnippet(id string) (*jq.JQ, error) {
 	fmt.Println(id)
-	s := Snippet{}
-	err := db.Get(&s, "SELECT slug, j, q FROM snippets WHERE slug = $1", id)
+	jq := jq.JQ{}
+	err := db.Get(&jq, "SELECT j, q FROM snippets WHERE slug = $1", id)
 
-	return &s, err
+	return &jq, err
 }
 
-func (db *DB) slug(s *Snippet) string {
+func (db *DB) slug(jq *jq.JQ) string {
 	h := sha1.New()
 	io.WriteString(h, db.salt)
-	io.WriteString(h, s.J)
-	io.WriteString(h, s.Q)
+	io.WriteString(h, jq.J)
+	io.WriteString(h, jq.Q)
 	sum := h.Sum(nil)
 	b := make([]byte, base64.URLEncoding.EncodedLen(len(sum)))
 	base64.URLEncoding.Encode(b, sum)

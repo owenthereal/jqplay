@@ -11,8 +11,8 @@ import (
 )
 
 type JQ struct {
-	J string          `json:"j"`
-	Q string          `json:"q"`
+	J string          `json:"j" db:"j"`
+	Q string          `json:"q" db:"q"`
 	O map[string]bool `json:"o"`
 }
 

@@ -19,10 +19,6 @@ const (
 	OneMB              = 1024000
 )
 
-type JQError struct {
-	err error `json:"error"`
-}
-
 type JQHandlerContext struct {
 	*config.Config
 	JQ string
@@ -104,32 +100,27 @@ func (h *JQHandler) handleJqGet(c *gin.Context) {
 func (h *JQHandler) handleJqSharePost(c *gin.Context) {
 	if err := h.checkReqSize(c); err != nil {
 		h.logger(c).WithError(err).Info("req too large")
-		c.JSON(http.StatusExpectationFailed, &JQError{err})
+		c.String(http.StatusExpectationFailed, err.Error())
 		return
 	}
 
-	var snippet *Snippet
-	err := c.BindJSON(&snippet)
+	var jq *jq.JQ
+	err := c.BindJSON(&jq)
 	if err != nil {
 		err = fmt.Errorf("error parsing JSON: %s", err)
 		h.logger(c).WithError(err).Info("error parsing JSON")
-		c.JSON(http.StatusUnprocessableEntity, &JQError{err})
+		c.String(http.StatusUnprocessableEntity, err.Error())
 		return
 	}
 
-	err = h.DB.UpsertSnippet(snippet)
+	id, err := h.DB.UpsertSnippet(jq)
 	if err != nil {
 		h.logger(c).WithError(err).Info("error upserting snippet")
-		c.JSON(http.StatusUnprocessableEntity, &JQError{err})
+		c.String(http.StatusUnprocessableEntity, err.Error())
 		return
 	}
 
-	c.JSON(http.StatusCreated, snippet)
-}
-
-func (h *JQHandler) logger(c *gin.Context) *logrus.Entry {
-	l, _ := c.Get("logger")
-	return l.(*logrus.Entry)
+	c.String(http.StatusCreated, id)
 }
 
 func (h *JQHandler) handleJqShareGet(c *gin.Context) {
@@ -138,7 +129,7 @@ func (h *JQHandler) handleJqShareGet(c *gin.Context) {
 	s, err := h.DB.GetSnippet(id)
 	if err != nil {
 		h.logger(c).WithError(err).Info("error getting snippet")
-		c.JSON(http.StatusNotFound, &JQError{err})
+		c.String(http.StatusNotFound, err.Error())
 		return
 	}
 
@@ -152,4 +143,9 @@ func (h *JQHandler) handleJqShareGet(c *gin.Context) {
 		Config: h.Config,
 		JQ:     jqData,
 	})
+}
+
+func (h *JQHandler) logger(c *gin.Context) *logrus.Entry {
+	l, _ := c.Get("logger")
+	return l.(*logrus.Entry)
 }

@@ -31,7 +31,7 @@ angular.module('jqplay.controllers', []).controller('JqplayCtrl', function Jqpla
   $scope.shareSnippet = function() {
     jqplayService.share($scope.jq).then(
       function successCallback(response) {
-        $window.location.href = '/s/' + response.data.id;
+        $window.location.href = '/s/' + response.data;
       },
       function errorCallback(response) {
         alert("error sharing snippet");
