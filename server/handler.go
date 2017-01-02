@@ -64,8 +64,7 @@ func (h *JQHandler) handleJqPost(c *gin.Context) {
 	c.Request.Body = http.MaxBytesReader(c.Writer, c.Request.Body, JSONPayloadLimit)
 
 	var j *jq.JQ
-	err := c.BindJSON(&j)
-	if err != nil {
+	if err := c.BindJSON(&j); err != nil {
 		err = fmt.Errorf("error parsing JSON: %s", err)
 		h.logger(c).WithError(err).Infof("error parsing JSON")
 		c.String(http.StatusUnprocessableEntity, err.Error())
