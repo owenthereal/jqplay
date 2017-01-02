@@ -78,8 +78,7 @@ func (h *JQHandler) handleJqPost(c *gin.Context) {
 	// appending error message in the end if there's any
 	var debug bytes.Buffer
 	w := io.MultiWriter(c.Writer, &debug)
-	err = j.Eval(ctx, w)
-	if err != nil {
+	if err := j.Eval(ctx, w); err != nil {
 		if _, ok := err.(*jq.JQValidationError); !ok {
 			h.logger(c).WithError(err).WithFields(log.Fields{
 				"j": j.J,
