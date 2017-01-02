@@ -1,7 +1,14 @@
 module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.config('concat', {
-    scripts: {
+    css: {
+      src: [
+        'public/bower_components/bootstrap/dist/css/bootstrap.css',
+        'assets/css/app.css'
+      ],
+      dest: 'assets/tmp/app.css'
+    },
+    js: {
       src: [
         'public/bower_components/angular/angular.js',
         'public/bower_components/angular-ui-ace/ui-ace.js',

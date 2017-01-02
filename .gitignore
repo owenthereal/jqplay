@@ -5,5 +5,5 @@ public/bower_components
 public/css
 public/js
 public/index.tmpl
-assets/tmp/app.js
+assets/tmp
 .env

@@ -3,7 +3,7 @@ module.exports = function(grunt) {
   grunt.config('cssmin', {
     app: {
       files: {
-        'public/css/app.min.<%= grunt.option("ts") %>.css': ['assets/css/app.css']
+        'public/css/app.min.<%= grunt.option("ts") %>.css': ['assets/tmp/app.css']
       }
     }
   });
