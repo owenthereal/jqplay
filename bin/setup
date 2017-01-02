@@ -8,3 +8,5 @@ set -e
 dropdb --if-exists jqplay
 createdb jqplay
 psql -d jqplay -f server/db.sql
+
+go get github.com/ddollar/forego
