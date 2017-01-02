@@ -152,3 +152,7 @@ label {
 .dbg-bdr-green {
   border: 1px solid green !important;
 }
+
+.command-line-heading {
+  margin-bottom: 0;
+}
