@@ -10,6 +10,14 @@ import (
 	"golang.org/x/net/context"
 )
 
+type JQValidationError struct {
+	s string
+}
+
+func (e *JQValidationError) Error() string {
+	return e.s
+}
+
 type JQ struct {
 	J string  `json:"j"`
 	Q string  `json:"q"`
@@ -73,7 +81,7 @@ func (j *JQ) Validate() error {
 	}
 
 	if len(errMsgs) > 0 {
-		return fmt.Errorf("invalid input: %s", strings.Join(errMsgs, " and "))
+		return &JQValidationError{fmt.Sprintf("invalid input: %s", strings.Join(errMsgs, " and "))}
 	}
 
 	return nil

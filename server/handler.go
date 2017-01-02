@@ -1,12 +1,15 @@
 package server
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"time"
 
 	"github.com/Sirupsen/logrus"
+	log "github.com/Sirupsen/logrus"
 	"github.com/jingweno/jqplay/config"
 	"github.com/jingweno/jqplay/jq"
 	"golang.org/x/net/context"
@@ -42,26 +45,26 @@ func (h *JQHandler) handleIndex(c *gin.Context) {
 	c.HTML(200, "index.tmpl", &JQHandlerContext{Config: h.Config})
 }
 
-func (h *JQHandler) checkReqSize(c *gin.Context) error {
+func (h *JQHandler) checkReqSize(c *gin.Context) (float64, error) {
 	if c.Request.ContentLength > JSONPayloadLimit {
 		size := float64(c.Request.ContentLength) / OneMB
-		return fmt.Errorf("JSON payload size is %.1fMB, larger than limit %dMB.", size, JSONPayloadLimitMB)
+		return size, fmt.Errorf("JSON payload size is %.1fMB, larger than limit %dMB.", size, JSONPayloadLimitMB)
 	}
 
-	return nil
+	return 0, nil
 }
 
 func (h *JQHandler) handleJqPost(c *gin.Context) {
-	if err := h.checkReqSize(c); err != nil {
-		h.logger(c).WithError(err)
+	if size, err := h.checkReqSize(c); err != nil {
+		h.logger(c).WithField("size", size).WithError(err)
 		c.String(http.StatusExpectationFailed, err.Error())
 		return
 	}
 
 	c.Request.Body = http.MaxBytesReader(c.Writer, c.Request.Body, JSONPayloadLimit)
 
-	var jq *jq.JQ
-	err := c.BindJSON(&jq)
+	var j *jq.JQ
+	err := c.BindJSON(&j)
 	if err != nil {
 		err = fmt.Errorf("error parsing JSON: %s", err)
 		h.logger(c).WithError(err).Infof("error parsing JSON")
@@ -74,9 +77,19 @@ func (h *JQHandler) handleJqPost(c *gin.Context) {
 
 	// Evaling into ResponseWriter sets the status code to 200
 	// appending error message in the end if there's any
-	err = jq.Eval(ctx, c.Writer)
+	var debug bytes.Buffer
+	w := io.MultiWriter(c.Writer, &debug)
+	err = j.Eval(ctx, w)
 	if err != nil {
-		h.logger(c).WithError(err).WithField("j", jq.J).WithField("q", jq.Q).Infof("jq error")
+		if _, ok := err.(*jq.JQValidationError); !ok {
+			h.logger(c).WithError(err).WithFields(log.Fields{
+				"j": j.J,
+				"q": j.Q,
+				"o": j.Opts(),
+				"r": debug.String(),
+			}).Info("jq error")
+		}
+
 		fmt.Fprint(c.Writer, err.Error())
 	}
 }
@@ -99,8 +112,8 @@ func (h *JQHandler) handleJqGet(c *gin.Context) {
 }
 
 func (h *JQHandler) handleJqSharePost(c *gin.Context) {
-	if err := h.checkReqSize(c); err != nil {
-		h.logger(c).WithError(err)
+	if size, err := h.checkReqSize(c); err != nil {
+		h.logger(c).WithField("size", size).WithError(err)
 		c.String(http.StatusExpectationFailed, err.Error())
 		return
 	}
@@ -116,7 +129,6 @@ func (h *JQHandler) handleJqSharePost(c *gin.Context) {
 	}
 
 	if err := jq.Validate(); err != nil {
-		h.logger(c).WithError(err)
 		c.String(http.StatusUnprocessableEntity, err.Error())
 		return
 	}
