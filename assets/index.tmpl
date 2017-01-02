@@ -9,7 +9,7 @@
     <title>jq play</title>
 
     <link rel="icon" type="image/png" href="#{ .Asset "public/images/favicon.png" }">
-    <link rel="stylesheet" href="#{ .Asset "public/css/app.min.#{ TIMESTAMP }.css" }">
+    <link rel="stylesheet" href="#{ .Asset "css/app.min.#{ TIMESTAMP }.css" }">
 
     <!-- Just for debugging purposes. Don't actually copy this line! -->
     <!--[if lt IE 9]><script src="https://raw.githubusercontent.com/twbs/bootstrap/master/docs/assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
@@ -143,10 +143,7 @@
       window.jq = JSON.parse(#{.JQ});
     </script>
     #{ end }
-    <script type="text/javascript" src="#{ .Asset "public/bower_components/ace-builds/src-min-noconflict/ace.js" }"></script>
-    <script type="text/javascript" src="#{ .Asset "public/bower_components/ace-builds/src-min-noconflict/theme-github.js" }"></script>
-    <script type="text/javascript" src="#{ .Asset "public/bower_components/ace-builds/src-min-noconflict/mode-jsoniq.js" }"></script>
-    <script type="text/javascript" src="#{ .Asset "public/js/app.min.#{ TIMESTAMP }.js" }"></script>
+    <script type="text/javascript" src="#{ .Asset "js/app.min.#{ TIMESTAMP }.js" }"></script>
     #{ if .IsProd }
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

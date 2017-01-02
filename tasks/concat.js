@@ -10,6 +10,9 @@ module.exports = function(grunt) {
     },
     js: {
       src: [
+        'public/bower_components/ace-builds/src-noconflict/ace.js',
+        'public/bower_components/ace-builds/src-noconflict/theme-github.js',
+        'public/bower_components/ace-builds/src-noconflict/mode-jsoniq.js',
         'public/bower_components/angular/angular.js',
         'public/bower_components/angular-ui-ace/ui-ace.js',
         'assets/js/app.js',

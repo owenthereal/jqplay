@@ -37,8 +37,14 @@ func (s *Server) Start() error {
 	router := gin.New()
 	router.Use(middleware.Secure(s.Config.IsProd()), middleware.RequestID(), middleware.Logger(), gin.Recovery())
 	router.SetHTMLTemplate(tmpl)
-	router.Static("/public", "public")
+
+	router.Static("/js", "public/js")
+	router.Static("/css", "public/css")
+	router.Static("/images", "public/images")
+	router.Static("/fonts", "public/bower_components/bootstrap/fonts")
+	router.StaticFile("/worker-xquery.js", "public/bower_components/ace-builds/src-min-noconflict/worker-xquery.js")
 	router.StaticFile("/robots.txt", "public/robots.txt")
+
 	router.GET("/", h.handleIndex)
 	router.GET("/jq", h.handleJqGet)
 	router.POST("/jq", h.handleJqPost)
