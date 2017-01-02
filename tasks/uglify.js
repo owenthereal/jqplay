@@ -3,7 +3,7 @@ module.exports = function(grunt) {
   grunt.config('uglify', {
     scripts: {
       files: {
-        'public/js/app.js' : 'assets/tmp/app.js'
+        'public/js/app.min.<%= grunt.option("ts") %>.js': 'assets/tmp/app.js'
       },
       options: {
         mangle: false
