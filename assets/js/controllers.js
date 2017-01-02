@@ -7,6 +7,7 @@ angular.module('jqplay.controllers', []).controller('JqplayCtrl', function Jqpla
     { name: "raw-input", enabled: false },
     { name: "raw-output", enabled: false },
   ];
+  $scope.cmd = "jq ''";
   $scope.result = "";
 
   $scope.editorLoaded = function(_editor) {
@@ -16,14 +17,21 @@ angular.module('jqplay.controllers', []).controller('JqplayCtrl', function Jqpla
     _editor.session.setUseWorker(false);
   };
 
+  $scope.buildCmd = function(jq) {
+    var cmd = 'jq '
+    jq.o.forEach(function(o) {
+      if (o.enabled) {
+        cmd += '--' + o.name + ' '
+      }
+    })
+    var q = jq.q || ''
+
+    return cmd + "'" + q + "'"
+  }
+
   $scope.$watch('jq', function(newValue, oldValue) {
     if ( newValue !== oldValue ) {
-      $scope.delayedRun($scope.jq)
-    }
-  }, true);
-
-  $scope.$watch('jq.o', function(newValue, oldValue) {
-    if ( newValue !== oldValue ) {
+      $scope.cmd = $scope.buildCmd($scope.jq)
       $scope.delayedRun($scope.jq)
     }
   }, true);
