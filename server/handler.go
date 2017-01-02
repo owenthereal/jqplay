@@ -33,6 +33,7 @@ func (c *JQHandlerContext) ShouldInitJQ() bool {
 }
 
 type JQHandler struct {
+	DB     *DB
 	Config *config.Config
 }
 
@@ -40,14 +41,18 @@ func (h *JQHandler) handleIndex(c *gin.Context) {
 	c.HTML(200, "index.tmpl", &JQHandlerContext{Config: h.Config})
 }
 
-func (h *JQHandler) handleJqPost(c *gin.Context) {
-	l, _ := c.Get("logger")
-	logger := l.(*logrus.Entry)
-
+func (h *JQHandler) checkReqSize(c *gin.Context) error {
 	if c.Request.ContentLength > JSONPayloadLimit {
 		size := float64(c.Request.ContentLength) / OneMB
-		err := fmt.Errorf("JSON payload size is %.1fMB, larger than limit %dMB.", size, JSONPayloadLimitMB)
-		logger.WithField("size", size).WithError(err)
+		return fmt.Errorf("JSON payload size is %.1fMB, larger than limit %dMB.", size, JSONPayloadLimitMB)
+	}
+
+	return nil
+}
+
+func (h *JQHandler) handleJqPost(c *gin.Context) {
+	if err := h.checkReqSize(c); err != nil {
+		h.logger(c).WithError(err)
 		c.String(http.StatusExpectationFailed, err.Error())
 		return
 	}
@@ -61,7 +66,7 @@ func (h *JQHandler) handleJqPost(c *gin.Context) {
 	err := c.BindJSON(&jq)
 	if err != nil {
 		err = fmt.Errorf("error parsing JSON: %s", err)
-		logger.WithError(err).Infof("error parsing JSON")
+		h.logger(c).WithError(err).Infof("error parsing JSON")
 		c.String(422, err.Error())
 		return
 	}
@@ -70,7 +75,7 @@ func (h *JQHandler) handleJqPost(c *gin.Context) {
 	// appending error message in the end if there's any
 	err = jq.Eval(ctx, c.Writer)
 	if err != nil {
-		logger.WithError(err).WithField("j", jq.J).WithField("q", jq.Q).Infof("jq error")
+		h.logger(c).WithError(err).WithField("j", jq.J).WithField("q", jq.Q).Infof("jq error")
 		fmt.Fprint(c.Writer, err.Error())
 	}
 }
@@ -90,4 +95,57 @@ func (h *JQHandler) handleJqGet(c *gin.Context) {
 	}
 
 	c.HTML(200, "index.tmpl", &JQHandlerContext{Config: h.Config, JQ: jqData})
+}
+
+func (h *JQHandler) handleJqSharePost(c *gin.Context) {
+	if err := h.checkReqSize(c); err != nil {
+		h.logger(c).WithError(err)
+		c.String(http.StatusExpectationFailed, err.Error())
+		return
+	}
+
+	var jq *jq.JQ
+	err := c.BindJSON(&jq)
+	if err != nil {
+		err = fmt.Errorf("error parsing JSON: %s", err)
+		h.logger(c).WithError(err)
+		c.String(http.StatusUnprocessableEntity, err.Error())
+		return
+	}
+
+	id, err := h.DB.UpsertSnippet(FromJQ(jq))
+	if err != nil {
+		h.logger(c).WithError(err)
+		c.String(http.StatusUnprocessableEntity, "error sharing snippet")
+		return
+	}
+
+	c.String(http.StatusCreated, id)
+}
+
+func (h *JQHandler) handleJqShareGet(c *gin.Context) {
+	id := c.Param("id")
+
+	s, err := h.DB.GetSnippet(id)
+	if err != nil {
+		h.logger(c).WithError(err).Info("error getting snippet")
+		c.Redirect(http.StatusFound, "/")
+		return
+	}
+
+	var jqData string
+	d, err := json.Marshal(ToJQ(s))
+	if err == nil {
+		jqData = string(d)
+	}
+
+	c.HTML(200, "index.tmpl", &JQHandlerContext{
+		Config: h.Config,
+		JQ:     jqData,
+	})
+}
+
+func (h *JQHandler) logger(c *gin.Context) *logrus.Entry {
+	l, _ := c.Get("logger")
+	return l.(*logrus.Entry)
 }

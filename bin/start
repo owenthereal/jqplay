@@ -5,4 +5,4 @@
 
 set -e
 
-./bin/build && ./bin/jqplay
+./bin/build && forego start

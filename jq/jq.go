@@ -11,16 +11,21 @@ import (
 )
 
 type JQ struct {
-	J string          `json:"j"`
-	Q string          `json:"q"`
-	O map[string]bool `json:"o"`
+	J string  `json:"j"`
+	Q string  `json:"q"`
+	O []JQOpt `json:"o"`
+}
+
+type JQOpt struct {
+	Name    string `json:"name"`
+	Enabled bool   `json:"enabled"`
 }
 
 func (j *JQ) Opts() []string {
 	opts := []string{}
-	for opt, enabled := range j.O {
-		if enabled {
-			opts = append(opts, fmt.Sprintf("--%s", opt))
+	for _, opt := range j.O {
+		if opt.Enabled {
+			opts = append(opts, fmt.Sprintf("--%s", opt.Name))
 		}
 	}
 

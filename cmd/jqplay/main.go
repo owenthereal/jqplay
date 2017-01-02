@@ -28,5 +28,8 @@ func main() {
 		"port": conf.Port,
 	}).Infof("Starting server at %s:%s", conf.Host, conf.Port)
 	srv := server.New(conf)
-	srv.Start()
+	err = srv.Start()
+	if err != nil {
+		log.WithError(err).Fatal("error starting sever")
+	}
 }
