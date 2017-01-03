@@ -90,7 +90,7 @@ func (h *JQHandler) handleJqPost(c *gin.Context) {
 	var debug bytes.Buffer
 	w := io.MultiWriter(c.Writer, &debug)
 	if err := j.Eval(ctx, w); err != nil {
-		if shouldLogJQError(err) {
+		if shouldLogJQError(err, debug) {
 			h.logger(c).WithError(err).WithFields(log.Fields{
 				"j": j.J,
 				"q": j.Q,
@@ -179,13 +179,14 @@ func (h *JQHandler) logger(c *gin.Context) *logrus.Entry {
 	return l.(*logrus.Entry)
 }
 
-func shouldLogJQError(err error) bool {
+func shouldLogJQError(err error, out bytes.Buffer) bool {
 	if _, ok := err.(*jq.JQValidationError); ok {
 		return false
 	}
 
+	outStr := out.String()
 	for _, e := range ignoredJQErrors {
-		if strings.Contains(err.Error(), e) {
+		if strings.Contains(outStr, e) {
 			return false
 		}
 	}
