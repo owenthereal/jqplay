@@ -7,15 +7,15 @@ import (
 
 func Secure(isProd bool) gin.HandlerFunc {
 	secureMiddleware := secure.New(secure.Options{
-		AllowedHosts:         []string{"jqplay.org", "assets.jqplay.org"},
-		SSLRedirect:          true,
-		STSSeconds:           315360000,
-		SSLProxyHeaders:      map[string]string{"X-Forwarded-Proto": "https"},
-		STSIncludeSubdomains: true,
-		FrameDeny:            true,
-		ContentTypeNosniff:   true,
-		BrowserXssFilter:     true,
-		IsDevelopment:        !isProd,
+		SSLRedirect:           true,
+		STSSeconds:            315360000,
+		SSLProxyHeaders:       map[string]string{"X-Forwarded-Proto": "https"},
+		STSIncludeSubdomains:  true,
+		FrameDeny:             true,
+		ContentTypeNosniff:    true,
+		BrowserXssFilter:      true,
+		IsDevelopment:         !isProd,
+		ContentSecurityPolicy: `default-src 'none'; base-uri 'self'; block-all-mixed-content; child-src assets.jqplay.org; connect-src 'self' assets.jqplay.org www.google-analytics.com; font-src assets.jqplay.org; form-action 'self' jqplay.org assets.jqplay.org; frame-ancestors 'none'; frame-src assets.japlay.org; img-src 'self' data: assets.jqplay.org; media-src 'none'; script-src assets.jqplay.org; style-src 'unsafe-inline' assets.japlay.org`,
 	})
 
 	return func(c *gin.Context) {
