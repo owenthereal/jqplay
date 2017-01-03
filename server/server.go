@@ -5,6 +5,7 @@ import (
 	"log"
 	"time"
 
+	"github.com/gin-contrib/gzip"
 	"github.com/jingweno/jqplay/config"
 	"github.com/jingweno/jqplay/server/middleware"
 	"github.com/tylerb/graceful"
@@ -35,6 +36,7 @@ func (s *Server) Start() error {
 	}
 
 	router := gin.New()
+	router.Use(gzip.Gzip(gzip.DefaultCompression))
 	router.Use(middleware.Secure(s.Config.IsProd()), middleware.RequestID(), middleware.Logger(), gin.Recovery())
 	router.SetHTMLTemplate(tmpl)
 
