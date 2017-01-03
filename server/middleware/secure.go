@@ -7,6 +7,7 @@ import (
 
 func Secure(isProd bool) gin.HandlerFunc {
 	secureMiddleware := secure.New(secure.Options{
+		AllowedHosts:         []string{"jqplay.org", "assets.jqplay.org"},
 		SSLRedirect:          true,
 		STSSeconds:           315360000,
 		SSLProxyHeaders:      map[string]string{"X-Forwarded-Proto": "https"},
