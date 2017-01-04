@@ -43,7 +43,7 @@ func (s *Server) Start() error {
 	router.Static("/js", "public/js")
 	router.Static("/css", "public/css")
 	router.Static("/images", "public/images")
-	router.Static("/fonts", "public/bower_components/bootstrap/fonts")
+	router.Static("/fonts", "public/bower_components/bootstrap/dist/fonts")
 	router.StaticFile("/worker-xquery.js", "public/bower_components/ace-builds/src-min-noconflict/worker-xquery.js")
 	router.StaticFile("/robots.txt", "public/robots.txt")
 
