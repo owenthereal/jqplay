@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"strings"
 	"time"
 
 	"github.com/Sirupsen/logrus"
@@ -22,16 +21,6 @@ const (
 	JSONPayloadLimitMB = 10
 	OneMB              = 1024000
 	JQExecTimeout      = 15 * time.Second
-)
-
-var (
-	ignoredJQErrors = []string{
-		"syntax error",
-		"compile error",
-		"parse error",
-		"Cannot iterate over",
-		"Cannot index array",
-	}
 )
 
 type JQHandlerContext struct {
@@ -90,7 +79,7 @@ func (h *JQHandler) handleJqPost(c *gin.Context) {
 	var debug bytes.Buffer
 	w := io.MultiWriter(c.Writer, &debug)
 	if err := j.Eval(ctx, w); err != nil {
-		if shouldLogJQError(err, debug) {
+		if shouldLogJQError(err) {
 			h.logger(c).WithError(err).WithFields(log.Fields{
 				"j": j.J,
 				"q": j.Q,
@@ -179,17 +168,6 @@ func (h *JQHandler) logger(c *gin.Context) *logrus.Entry {
 	return l.(*logrus.Entry)
 }
 
-func shouldLogJQError(err error, out bytes.Buffer) bool {
-	if _, ok := err.(*jq.JQValidationError); ok {
-		return false
-	}
-
-	outStr := out.String()
-	for _, e := range ignoredJQErrors {
-		if strings.Contains(outStr, e) {
-			return false
-		}
-	}
-
-	return true
+func shouldLogJQError(err error) bool {
+	return err == jq.ExecTimeoutError
 }

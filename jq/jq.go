@@ -10,13 +10,15 @@ import (
 	"golang.org/x/net/context"
 )
 
-type JQValidationError struct {
+type ValidationError struct {
 	s string
 }
 
-func (e *JQValidationError) Error() string {
+func (e *ValidationError) Error() string {
 	return e.s
 }
+
+var ExecTimeoutError = fmt.Errorf("jq execution timeout")
 
 type JQ struct {
 	J string  `json:"j"`
@@ -65,7 +67,7 @@ func (j *JQ) Eval(ctx context.Context, w io.Writer) error {
 	case <-ctx.Done():
 		cmd.Process.Kill()
 		<-c // Wait for it to return.
-		return fmt.Errorf("jq execution timeout")
+		return ExecTimeoutError
 	}
 }
 
@@ -81,7 +83,7 @@ func (j *JQ) Validate() error {
 	}
 
 	if len(errMsgs) > 0 {
-		return &JQValidationError{fmt.Sprintf("invalid input: %s", strings.Join(errMsgs, " and "))}
+		return &ValidationError{fmt.Sprintf("invalid input: %s", strings.Join(errMsgs, " and "))}
 	}
 
 	return nil
