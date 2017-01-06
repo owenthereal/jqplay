@@ -162,6 +162,7 @@ angular.module('jqplay.controllers', []).controller('JqplayCtrl', function Jqpla
     if (!!window.jq.o) {
       $scope.jq.o = window.jq.o;
     }
+    $scope.cmd = $scope.buildCmd($scope.jq);
     $scope.run($scope.jq);
   }
 });
