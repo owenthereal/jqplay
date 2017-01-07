@@ -79,6 +79,8 @@ func (h *JQHandler) handleJqPost(c *gin.Context) {
 	var debug bytes.Buffer
 	w := io.MultiWriter(c.Writer, &debug)
 	if err := j.Eval(ctx, w); err != nil {
+		fmt.Fprint(c.Writer, err.Error())
+
 		if shouldLogJQError(err) {
 			h.logger(c).WithError(err).WithFields(log.Fields{
 				"j": j.J,
@@ -87,8 +89,6 @@ func (h *JQHandler) handleJqPost(c *gin.Context) {
 				"r": debug.String(),
 			}).Info("jq error")
 		}
-
-		fmt.Fprint(c.Writer, err.Error())
 	}
 }
 
