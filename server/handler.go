@@ -146,7 +146,7 @@ func (h *JQHandler) handleJqShareGet(c *gin.Context) {
 
 	s, err := h.DB.GetSnippet(id)
 	if err != nil {
-		h.logger(c).WithError(err).Info("error getting snippet")
+		h.logger(c).WithError(err).WithField("id", id).Info("error getting snippet")
 		c.Redirect(http.StatusFound, "/")
 		return
 	}
