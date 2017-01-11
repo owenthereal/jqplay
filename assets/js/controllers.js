@@ -11,6 +11,7 @@ angular.module('jqplay.controllers', []).controller('JqplayCtrl', function Jqpla
   $scope.result = "";
 
   $scope.editorLoaded = function(_editor) {
+    _editor.$blockScrolling = Infinity
     _editor.setHighlightActiveLine(false);
     _editor.setFontSize(14);
     _editor.setShowPrintMargin(false);
