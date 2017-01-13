@@ -3,6 +3,8 @@ package server
 import (
 	"html/template"
 	"log"
+	"net"
+	"net/http"
 	"time"
 
 	"github.com/gin-contrib/gzip"
@@ -53,7 +55,22 @@ func (s *Server) Start() error {
 	router.POST("/s", h.handleJqSharePost)
 	router.GET("/s/:id", h.handleJqShareGet)
 
-	graceful.Run(":"+s.Config.Port, 10*time.Second, router)
+	srv := &graceful.Server{
+		Timeout:      10 * time.Second,
+		TCPKeepAlive: 3 * time.Minute,
+		Server: &http.Server{
+			Addr:         ":" + s.Config.Port,
+			ReadTimeout:  25 * time.Second,
+			WriteTimeout: 25 * time.Second,
+			Handler:      router,
+		},
+	}
+
+	if err := srv.ListenAndServe(); err != nil {
+		if opErr, ok := err.(*net.OpError); !ok || (ok && opErr.Op != "accept") {
+			return err
+		}
+	}
 
 	return nil
 }
