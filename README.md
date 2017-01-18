@@ -26,7 +26,7 @@ This script will build and start the `jqplay` server.
 Support
 --------
 ### Backers
-Love our work and community? [Become a backer](https://opencollective.com/jqplay#backer)
+Love our work and community? [Become a backer](https://opencollective.com/jqplay#backer).
 
 <a href="https://opencollective.com/jqplay/backer/0/website" target="_blank"><img src="https://opencollective.com/jqplay/backer/0/avatar.svg"></a>
 <a href="https://opencollective.com/jqplay/backer/1/website" target="_blank"><img src="https://opencollective.com/jqplay/backer/1/avatar.svg"></a>
