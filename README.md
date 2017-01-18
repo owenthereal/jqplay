@@ -26,7 +26,7 @@ This script will build and start the `jqplay` server.
 Support
 --------
 ### Backers
-Support us with a monthly donation and help us continue our activities. [[Become a backer](https://opencollective.com/jqplay#backer)]
+Love our work and community? [Become a backer](https://opencollective.com/jqplay#backer)
 
 <a href="https://opencollective.com/jqplay/backer/0/website" target="_blank"><img src="https://opencollective.com/jqplay/backer/0/avatar.svg"></a>
 <a href="https://opencollective.com/jqplay/backer/1/website" target="_blank"><img src="https://opencollective.com/jqplay/backer/1/avatar.svg"></a>
@@ -60,7 +60,8 @@ Support us with a monthly donation and help us continue our activities. [[Become
 <a href="https://opencollective.com/jqplay/backer/29/website" target="_blank"><img src="https://opencollective.com/jqplay/backer/29/avatar.svg"></a>
 
 ### Sponsors
-Become a sponsor and get your logo on our README on Github with a link to your site. [[Become a sponsor](https://opencollective.com/jqplay#sponsor)]
+
+Use jqplay? Love jqplay? Help [sponsor the project](https://opencollective.com/jqplay#sponsor) and help fill our mugs with coffee.
 
 <a href="https://opencollective.com/jqplay/sponsor/0/website" target="_blank"><img src="https://opencollective.com/jqplay/sponsor/0/avatar.svg"></a>
 <a href="https://opencollective.com/jqplay/sponsor/1/website" target="_blank"><img src="https://opencollective.com/jqplay/sponsor/1/avatar.svg"></a>
