@@ -56,7 +56,7 @@ func (h *JQHandler) checkReqSize(c *gin.Context) (float64, error) {
 
 func (h *JQHandler) handleJqPost(c *gin.Context) {
 	if size, err := h.checkReqSize(c); err != nil {
-		h.logger(c).WithField("size", size).WithError(err)
+		h.logger(c).WithField("size", size).WithError(err).Info("req too large")
 		c.String(http.StatusExpectationFailed, err.Error())
 		return
 	}
@@ -66,7 +66,7 @@ func (h *JQHandler) handleJqPost(c *gin.Context) {
 	var j *jq.JQ
 	if err := c.BindJSON(&j); err != nil {
 		err = fmt.Errorf("error parsing JSON: %s", err)
-		h.logger(c).WithError(err).Infof("error parsing JSON")
+		h.logger(c).WithError(err).Info("error parsing JSON")
 		c.String(http.StatusUnprocessableEntity, err.Error())
 		return
 	}
@@ -111,7 +111,7 @@ func (h *JQHandler) handleJqGet(c *gin.Context) {
 
 func (h *JQHandler) handleJqSharePost(c *gin.Context) {
 	if size, err := h.checkReqSize(c); err != nil {
-		h.logger(c).WithField("size", size).WithError(err)
+		h.logger(c).WithField("size", size).WithError(err).Info("req too large")
 		c.String(http.StatusExpectationFailed, err.Error())
 		return
 	}
@@ -121,7 +121,7 @@ func (h *JQHandler) handleJqSharePost(c *gin.Context) {
 	var jq *jq.JQ
 	if err := c.BindJSON(&jq); err != nil {
 		err = fmt.Errorf("error parsing JSON: %s", err)
-		h.logger(c).WithError(err)
+		h.logger(c).WithError(err).Info("error parsing JSON")
 		c.String(http.StatusUnprocessableEntity, err.Error())
 		return
 	}
@@ -133,7 +133,7 @@ func (h *JQHandler) handleJqSharePost(c *gin.Context) {
 
 	id, err := h.DB.UpsertSnippet(FromJQ(jq))
 	if err != nil {
-		h.logger(c).WithError(err)
+		h.logger(c).WithError(err).Info("error upserting snippet")
 		c.String(http.StatusUnprocessableEntity, "error sharing snippet")
 		return
 	}
