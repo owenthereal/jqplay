@@ -14,12 +14,6 @@
 			"revisionTime": "2016-12-02T02:35:07Z"
 		},
 		{
-			"checksumSHA1": "BJJ1/LiktU6xeJkVFnvYGFfppZ0=",
-			"path": "github.com/gin-contrib/gzip",
-			"revision": "b773df125bed8dc8ee18900bf4e0dc7615dbdfc3",
-			"revisionTime": "2016-12-17T03:21:41Z"
-		},
-		{
 			"checksumSHA1": "UsILDoIB2S7ra+w2fMdb85mX3HM=",
 			"path": "github.com/gin-gonic/gin/binding",
 			"revision": "e2212d40c62a98b388a5eb48ecbdcf88534688ba",
