@@ -50,6 +50,7 @@ func (s *Server) Start() error {
 	router.Static("/images", "public/images")
 	router.Static("/fonts", "public/bower_components/bootstrap/dist/fonts")
 	router.StaticFile("/worker-xquery.js", "public/bower_components/ace-builds/src-min-noconflict/worker-xquery.js")
+	router.StaticFile("/ext-searchbox.js", "public/bower_components/ace-builds/src-min-noconflict/ext-searchbox.js")
 	router.StaticFile("/robots.txt", "public/robots.txt")
 
 	router.GET("/", h.handleIndex)
