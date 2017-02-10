@@ -64,8 +64,8 @@ func (s *Server) Start() error {
 		TCPKeepAlive: 3 * time.Minute,
 		Server: &http.Server{
 			Addr:         ":" + s.Config.Port,
-			ReadTimeout:  25 * time.Second,
-			WriteTimeout: 25 * time.Second,
+			ReadTimeout:  28 * time.Second,
+			WriteTimeout: 28 * time.Second,
 			Handler:      router,
 		},
 	}
