@@ -78,6 +78,8 @@ func (s *Server) Start() error {
 
 	<-stop
 	log.Println("\nShutting down the server...")
-	ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
 	return srv.Shutdown(ctx)
 }
