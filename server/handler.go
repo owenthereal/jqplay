@@ -169,5 +169,5 @@ func (h *JQHandler) logger(c *gin.Context) *logrus.Entry {
 }
 
 func shouldLogJQError(err error) bool {
-	return err == jq.ExecTimeoutError
+	return err == jq.ExecTimeoutError || err == jq.ExecCancelledError
 }
