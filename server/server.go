@@ -1,15 +1,16 @@
 package server
 
 import (
+	"context"
 	"html/template"
-	"log"
-	"net"
 	"net/http"
+	"os"
+	"os/signal"
 	"time"
 
+	log "github.com/Sirupsen/logrus"
 	"github.com/jingweno/jqplay/config"
 	"github.com/jingweno/jqplay/server/middleware"
-	"github.com/tylerb/graceful"
 	"gopkg.in/gin-gonic/gin.v1"
 )
 
@@ -22,6 +23,9 @@ type Server struct {
 }
 
 func (s *Server) Start() error {
+	stop := make(chan os.Signal)
+	signal.Notify(stop, os.Interrupt)
+
 	db, err := ConnectDB(s.Config.DatabaseURL)
 	if err != nil {
 		return err
@@ -59,22 +63,21 @@ func (s *Server) Start() error {
 	router.POST("/s", h.handleJqSharePost)
 	router.GET("/s/:id", h.handleJqShareGet)
 
-	srv := &graceful.Server{
-		Timeout:      10 * time.Second,
-		TCPKeepAlive: 3 * time.Minute,
-		Server: &http.Server{
-			Addr:         ":" + s.Config.Port,
-			ReadTimeout:  28 * time.Second,
-			WriteTimeout: 28 * time.Second,
-			Handler:      router,
-		},
+	srv := &http.Server{
+		Addr:         ":" + s.Config.Port,
+		ReadTimeout:  28 * time.Second,
+		WriteTimeout: 28 * time.Second,
+		Handler:      router,
 	}
 
-	if err := srv.ListenAndServe(); err != nil {
-		if opErr, ok := err.(*net.OpError); !ok || (ok && opErr.Op != "accept") {
-			return err
+	go func() {
+		if err := srv.ListenAndServe(); err != nil {
+			log.WithError(err).Fatal("error starting server")
 		}
-	}
+	}()
 
-	return nil
+	<-stop
+	log.Println("\nShutting down the server...")
+	ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
+	return srv.Shutdown(ctx)
 }

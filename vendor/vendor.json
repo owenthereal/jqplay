@@ -80,12 +80,6 @@
 			"revisionTime": "2016-09-27T10:08:44Z"
 		},
 		{
-			"checksumSHA1": "9MBZGLtzg4VbsvcYLwm/6g9bB2M=",
-			"path": "github.com/tylerb/graceful",
-			"revision": "4df1190835320af7076dfcf27b3d071fd3612caf",
-			"revisionTime": "2016-11-17T16:53:25Z"
-		},
-		{
 			"checksumSHA1": "WROgFE38118k7HpHbtas4F5wqmA=",
 			"path": "github.com/unrolled/secure",
 			"revision": "a60f385df7d2b42d3562114b25eb4a71884f62d2",
