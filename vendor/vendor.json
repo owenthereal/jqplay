@@ -8,10 +8,10 @@
 	"ignore": "test",
 	"package": [
 		{
-			"checksumSHA1": "h5Q1o+kA7VMAR5QpBzVJZbBEgC0=",
+			"checksumSHA1": "DYv6Q1+VfnUVxMwvk5IshAClLvw=",
 			"path": "github.com/Sirupsen/logrus",
-			"revision": "881bee4e20a5d11a6a88a5667c6f292072ac1963",
-			"revisionTime": "2016-12-02T02:35:07Z"
+			"revision": "5e5dc898656f695e2a086b8e12559febbfc01562",
+			"revisionTime": "2017-05-15T10:45:16Z"
 		},
 		{
 			"checksumSHA1": "UsILDoIB2S7ra+w2fMdb85mX3HM=",
@@ -32,10 +32,10 @@
 			"revisionTime": "2016-11-17T03:31:26Z"
 		},
 		{
-			"checksumSHA1": "hmjY4MUlyj/kx/zw+R1iSu3FTlo=",
+			"checksumSHA1": "SEZulQ/Gm4f6P6/c3waZjXxvl0g=",
 			"path": "github.com/jmoiron/sqlx",
-			"revision": "cac998c4f0959c19c638c523e374fa8e4e0bcfe3",
-			"revisionTime": "2016-12-09T02:45:31Z"
+			"revision": "d9bd385d68c068f1fabb5057e3dedcbcbb039d0f",
+			"revisionTime": "2017-04-30T19:46:03Z"
 		},
 		{
 			"checksumSHA1": "NrhkMPKlj0N6LaD2JMb2KKnR03w=",
@@ -50,10 +50,10 @@
 			"revisionTime": "2016-06-02T13:47:01Z"
 		},
 		{
-			"checksumSHA1": "rjOPPye7xtwKTe67HeEtLP5Gl8A=",
+			"checksumSHA1": "Wh2YCiWY/VIAEEQGLS7sMB9isXk=",
 			"path": "github.com/lib/pq",
-			"revision": "22cb3e4c487ce6242e2b03369219e5631eed1221",
-			"revisionTime": "2016-12-31T17:40:29Z"
+			"revision": "8837942c3e09574accbc5f150e2c5e057189cace",
+			"revisionTime": "2017-06-03T22:54:54Z"
 		},
 		{
 			"checksumSHA1": "xppHi82MLqVx1eyQmbhTesAEjx8=",
@@ -90,6 +90,12 @@
 			"path": "github.com/unrolled/secure",
 			"revision": "a60f385df7d2b42d3562114b25eb4a71884f62d2",
 			"revisionTime": "2016-10-31T17:00:06Z"
+		},
+		{
+			"checksumSHA1": "Y+HGqEkYM15ir+J93MEaHdyFy0c=",
+			"path": "golang.org/x/net/context",
+			"revision": "e4fa1c5465ad6111f206fc92186b8c83d64adbe1",
+			"revisionTime": "2017-06-02T19:04:32Z"
 		},
 		{
 			"checksumSHA1": "uTQtOqR0ePMMcvuvAIksiIZxhqU=",
