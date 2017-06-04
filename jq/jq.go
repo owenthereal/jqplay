@@ -2,12 +2,12 @@ package jq
 
 import (
 	"bytes"
+	"context"
+	"errors"
 	"fmt"
 	"io"
 	"os/exec"
 	"strings"
-
-	"golang.org/x/net/context"
 )
 
 type ValidationError struct {
@@ -18,7 +18,10 @@ func (e *ValidationError) Error() string {
 	return e.s
 }
 
-var ExecTimeoutError = fmt.Errorf("jq execution timeout")
+var (
+	ExecTimeoutError   = errors.New("jq execution was timeout")
+	ExecCancelledError = errors.New("jq execution was cancelled")
+)
 
 type JQ struct {
 	J string  `json:"j"`
@@ -49,26 +52,24 @@ func (j *JQ) Eval(ctx context.Context, w io.Writer) error {
 
 	opts := j.Opts()
 	opts = append(opts, j.Q)
-	cmd := exec.Command(Path, opts...)
+	cmd := exec.CommandContext(ctx, Path, opts...)
 	cmd.Stdin = bytes.NewBufferString(j.J)
 	cmd.Env = make([]string, 0)
 	cmd.Stdout = w
 	cmd.Stderr = w
-	err := cmd.Start()
+
+	err := cmd.Run()
 	if err != nil {
-		return err
+		ctxErr := ctx.Err()
+		if ctxErr == context.DeadlineExceeded {
+			return ExecTimeoutError
+		}
+		if ctxErr == context.Canceled {
+			return ExecCancelledError
+		}
 	}
 
-	c := make(chan error, 1)
-	go func() { c <- cmd.Wait() }()
-	select {
-	case err := <-c:
-		return err
-	case <-ctx.Done():
-		cmd.Process.Kill()
-		<-c // Wait for it to return.
-		return ExecTimeoutError
-	}
+	return err
 }
 
 func (j *JQ) Validate() error {
