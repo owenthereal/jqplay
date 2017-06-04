@@ -1,30 +1,24 @@
-jqplay [![Build Status](https://travis-ci.org/jingweno/jqplay.svg?branch=master)](https://travis-ci.org/jingweno/jqplay) 
-[![OpenCollective](https://opencollective.com/jqplay/backers/badge.svg)](#backers) 
-[![OpenCollective](https://opencollective.com/jqplay/sponsors/badge.svg)](#sponsors)
+# jqplay
 
-======
+https://jqplay.org [![Build Status](https://travis-ci.org/jingweno/jqplay.svg?branch=master)](https://travis-ci.org/jingweno/jqplay) [![OpenCollective](https://opencollective.com/jqplay/backers/badge.svg)](#backers) [![OpenCollective](https://opencollective.com/jqplay/sponsors/badge.svg)](#sponsors)
 
-http://jqplay.org
+A playground for [jq](https://github.com/stedolan/jq) made with love by [@jingweno](https://github.com/jingweno), [@lokywin](https://github.com/lokywin) and [@leoping](https://github.com/leoping). Please put it into good use.
 
-A playground for [jq](https://github.com/stedolan/jq) made with love by [@jingweno](https://github.com/jingweno), [@lokywin](https://github.com/lokywin) and [@leoping](https://github.com/leoping).
-Please put it into good use.
-
-Development
------------
+## Development
 
 To develop `jqplay`, you need to have a [Go development environment](http://golang.org/doc/install).
 You also need to have Node & Postgresql installed.
 
-### ./bin/setup
+### bin/setup
 
 This script will setup Postgresql for `jqplay`.
 
-### ./bin/start
+### bin/start
 
 This script will build and start the `jqplay` server.
 
-Support
---------
+## Support
+
 ### Backers
 Love our work and community? [Become a backer](https://opencollective.com/jqplay#backer).
 
@@ -94,7 +88,6 @@ Use jqplay? Love jqplay? Help [sponsor the project](https://opencollective.com/j
 <a href="https://opencollective.com/jqplay/sponsor/28/website" target="_blank"><img src="https://opencollective.com/jqplay/sponsor/28/avatar.svg"></a>
 <a href="https://opencollective.com/jqplay/sponsor/29/website" target="_blank"><img src="https://opencollective.com/jqplay/sponsor/29/avatar.svg"></a>
 
-License
--------
+### License
 
 jqplay is released under the MIT license. See [LICENSE.md](https://github.com/jingweno/jqplay/blob/master/LICENSE.md).
