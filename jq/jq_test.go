@@ -1,49 +1,72 @@
 package jq
 
 import (
+	"context"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"sync"
 	"testing"
 	"time"
-
-	"golang.org/x/net/context"
 )
 
-func TestJQEval(t *testing.T) {
+func TestMain(m *testing.M) {
 	pwd, _ := os.Getwd()
 	err := SetPath(filepath.Join(pwd, ".."))
 	if err != nil {
-		t.Fatalf("can't set JQ path: %s", err)
+		panic("can't set JQ path: " + err.Error())
 	}
 
+	os.Exit(m.Run())
+}
+
+func TestJQEvalInvalidInput(t *testing.T) {
 	jq := &JQ{}
-	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
-	err = jq.Eval(ctx, ioutil.Discard)
-	cancel()
+	err := jq.Eval(context.Background(), ioutil.Discard)
 
 	if err == nil {
 		t.Errorf("err should not be nil since it's invalid input")
 	}
+}
 
-	jq = &JQ{
+func TestJQEvalTimeout(t *testing.T) {
+	t.Parallel()
+
+	jq := &JQ{
 		J: `{"dependencies":{"capnp":{"version":"0.1.4","dependencies":{"es6-promise":{"version":"1.0.0","dependencies":{"es6-promise":{"version":"1.0.0"}}}}}}}`,
 		Q: `.dependencies | recurse(to_entries | map(.values.dependencies))`,
 	}
-	ctx, cancel = context.WithTimeout(context.Background(), 3*time.Second)
-	err = jq.Eval(ctx, ioutil.Discard)
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	err := jq.Eval(ctx, ioutil.Discard)
 	cancel()
 
-	if err == nil {
-		t.Errorf("err should not be nil since the executation should timeout")
-	}
-
-	if err.Error() != "jq execution timeout" {
+	if err != ExecTimeoutError {
 		t.Errorf("err message should be jq execution timeout, but it's %s", err)
 	}
+}
 
-	// simulate race condition
+func TestJQEvalCancelled(t *testing.T) {
+	t.Parallel()
+
+	jq := &JQ{
+		J: `{"dependencies":{"capnp":{"version":"0.1.4","dependencies":{"es6-promise":{"version":"1.0.0","dependencies":{"es6-promise":{"version":"1.0.0"}}}}}}}`,
+		Q: `.dependencies | recurse(to_entries | map(.values.dependencies))`,
+	}
+	ctx, cancel := context.WithCancel(context.Background())
+	go func() {
+		time.Sleep(3 * time.Second)
+		cancel()
+	}()
+	err := jq.Eval(ctx, ioutil.Discard)
+
+	if err != ExecCancelledError {
+		t.Errorf("err message should be jq execution timeout, but it's %s", err)
+	}
+}
+
+func TestJQEvalRaceCondition(t *testing.T) {
+	t.Parallel()
+
 	var wg sync.WaitGroup
 	for i := 0; i < 100; i++ {
 		wg.Add(1)
@@ -57,7 +80,7 @@ func TestJQEval(t *testing.T) {
 				J: `{ "foo": { "bar": { "baz": 123 } } }`,
 				Q: ".",
 			}
-			err = jq.Eval(ctx, ioutil.Discard)
+			err := jq.Eval(ctx, ioutil.Discard)
 			if err != nil {
 				t.Errorf("err should be nil: %s", err)
 			}
