@@ -64,7 +64,7 @@ func (s *Server) Start() error {
 
 	srv := &http.Server{
 		Addr:         ":" + s.Config.Port,
-		ReadTimeout:  20 * time.Second,
+		ReadTimeout:  25 * time.Second,
 		WriteTimeout: 20 * time.Second,
 		Handler:      router,
 	}
