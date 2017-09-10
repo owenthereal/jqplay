@@ -1,6 +1,7 @@
 {
 	"comment": "",
 	"heroku": {
+    "goVersion": "go1.9",
 		"install": [
 			"github.com/jingweno/jqplay/cmd/jqplay"
 		]
