@@ -17,10 +17,7 @@ import (
 )
 
 const (
-	JSONPayloadLimit   = JSONPayloadLimitMB * OneMB
-	JSONPayloadLimitMB = 10
-	OneMB              = 1024000
-	JQExecTimeout      = 15 * time.Second
+	jqExecTimeout = 15 * time.Second
 )
 
 type JQHandlerContext struct {
@@ -45,24 +42,7 @@ func (h *JQHandler) handleIndex(c *gin.Context) {
 	c.HTML(200, "index.tmpl", &JQHandlerContext{Config: h.Config})
 }
 
-func (h *JQHandler) checkReqSize(c *gin.Context) (float64, error) {
-	if c.Request.ContentLength > JSONPayloadLimit {
-		size := float64(c.Request.ContentLength) / OneMB
-		return size, fmt.Errorf("JSON payload size is %.1fMB, larger than limit %dMB.", size, JSONPayloadLimitMB)
-	}
-
-	return 0, nil
-}
-
 func (h *JQHandler) handleJqPost(c *gin.Context) {
-	if size, err := h.checkReqSize(c); err != nil {
-		h.logger(c).WithField("size", size).WithError(err).Info("req too large")
-		c.String(http.StatusExpectationFailed, err.Error())
-		return
-	}
-
-	c.Request.Body = http.MaxBytesReader(c.Writer, c.Request.Body, JSONPayloadLimit)
-
 	var j *jq.JQ
 	if err := c.BindJSON(&j); err != nil {
 		err = fmt.Errorf("error parsing JSON: %s", err)
@@ -71,7 +51,7 @@ func (h *JQHandler) handleJqPost(c *gin.Context) {
 		return
 	}
 
-	ctx, cancel := context.WithTimeout(c.Request.Context(), JQExecTimeout)
+	ctx, cancel := context.WithTimeout(c.Request.Context(), jqExecTimeout)
 	defer cancel()
 
 	// Evaling into ResponseWriter sets the status code to 200
@@ -110,14 +90,6 @@ func (h *JQHandler) handleJqGet(c *gin.Context) {
 }
 
 func (h *JQHandler) handleJqSharePost(c *gin.Context) {
-	if size, err := h.checkReqSize(c); err != nil {
-		h.logger(c).WithField("size", size).WithError(err).Info("req too large")
-		c.String(http.StatusExpectationFailed, err.Error())
-		return
-	}
-
-	c.Request.Body = http.MaxBytesReader(c.Writer, c.Request.Body, JSONPayloadLimit)
-
 	var jq *jq.JQ
 	if err := c.BindJSON(&jq); err != nil {
 		err = fmt.Errorf("error parsing JSON: %s", err)
