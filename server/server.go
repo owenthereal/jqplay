@@ -42,6 +42,8 @@ func (s *Server) Start() error {
 
 	router := gin.New()
 	router.Use(
+		middleware.Timeout(25*time.Second),
+		middleware.LimitContentLength(10),
 		middleware.Secure(s.Config.IsProd()),
 		middleware.RequestID(),
 		middleware.Logger(),
@@ -63,10 +65,8 @@ func (s *Server) Start() error {
 	router.GET("/s/:id", h.handleJqShareGet)
 
 	srv := &http.Server{
-		Addr:         ":" + s.Config.Port,
-		ReadTimeout:  25 * time.Second,
-		WriteTimeout: 20 * time.Second,
-		Handler:      router,
+		Addr:    ":" + s.Config.Port,
+		Handler: router,
 	}
 
 	go func() {
@@ -77,7 +77,7 @@ func (s *Server) Start() error {
 
 	<-stop
 	log.Println("\nShutting down the server...")
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 28*time.Second)
 	defer cancel()
 
 	return srv.Shutdown(ctx)
