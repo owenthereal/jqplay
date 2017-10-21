@@ -26,7 +26,7 @@ type Config struct {
         SnsTopics []string `env:"AWS_SNS_TOPICS"`
     }
 
-    Timeout time.Duration `env:"TIMEOUT,default=1m"`
+    Timeout time.Duration `env:"TIMEOUT,default=1m,strict"`
 }
 ```
 
@@ -41,6 +41,15 @@ Then call `envdecode.Decode`:
 var cfg Config
 err := envdecode.Decode(&cfg)
 ```
+
+If you want all fields to act `strict`, you may use `envdecode.StrictDecode`:
+
+```go
+var cfg Config
+err := envdecode.StrictDecode(&cfg)
+```
+
+All parse errors will fail fast and return an error in this mode.
 
 ## Supported types ##
 
