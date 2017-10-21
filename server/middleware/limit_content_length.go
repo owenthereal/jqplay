@@ -20,7 +20,7 @@ func LimitContentLength(limitMBs int64) gin.HandlerFunc {
 			return
 		}
 
-		c.Request.Body = http.MaxBytesReader(c.Writer, c.Request.Body, limitMBs)
+		c.Request.Body = http.MaxBytesReader(c.Writer, c.Request.Body, limitBytes)
 		c.Next()
 	}
 }
