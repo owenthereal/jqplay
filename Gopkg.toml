@@ -51,6 +51,6 @@
 
 [metadata.heroku]
   root-package = "github.com/jingweno/jqplay"
-  go-version = "go1.9.1"
+  go-version = "go1.9.2"
   install = [ "./cmd/..." ]
   ensure = "false"
