@@ -1,16 +1,13 @@
 package server
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
-	"io"
 	"net/http"
 	"time"
 
 	"github.com/Sirupsen/logrus"
-	log "github.com/Sirupsen/logrus"
 	"github.com/jingweno/jqplay/config"
 	"github.com/jingweno/jqplay/jq"
 	"gopkg.in/gin-gonic/gin.v1"
@@ -56,19 +53,9 @@ func (h *JQHandler) handleJqPost(c *gin.Context) {
 
 	// Evaling into ResponseWriter sets the status code to 200
 	// appending error message in the end if there's any
-	var debug bytes.Buffer
-	w := io.MultiWriter(c.Writer, &debug)
-	if err := j.Eval(ctx, w); err != nil {
+	if err := j.Eval(ctx, c.Writer); err != nil {
 		fmt.Fprint(c.Writer, err.Error())
-
-		if shouldLogJQError(err) {
-			h.logger(c).WithError(err).WithFields(log.Fields{
-				"j": j.J,
-				"q": j.Q,
-				"o": j.Opts(),
-				"r": debug.String(),
-			}).Info("jq error")
-		}
+		h.logger(c).WithError(err).Info("jq error")
 	}
 }
 
