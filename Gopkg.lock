@@ -2,12 +2,6 @@
 
 
 [[projects]]
-  name = "github.com/Sirupsen/logrus"
-  packages = ["."]
-  revision = "f006c2ac4710855cf0f916dd6b77acf6b048dc6e"
-  version = "v1.0.3"
-
-[[projects]]
   branch = "master"
   name = "github.com/gin-contrib/sse"
   packages = ["."]
@@ -15,7 +9,10 @@
 
 [[projects]]
   name = "github.com/gin-gonic/gin"
-  packages = ["binding","render"]
+  packages = [
+    "binding",
+    "render"
+  ]
   revision = "d459835d2b077e44f7c9b453505ee29881d5d12d"
   version = "v1.2"
 
@@ -28,7 +25,10 @@
 [[projects]]
   branch = "master"
   name = "github.com/jmoiron/sqlx"
-  packages = [".","reflectx"]
+  packages = [
+    ".",
+    "reflectx"
+  ]
   revision = "3379e5993990b1f927fc8db926485e6f6becf2d2"
 
 [[projects]]
@@ -40,7 +40,10 @@
 [[projects]]
   branch = "master"
   name = "github.com/lib/pq"
-  packages = [".","oid"]
+  packages = [
+    ".",
+    "oid"
+  ]
   revision = "456514e2defec52e0cd37f90ccf17ec8b28295e2"
 
 [[projects]]
@@ -54,6 +57,12 @@
   packages = ["."]
   revision = "879c5887cd475cd7864858769793b2ceb0d44feb"
   version = "v1.1.0"
+
+[[projects]]
+  name = "github.com/sirupsen/logrus"
+  packages = ["."]
+  revision = "c155da19408a8799da419ed3eeb0cb5db0ad5dbc"
+  version = "v1.0.5"
 
 [[projects]]
   branch = "master"
@@ -76,7 +85,10 @@
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
-  packages = ["unix","windows"]
+  packages = [
+    "unix",
+    "windows"
+  ]
   revision = "8dbc5d05d6edcc104950cc299a1ce6641235bc86"
 
 [[projects]]
@@ -100,6 +112,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "127337a0190c3bd3510a6e50c9dacff7772f3706af0809206b0df4a416a8737c"
+  inputs-digest = "2b3ba72af975983c2c870a1954b33049fb1059576885ed1c33c75b9866d3aae7"
   solver-name = "gps-cdcl"
   solver-version = 1

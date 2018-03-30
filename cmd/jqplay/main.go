@@ -1,10 +1,10 @@
 package main
 
 import (
-	log "github.com/Sirupsen/logrus"
 	"github.com/jingweno/jqplay/config"
 	"github.com/jingweno/jqplay/jq"
 	"github.com/jingweno/jqplay/server"
+	log "github.com/sirupsen/logrus"
 )
 
 func main() {
