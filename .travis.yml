@@ -1,6 +1,7 @@
+sudo: false
 language: go
 go:
-  - 1.10.1
+  - 1.11.1
 env:
   - TRAVIS_NODE_VERSION="7"
 install:
