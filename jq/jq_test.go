@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 	"sync"
 	"testing"
 	"time"
@@ -26,6 +27,23 @@ func TestJQEvalInvalidInput(t *testing.T) {
 
 	if err == nil {
 		t.Errorf("err should not be nil since it's invalid input")
+	}
+}
+
+func TestJQValidateDisallowOpts(t *testing.T) {
+	jq := &JQ{
+		J: "{}",
+		Q: ".",
+		O: []JQOpt{
+			{
+				Name: "from-file",
+			},
+		},
+	}
+
+	err := jq.Validate()
+	if err == nil || !strings.Contains(err.Error(), `disallow option "from-file"`) {
+		t.Errorf(`err should include disallow option "from-file"`)
 	}
 }
 
