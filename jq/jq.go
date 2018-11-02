@@ -21,6 +21,14 @@ func (e *ValidationError) Error() string {
 var (
 	ExecTimeoutError   = errors.New("jq execution was timeout")
 	ExecCancelledError = errors.New("jq execution was cancelled")
+	disallowOpts       = map[string]bool{
+		"f":         true,
+		"from-file": true,
+		"slurpfile": true,
+		"argfile":   true,
+		"L":         true,
+		"run-tests": true,
+	}
 )
 
 type JQ struct {
@@ -83,8 +91,14 @@ func (j *JQ) Validate() error {
 		errMsgs = append(errMsgs, "missing JSON")
 	}
 
+	for _, opt := range j.O {
+		if disallowOpts[opt.Name] {
+			errMsgs = append(errMsgs, fmt.Sprintf("disallow option %q", opt.Name))
+		}
+	}
+
 	if len(errMsgs) > 0 {
-		return &ValidationError{fmt.Sprintf("invalid input: %s", strings.Join(errMsgs, " and "))}
+		return &ValidationError{fmt.Sprintf("invalid input: %s", strings.Join(errMsgs, ", "))}
 	}
 
 	return nil
