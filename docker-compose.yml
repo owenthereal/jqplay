@@ -1,0 +1,19 @@
+version: "2.1"
+
+services:
+  db:
+    image: postgres:10.5
+    restart: always
+    environment:
+      POSTGRES_USER: jqplay-user
+      POSTGRES_PASSWORD: jqplay-pass
+      POSTGRES_DB: jqplay-db
+    volumes:
+      - ./server/db.sql:/docker-entrypoint-initdb.d/db.sql
+  jqplay:
+    build: .
+    restart: always
+    ports:
+      - "3000:80"
+    environment:
+      DATABASE_URL: "postgres://jqplay-user:jqplay-pass@db/jqplay-db?sslmode=disable"

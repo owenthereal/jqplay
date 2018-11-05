@@ -63,6 +63,9 @@ func (s *Server) Start() error {
 	router.POST("/jq", h.handleJqPost)
 	router.POST("/s", h.handleJqSharePost)
 	router.GET("/s/:id", h.handleJqShareGet)
+	router.GET("/health", func(c *gin.Context) {
+		c.String(200, "OK")
+	})
 
 	srv := &http.Server{
 		Addr:    ":" + s.Config.Port,

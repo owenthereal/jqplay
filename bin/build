@@ -3,7 +3,10 @@
 #
 # Builds jqplay
 
-set -e
+set -xe
 
 go build -o ./bin/jqplay ./cmd/jqplay
-npm install
+npm --verbose install
+bower --verbose --allow-root install
+rm -rf public/bower_components/ace-builds/demo/kitchen-sink/docs
+grunt build

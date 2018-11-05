@@ -17,6 +17,16 @@ This script will setup Postgresql for `jqplay`.
 
 This script will build and start the `jqplay` server.
 
+### Docker Compose
+
+You can start a local instance of jqplay by using Docker Compose:
+
+```
+docker-compose up -d --build
+```
+
+jqplay will be available at [http://localhost:3000](http://localhost:3000).
+
 ## Support
 
 ### Backers
