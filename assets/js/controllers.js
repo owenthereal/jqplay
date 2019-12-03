@@ -27,7 +27,7 @@ angular.module('jqplay.controllers', []).controller('JqplayCtrl', function Jqpla
     })
     var q = jq.q || ''
 
-    return cmd + "'" + q + "'"
+    return cmd + "'" + q.replace(/'/g, "'\\''") + "'" // use POSIX shell's strong quoting rules
   }
 
   $scope.$watch('jq', function(newValue, oldValue) {
