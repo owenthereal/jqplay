@@ -13,7 +13,7 @@
   },
   "homepage": "https://jqplay.org",
   "dependencies": {
-    "bower": "^1.8.0",
+    "bower": "^1.8.8",
     "grunt": "^1.0.3",
     "grunt-cli": "^1.2.0",
     "grunt-contrib-clean": "^1.0.0",
