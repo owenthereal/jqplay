@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+import "google/api/annotations.proto";
+
+package api;
+
+service JQService {
+    rpc PostRun (RunRequest) returns (RunResponse) {
+        option (google.api.http) = {
+          post: "/run"
+          body: "*"
+        };
+    }
+}
+
+message RunRequest {
+    string j = 1;
+    string q = 2;
+    repeated string o = 3;
+}
+
+message RunResponse {
+    string out = 1;
+}
