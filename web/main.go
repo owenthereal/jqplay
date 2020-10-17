@@ -20,13 +20,13 @@ func main() {
 	cfg.Host = u.Host
 	cfg.Schemes = []string{u.Scheme}
 	c := client.NewHTTPClientWithConfig(nil, cfg)
-	req := j_q_service.NewPostRunParams().WithBody(&models.APIRunRequest{
-		J: `{"foo": "bar}`,
+	req := j_q_service.NewJQServicePostRunParams().WithBody(&models.APIRunRequest{
+		J: `{"foo": "bar"}`,
 		Q: ".",
 	})
-	resp, err := c.JqService.PostRun(req)
+	resp, err := c.JqService.JQServicePostRun(req)
 	if err != nil {
-		def := err.(*j_q_service.PostRunDefault)
+		def := err.(*j_q_service.JQServicePostRunDefault)
 		fmt.Println(def.GetPayload().Code)
 		fmt.Println(def.GetPayload().Error)
 		return

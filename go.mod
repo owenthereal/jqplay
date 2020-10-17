@@ -13,7 +13,7 @@ require (
 	github.com/go-sql-driver/mysql v1.5.0 // indirect
 	github.com/golang/protobuf v1.4.2
 	github.com/gorilla/mux v1.8.0
-	github.com/grpc-ecosystem/grpc-gateway v1.14.8
+	github.com/grpc-ecosystem/grpc-gateway v1.15.2
 	github.com/jmoiron/sqlx v0.0.0-20171020205521-3379e5993990
 	github.com/joeshaw/envdecode v0.0.0-20170502020559-6326cbed175e
 	github.com/lib/pq v0.0.0-20171019223007-456514e2defe

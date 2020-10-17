@@ -25,41 +25,41 @@ type Client struct {
 
 // ClientService is the interface for Client methods
 type ClientService interface {
-	PostRun(params *PostRunParams) (*PostRunOK, error)
+	JQServicePostRun(params *JQServicePostRunParams) (*JQServicePostRunOK, error)
 
 	SetTransport(transport runtime.ClientTransport)
 }
 
 /*
-  PostRun post run API
+  JQServicePostRun j q service post run API
 */
-func (a *Client) PostRun(params *PostRunParams) (*PostRunOK, error) {
+func (a *Client) JQServicePostRun(params *JQServicePostRunParams) (*JQServicePostRunOK, error) {
 	// TODO: Validate the params before sending
 	if params == nil {
-		params = NewPostRunParams()
+		params = NewJQServicePostRunParams()
 	}
 
 	result, err := a.transport.Submit(&runtime.ClientOperation{
-		ID:                 "PostRun",
+		ID:                 "JQService_PostRun",
 		Method:             "POST",
 		PathPattern:        "/run",
 		ProducesMediaTypes: []string{"application/json"},
 		ConsumesMediaTypes: []string{"application/json"},
 		Schemes:            []string{"http"},
 		Params:             params,
-		Reader:             &PostRunReader{formats: a.formats},
+		Reader:             &JQServicePostRunReader{formats: a.formats},
 		Context:            params.Context,
 		Client:             params.HTTPClient,
 	})
 	if err != nil {
 		return nil, err
 	}
-	success, ok := result.(*PostRunOK)
+	success, ok := result.(*JQServicePostRunOK)
 	if ok {
 		return success, nil
 	}
 	// unexpected success response
-	unexpectedSuccess := result.(*PostRunDefault)
+	unexpectedSuccess := result.(*JQServicePostRunDefault)
 	return nil, runtime.NewAPIError("unexpected success response: content available as default response in error", unexpectedSuccess, unexpectedSuccess.Code())
 }
 

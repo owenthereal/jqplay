@@ -1,4 +1,5 @@
 bin/jqplay
+bin/jqp
 gin-bin
 node_modules
 public/bower_components
@@ -7,3 +8,4 @@ public/js
 public/index.tmpl
 assets/tmp
 .env
+web/assets/main.wasm

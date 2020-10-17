@@ -63,7 +63,7 @@ github.com/golang/protobuf/ptypes/wrappers
 # github.com/gorilla/mux v1.8.0
 ## explicit
 github.com/gorilla/mux
-# github.com/grpc-ecosystem/grpc-gateway v1.14.8
+# github.com/grpc-ecosystem/grpc-gateway v1.15.2
 ## explicit
 github.com/grpc-ecosystem/grpc-gateway/internal
 github.com/grpc-ecosystem/grpc-gateway/runtime

@@ -7,23 +7,11 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
         <script src="/assets/wasm_exec.js"></script>
         <script>
-const go = new Go();
-		let mod, inst;
-		WebAssembly.instantiateStreaming(fetch("/assets/main.wasm"), go.importObject).then((result) => {
-			mod = result.module;
-			inst = result.instance;
-			document.getElementById("runButton").disabled = false;
-		}).catch((err) => {
-			console.error(err);
-		});
-
-		async function run() {
-			console.clear();
-			await go.run(inst);
-			inst = await WebAssembly.instantiate(mod, go.importObject); // reset instance
-		}
+            const go = new Go();
+            WebAssembly.instantiateStreaming(fetch("/assets/main.wasm"), go.importObject).then((result) => {
+                go.run(result.instance);
+            });
         </script>
-        <button onClick="run();" id="runButton" disabled>Run</button>
     </head>
     <body></body>
 </html>
