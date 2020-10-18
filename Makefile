@@ -30,6 +30,20 @@ client: proto
 		quay.io/goswagger/swagger \
 		generate client -t api/swagger -f ./api/api.swagger.json
 
+.PHONY: js_client
+js_client:
+	rm -rf api/js
+	mkdir -p api/js
+	docker run --rm \
+	  -v $(CURDIR)/api/js:/local \
+	  -v $(CURDIR)/api/api.swagger.json:/input.json \
+	  -v $(CURDIR)/api/config.swagger.yml:/config.swagger.yml \
+	  openapitools/openapi-generator-cli generate \
+	  -i /input.json \
+	  -g typescript-axios \
+	  -c /config.swagger.yml \
+	  -o /local
+
 .PHONY: init
 init:
 	go get -u github.com/go-bindata/go-bindata/...

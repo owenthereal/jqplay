@@ -12,6 +12,7 @@ require (
 	github.com/go-openapi/swag v0.19.9
 	github.com/go-sql-driver/mysql v1.5.0 // indirect
 	github.com/golang/protobuf v1.4.2
+	github.com/gorilla/handlers v1.5.1
 	github.com/gorilla/mux v1.8.0
 	github.com/grpc-ecosystem/grpc-gateway v1.15.2
 	github.com/jmoiron/sqlx v0.0.0-20171020205521-3379e5993990
@@ -22,8 +23,8 @@ require (
 	github.com/mattn/go-sqlite3 v1.14.3 // indirect
 	github.com/philhofer/fwd v1.0.0 // indirect
 	github.com/pquerna/ffjson v0.0.0-20190930134022-aa0246cd15f7 // indirect
+	github.com/rs/cors v1.7.0
 	github.com/satori/go.uuid v1.1.0
-	github.com/shurcooL/httpgzip v0.0.0-20190720172056-320755c1c1b0
 	github.com/sirupsen/logrus v1.4.2
 	github.com/tinylib/msgp v1.1.2 // indirect
 	github.com/ugorji/go v0.0.0-20171019201919-bdcc60b419d1 // indirect

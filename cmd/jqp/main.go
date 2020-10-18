@@ -3,14 +3,16 @@ package main
 import (
 	"context"
 	"net/http"
-	"time"
+	"os"
+	"os/signal"
 
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/grpc-ecosystem/grpc-gateway/runtime"
 	"github.com/jingweno/jqplay/api"
 	"github.com/jingweno/jqplay/config"
 	"github.com/jingweno/jqplay/jq"
-	"github.com/shurcooL/httpgzip"
+	"github.com/rs/cors"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc/grpclog"
 )
@@ -37,21 +39,35 @@ func main() {
 	}
 
 	r := mux.NewRouter()
-	r.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", httpgzip.FileServer(
-		api.AssetFile(),
-		httpgzip.FileServerOptions{},
-	)))
-	r.Path("/").Handler(http.FileServer(api.AssetFile())) // For index.html
-	r.Path("/run").Handler(grpcgw)                        // FIXME: Unfotunately this duplicates api.proto path defs
+	r.Use(handlers.CompressHandler)
+	r.NotFoundHandler = handlers.CompressHandler(cors.Default().Handler(grpcgw))
+
+	fs := http.FileServer(api.AssetFile())
+	r.PathPrefix("/assets/").Handler(http.StripPrefix("/assets/", fs))
+	r.Path("/").Handler(fs) // For index.html
 
 	logger.Infof("Starting server on %s", c.Port)
-	svc := &http.Server{
-		Addr:              ":" + c.Port,
-		Handler:           r,
-		ReadHeaderTimeout: 5 * time.Second,
-		IdleTimeout:       120 * time.Second,
+	srv := &http.Server{
+		Addr:    ":" + c.Port,
+		Handler: r,
 	}
-	if err := svc.ListenAndServe(); err != nil {
+
+	idleConnsClosed := make(chan struct{})
+	go func() {
+		sigint := make(chan os.Signal, 1)
+		signal.Notify(sigint, os.Interrupt)
+		<-sigint
+
+		if err := srv.Shutdown(context.Background()); err != nil {
+			logger.Infof("HTTP server Shutdown: %v", err)
+		}
+
+		close(idleConnsClosed)
+	}()
+
+	if err := srv.ListenAndServe(); err != nil {
 		logger.Fatal(err)
 	}
+
+	<-idleConnsClosed
 }
