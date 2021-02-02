@@ -1,11 +1,13 @@
-FROM golang:1.7
+FROM golang:latest
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends \
 		nodejs \
-		npm \
+    && curl -sL https://deb.nodesource.com/setup_8.x > /bin/getnpm \
+	&& chmod +x /bin/getnpm \
+	&& /bin/getnpm \
+	&& apt-get -y install npm \
 	&& npm install --global grunt-cli bower \
-	&& rm -rf /vr/lib/apt/lists/* \
-	&& ln -s "$(which nodejs)" /usr/bin/node
+	&& rm -rf /vr/lib/apt/lists/* 
 
 ENV PORT 80
 
