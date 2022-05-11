@@ -4,10 +4,10 @@ import (
 	"context"
 	"html/template"
 	"net/http"
-	"os"
-	"os/signal"
+	"syscall"
 	"time"
 
+	"github.com/oklog/run"
 	"github.com/owenthereal/jqplay/config"
 	"github.com/owenthereal/jqplay/server/middleware"
 	log "github.com/sirupsen/logrus"
@@ -22,29 +22,49 @@ type Server struct {
 	Config *config.Config
 }
 
-func (s *Server) Start() error {
-	stop := make(chan os.Signal)
-	signal.Notify(stop, os.Interrupt)
-
+func (s *Server) Start(ctx context.Context) error {
 	db, err := ConnectDB(s.Config.DatabaseURL)
 	if err != nil {
 		return err
 	}
 
-	h := &JQHandler{Config: s.Config, DB: db}
+	var g run.Group
+
+	g.Add(run.SignalHandler(ctx, syscall.SIGTERM))
+
+	srv, err := newHTTPServer(s.Config, db)
+	if err != nil {
+		return err
+	}
+	g.Add(func() error {
+		return srv.ListenAndServe()
+	}, func(error) {
+		ctx, cancel := context.WithTimeout(context.Background(), 28*time.Second)
+		defer cancel()
+
+		if err := srv.Shutdown(ctx); err != nil {
+			log.WithError(err).Error("error shutting down server")
+		}
+	})
+
+	return g.Run()
+}
+
+func newHTTPServer(cfg *config.Config, db *DB) (*http.Server, error) {
+	h := &JQHandler{Config: cfg, DB: db}
 
 	tmpl := template.New("index.tmpl")
 	tmpl.Delims("#{", "}")
-	tmpl, err = tmpl.ParseFiles("public/index.tmpl")
+	tmpl, err := tmpl.ParseFiles("public/index.tmpl")
 	if err != nil {
-		log.Fatal(err)
+		return nil, err
 	}
 
 	router := gin.New()
 	router.Use(
 		middleware.Timeout(25*time.Second),
 		middleware.LimitContentLength(10),
-		middleware.Secure(s.Config.IsProd()),
+		middleware.Secure(cfg.IsProd()),
 		middleware.RequestID(),
 		middleware.Logger(),
 		gin.Recovery(),
@@ -64,21 +84,8 @@ func (s *Server) Start() error {
 	router.POST("/s", h.handleJqSharePost)
 	router.GET("/s/:id", h.handleJqShareGet)
 
-	srv := &http.Server{
-		Addr:    ":" + s.Config.Port,
+	return &http.Server{
+		Addr:    ":" + cfg.Port,
 		Handler: router,
-	}
-
-	go func() {
-		if err := srv.ListenAndServe(); err != nil {
-			log.WithError(err).Fatal("error starting server")
-		}
-	}()
-
-	<-stop
-	log.Println("\nShutting down the server...")
-	ctx, cancel := context.WithTimeout(context.Background(), 28*time.Second)
-	defer cancel()
-
-	return srv.Shutdown(ctx)
+	}, nil
 }

@@ -21,13 +21,12 @@ func (e *ValidationError) Error() string {
 var (
 	ExecTimeoutError   = errors.New("jq execution was timeout")
 	ExecCancelledError = errors.New("jq execution was cancelled")
-	disallowOpts       = map[string]bool{
-		"f":         true,
-		"from-file": true,
-		"slurpfile": true,
-		"argfile":   true,
-		"L":         true,
-		"run-tests": true,
+	allowedOpts        = map[string]struct{}{
+		"slurp":          struct{}{},
+		"null-input":     struct{}{},
+		"compact-output": struct{}{},
+		"raw-input":      struct{}{},
+		"raw-output":     struct{}{},
 	}
 )
 
@@ -92,7 +91,7 @@ func (j *JQ) Validate() error {
 	}
 
 	for _, opt := range j.O {
-		if disallowOpts[opt.Name] {
+		if _, allowed := allowedOpts[opt.Name]; !allowed {
 			errMsgs = append(errMsgs, fmt.Sprintf("disallow option %q", opt.Name))
 		}
 	}

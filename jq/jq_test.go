@@ -83,8 +83,6 @@ func TestJQEvalCancelled(t *testing.T) {
 }
 
 func TestJQEvalRaceCondition(t *testing.T) {
-	t.Parallel()
-
 	var wg sync.WaitGroup
 	for i := 0; i < 100; i++ {
 		wg.Add(1)

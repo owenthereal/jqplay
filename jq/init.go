@@ -50,7 +50,9 @@ func setVersion() error {
 	cmd := exec.Command(Path, "--help")
 	cmd.Stdout = &b
 	cmd.Stderr = &b
-	cmd.Run()
+	if err := cmd.Run(); err != nil {
+		return err
+	}
 
 	out := bytes.TrimSpace(b.Bytes())
 	r := regexp.MustCompile(`\[version (.+)\]`)

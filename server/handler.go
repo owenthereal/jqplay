@@ -126,7 +126,3 @@ func (h *JQHandler) logger(c *gin.Context) *logrus.Entry {
 	l, _ := c.Get("logger")
 	return l.(*logrus.Entry)
 }
-
-func shouldLogJQError(err error) bool {
-	return err == jq.ExecTimeoutError || err == jq.ExecCancelledError
-}

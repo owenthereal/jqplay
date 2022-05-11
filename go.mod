@@ -6,6 +6,7 @@ require (
 	github.com/jmoiron/sqlx v0.0.0-20171020205521-3379e5993990
 	github.com/joeshaw/envdecode v0.0.0-20170502020559-6326cbed175e
 	github.com/lib/pq v0.0.0-20171019223007-456514e2defe
+	github.com/oklog/run v1.1.0
 	github.com/satori/go.uuid v1.1.0
 	github.com/sirupsen/logrus v1.0.5
 	github.com/unrolled/secure v0.0.0-20170904132641-19a872c81779
