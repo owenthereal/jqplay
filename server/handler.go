@@ -7,10 +7,10 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/owenthereal/jqplay/config"
 	"github.com/owenthereal/jqplay/jq"
 	"github.com/sirupsen/logrus"
-	"gopkg.in/gin-gonic/gin.v1"
 )
 
 const (

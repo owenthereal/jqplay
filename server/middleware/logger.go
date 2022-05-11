@@ -3,8 +3,8 @@ package middleware
 import (
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
-	"gopkg.in/gin-gonic/gin.v1"
 )
 
 func Logger() gin.HandlerFunc {

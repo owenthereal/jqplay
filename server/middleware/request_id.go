@@ -1,8 +1,8 @@
 package middleware
 
 import (
-	"github.com/satori/go.uuid"
-	"gopkg.in/gin-gonic/gin.v1"
+	"github.com/gin-gonic/gin"
+	uuid "github.com/satori/go.uuid"
 )
 
 func RequestID() gin.HandlerFunc {

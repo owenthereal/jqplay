@@ -7,11 +7,11 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/oklog/run"
 	"github.com/owenthereal/jqplay/config"
 	"github.com/owenthereal/jqplay/server/middleware"
 	log "github.com/sirupsen/logrus"
-	"gopkg.in/gin-gonic/gin.v1"
 )
 
 func New(c *config.Config) *Server {

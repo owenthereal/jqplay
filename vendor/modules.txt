@@ -1,16 +1,29 @@
 # github.com/codegangsta/negroni v1.0.0
 ## explicit
-# github.com/gin-contrib/sse v0.0.0-20170109093832-22d885f9ecc7
-## explicit
+# github.com/gin-contrib/sse v0.1.0
+## explicit; go 1.12
 github.com/gin-contrib/sse
-# github.com/gin-gonic/gin v1.1.5-0.20170702092826-d459835d2b07
-## explicit
+# github.com/gin-gonic/gin v1.7.7
+## explicit; go 1.13
+github.com/gin-gonic/gin
 github.com/gin-gonic/gin/binding
+github.com/gin-gonic/gin/internal/bytesconv
+github.com/gin-gonic/gin/internal/json
 github.com/gin-gonic/gin/render
+# github.com/go-playground/locales v0.13.0
+## explicit; go 1.13
+github.com/go-playground/locales
+github.com/go-playground/locales/currency
+# github.com/go-playground/universal-translator v0.17.0
+## explicit; go 1.13
+github.com/go-playground/universal-translator
+# github.com/go-playground/validator/v10 v10.4.1
+## explicit; go 1.13
+github.com/go-playground/validator/v10
 # github.com/go-sql-driver/mysql v1.6.0
 ## explicit; go 1.10
-# github.com/golang/protobuf v0.0.0-20171021043952-1643683e1b54
-## explicit
+# github.com/golang/protobuf v1.3.3
+## explicit; go 1.12
 github.com/golang/protobuf/proto
 # github.com/jmoiron/sqlx v0.0.0-20171020205521-3379e5993990
 ## explicit
@@ -19,22 +32,30 @@ github.com/jmoiron/sqlx/reflectx
 # github.com/joeshaw/envdecode v0.0.0-20170502020559-6326cbed175e
 ## explicit
 github.com/joeshaw/envdecode
+# github.com/json-iterator/go v1.1.9
+## explicit; go 1.12
+github.com/json-iterator/go
+# github.com/leodido/go-urn v1.2.0
+## explicit; go 1.13
+github.com/leodido/go-urn
 # github.com/lib/pq v0.0.0-20171019223007-456514e2defe
 ## explicit
 github.com/lib/pq
 github.com/lib/pq/oid
-# github.com/mailru/easyjson v0.7.7
+# github.com/mattn/go-isatty v0.0.12
 ## explicit; go 1.12
-# github.com/mattn/go-isatty v0.0.3
-## explicit
 github.com/mattn/go-isatty
 # github.com/mattn/go-sqlite3 v1.14.12
 ## explicit; go 1.12
-# github.com/oklog/run v1.1.0
+# github.com/modern-go/concurrent v0.0.0-20180228061459-e0a39a4cb421
+## explicit
+github.com/modern-go/concurrent
+# github.com/modern-go/reflect2 v0.0.0-20180701023420-4b7aa43c6742
+## explicit
+github.com/modern-go/reflect2
+# github.com/oklog/run v1.1.1-0.20200508094559-c7096881717e
 ## explicit; go 1.13
 github.com/oklog/run
-# github.com/pquerna/ffjson v0.0.0-20190930134022-aa0246cd15f7
-## explicit
 # github.com/satori/go.uuid v1.1.0
 ## explicit
 github.com/satori/go.uuid
@@ -43,9 +64,7 @@ github.com/satori/go.uuid
 github.com/sirupsen/logrus
 # github.com/stretchr/testify v1.7.1
 ## explicit; go 1.13
-# github.com/tinylib/msgp v1.1.6
-## explicit; go 1.14
-# github.com/ugorji/go v0.0.0-20171019201919-bdcc60b419d1
+# github.com/ugorji/go/codec v1.1.7
 ## explicit
 github.com/ugorji/go/codec
 # github.com/unrolled/secure v0.0.0-20170904132641-19a872c81779
@@ -53,13 +72,11 @@ github.com/ugorji/go/codec
 github.com/unrolled/secure
 # golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
 ## explicit; go 1.11
+golang.org/x/crypto/sha3
 golang.org/x/crypto/ssh/terminal
-# golang.org/x/net v0.0.0-20220425223048-2871e0cb64e4
-## explicit; go 1.17
-# golang.org/x/sync v0.0.0-20210220032951-036812b2e83c
-## explicit
 # golang.org/x/sys v0.0.0-20211216021012-1d35b9e2eb4e
 ## explicit; go 1.17
+golang.org/x/sys/cpu
 golang.org/x/sys/internal/unsafeheader
 golang.org/x/sys/unix
 golang.org/x/sys/windows
@@ -69,14 +86,6 @@ golang.org/x/sys/windows
 ## explicit; go 1.11
 # gopkg.in/gemnasium/logrus-airbrake-hook.v2 v2.1.2
 ## explicit
-# gopkg.in/gin-gonic/gin.v1 v1.1.5-0.20170702092826-d459835d2b07
-## explicit
-gopkg.in/gin-gonic/gin.v1
-# gopkg.in/go-playground/assert.v1 v1.2.1
-## explicit
-# gopkg.in/go-playground/validator.v8 v8.18.2
-## explicit
-gopkg.in/go-playground/validator.v8
-# gopkg.in/yaml.v2 v2.0.0-20170812160011-eb3733d160e7
+# gopkg.in/yaml.v2 v2.2.8
 ## explicit
 gopkg.in/yaml.v2
