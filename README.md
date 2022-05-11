@@ -9,11 +9,11 @@ https://jqplay.org [![Build Status](https://travis-ci.org/jingweno/jqplay.svg?br
 To develop `jqplay`, you need to have a [Go development environment](http://golang.org/doc/install).
 You also need to have Node & Postgresql installed.
 
-### bin/setup
+### make setup
 
 This script will setup Postgresql for `jqplay`.
 
-### bin/start
+### make start
 
 This script will build and start the `jqplay` server.
 

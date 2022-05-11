@@ -1,11 +1,10 @@
-FROM golang:1.7
+FROM golang:1.18
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
 		nodejs \
 		npm \
 	&& npm install --global grunt-cli bower \
-	&& rm -rf /vr/lib/apt/lists/* \
-	&& ln -s "$(which nodejs)" /usr/bin/node
+	&& rm -rf /vr/lib/apt/lists/*
 
 ENV PORT 80
 

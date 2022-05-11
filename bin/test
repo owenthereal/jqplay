@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-# Usage: script/test
-#
-# Run tests
-
-set -e
-
-go test ./... && go vet ./...
