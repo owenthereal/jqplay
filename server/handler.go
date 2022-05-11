@@ -7,8 +7,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/jingweno/jqplay/config"
-	"github.com/jingweno/jqplay/jq"
+	"github.com/owenthereal/jqplay/config"
+	"github.com/owenthereal/jqplay/jq"
 	"github.com/sirupsen/logrus"
 	"gopkg.in/gin-gonic/gin.v1"
 )

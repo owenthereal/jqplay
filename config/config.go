@@ -1,8 +1,8 @@
 package config
 
 import (
-	"github.com/jingweno/jqplay/jq"
 	"github.com/joeshaw/envdecode"
+	"github.com/owenthereal/jqplay/jq"
 )
 
 type Config struct {

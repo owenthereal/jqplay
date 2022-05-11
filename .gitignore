@@ -7,3 +7,4 @@ public/js
 public/index.tmpl
 assets/tmp
 .env
+*.c.out

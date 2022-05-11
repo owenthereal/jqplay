@@ -6,9 +6,9 @@ import (
 	"encoding/json"
 	"io"
 
-	"github.com/jingweno/jqplay/jq"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
+	"github.com/owenthereal/jqplay/jq"
 )
 
 const (

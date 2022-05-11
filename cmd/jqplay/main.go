@@ -1,9 +1,9 @@
 package main
 
 import (
-	"github.com/jingweno/jqplay/config"
-	"github.com/jingweno/jqplay/jq"
-	"github.com/jingweno/jqplay/server"
+	"github.com/owenthereal/jqplay/config"
+	"github.com/owenthereal/jqplay/jq"
+	"github.com/owenthereal/jqplay/server"
 	log "github.com/sirupsen/logrus"
 )
 

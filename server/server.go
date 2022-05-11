@@ -8,8 +8,8 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/jingweno/jqplay/config"
-	"github.com/jingweno/jqplay/server/middleware"
+	"github.com/owenthereal/jqplay/config"
+	"github.com/owenthereal/jqplay/server/middleware"
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/gin-gonic/gin.v1"
 )
