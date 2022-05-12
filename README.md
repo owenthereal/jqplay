@@ -1,8 +1,8 @@
 # jqplay
 
-https://jqplay.org [![Build Status](https://travis-ci.org/jingweno/jqplay.svg?branch=master)](https://travis-ci.org/jingweno/jqplay) [![OpenCollective](https://opencollective.com/jqplay/backers/badge.svg)](#backers) [![OpenCollective](https://opencollective.com/jqplay/sponsors/badge.svg)](#sponsors)
+[![OpenCollective](https://opencollective.com/jqplay/backers/badge.svg)](#backers) [![OpenCollective](https://opencollective.com/jqplay/sponsors/badge.svg)](#sponsors)
 
-`jqplay` is a playground for [jq](https://github.com/stedolan/jq). Please put it into good use.
+[jqplay](https://jqplay.org) is a playground for [jq](https://github.com/stedolan/jq). Please put it into good use.
 
 ## Development
 
@@ -90,4 +90,4 @@ Use jqplay? Love jqplay? Help [sponsor the project](https://opencollective.com/j
 
 ### License
 
-jqplay is released under the MIT license. See [LICENSE.md](https://github.com/jingweno/jqplay/blob/master/LICENSE.md).
+jqplay is released under the MIT license. See [LICENSE.md](https://github.com/owenthereal/jqplay/blob/master/LICENSE.md).
