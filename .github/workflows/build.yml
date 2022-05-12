@@ -47,4 +47,5 @@ jobs:
       - uses: actions/checkout@v2
       - name: Docker push on master
         run: |
+          echo "${{ secrets.CI_GITHUB_TOKEN }}" | docker login ghcr.io -u USERNAME --password-stdin
           TAG=master make docker_push
