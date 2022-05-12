@@ -9,6 +9,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/oklog/run"
+	"github.com/owenthereal/jqplay"
 	"github.com/owenthereal/jqplay/config"
 	"github.com/owenthereal/jqplay/server/middleware"
 	log "github.com/sirupsen/logrus"
@@ -71,13 +72,7 @@ func newHTTPServer(cfg *config.Config, db *DB) (*http.Server, error) {
 	)
 	router.SetHTMLTemplate(tmpl)
 
-	router.Static("/js", "public/js")
-	router.Static("/css", "public/css")
-	router.Static("/images", "public/images")
-	router.Static("/fonts", "public/bower_components/bootstrap/dist/fonts")
-	router.StaticFile("/worker-xquery.js", "public/bower_components/ace-builds/src-min-noconflict/worker-xquery.js")
-	router.StaticFile("/robots.txt", "public/robots.txt")
-
+	router.StaticFS("/assets", http.FS(jqplay.PublicFS))
 	router.GET("/", h.handleIndex)
 	router.GET("/jq", h.handleJqGet)
 	router.POST("/jq", h.handleJqPost)

@@ -23,7 +23,7 @@ type JQHandlerContext struct {
 }
 
 func (c *JQHandlerContext) Asset(path string) string {
-	return fmt.Sprintf("%s/%s", c.AssetHost, path)
+	return fmt.Sprintf("%s/assets/public/%s", c.AssetHost, path)
 }
 
 func (c *JQHandlerContext) ShouldInitJQ() bool {

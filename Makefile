@@ -3,8 +3,8 @@ SHELL=/bin/bash -o pipefail
 GOBIN ?= $(CURDIR)/build
 .PHONY: build
 build:
+	yarn
 	go build -o $(GOBIN)/jqplay ./cmd/jqplay
-	npm install
 
 .PHONY: test
 test:

@@ -3,19 +3,19 @@ module.exports = function(grunt) {
   grunt.config('concat', {
     css: {
       src: [
-        'public/bower_components/bootstrap/dist/css/bootstrap.css',
+        'node_modules/@bower_components/bootstrap/dist/css/bootstrap.css',
         'assets/css/app.css'
       ],
       dest: 'assets/tmp/app.css'
     },
     js: {
       src: [
-        'public/bower_components/ace-builds/src-noconflict/ace.js',
-        'public/bower_components/ace-builds/src-noconflict/ext-searchbox.js',
-        'public/bower_components/ace-builds/src-noconflict/theme-github.js',
-        'public/bower_components/ace-builds/src-noconflict/mode-jsoniq.js',
-        'public/bower_components/angular/angular.js',
-        'public/bower_components/angular-ui-ace/ui-ace.js',
+        'node_modules/@bower_components/ace-builds/src-noconflict/ace.js',
+        'node_modules/@bower_components/ace-builds/src-noconflict/ext-searchbox.js',
+        'node_modules/@bower_components/ace-builds/src-noconflict/theme-github.js',
+        'node_modules/@bower_components/ace-builds/src-noconflict/mode-jsoniq.js',
+        'node_modules/@bower_components/angular/angular.js',
+        'node_modules/@bower_components/angular-ui-ace/ui-ace.js',
         'assets/js/app.js',
         'assets/js/controllers.js',
         'assets/js/services.js',

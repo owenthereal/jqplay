@@ -1,9 +1,6 @@
 gin-bin
 node_modules
-public/bower_components
-public/css
-public/js
-public/index.tmpl
+/public
 assets/tmp
 .env
 *.c.out
