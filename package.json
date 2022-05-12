@@ -4,9 +4,9 @@
   "description": "jqplay",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jingweno/jqplay"
+    "url": "https://github.com/owenthereal/jqplay"
   },
-  "author": "Jingwen Owen Ou",
+  "author": "Owen Ou",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/jingweno/jqplay/issues"
