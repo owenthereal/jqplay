@@ -6,9 +6,9 @@ import (
 	"encoding/json"
 	"io"
 
-	"github.com/jingweno/jqplay/jq"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
+	"github.com/owenthereal/jqplay/jq"
 )
 
 const (
@@ -83,9 +83,9 @@ func (db *DB) GetSnippet(id string) (*Snippet, error) {
 
 func slug(s *Snippet) string {
 	h := sha1.New()
-	io.WriteString(h, s.J)
-	io.WriteString(h, s.Q)
-	io.WriteString(h, s.O)
+	_, _ = io.WriteString(h, s.J)
+	_, _ = io.WriteString(h, s.Q)
+	_, _ = io.WriteString(h, s.O)
 	sum := h.Sum(nil)
 	b := make([]byte, base64.URLEncoding.EncodedLen(len(sum)))
 	base64.URLEncoding.Encode(b, sum)

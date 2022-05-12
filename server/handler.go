@@ -7,10 +7,10 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/jingweno/jqplay/config"
-	"github.com/jingweno/jqplay/jq"
+	"github.com/gin-gonic/gin"
+	"github.com/owenthereal/jqplay/config"
+	"github.com/owenthereal/jqplay/jq"
 	"github.com/sirupsen/logrus"
-	"gopkg.in/gin-gonic/gin.v1"
 )
 
 const (
@@ -23,7 +23,7 @@ type JQHandlerContext struct {
 }
 
 func (c *JQHandlerContext) Asset(path string) string {
-	return fmt.Sprintf("%s/%s", c.AssetHost, path)
+	return fmt.Sprintf("%s/assets/public/%s", c.AssetHost, path)
 }
 
 func (c *JQHandlerContext) ShouldInitJQ() bool {
@@ -125,8 +125,4 @@ func (h *JQHandler) handleJqShareGet(c *gin.Context) {
 func (h *JQHandler) logger(c *gin.Context) *logrus.Entry {
 	l, _ := c.Get("logger")
 	return l.(*logrus.Entry)
-}
-
-func shouldLogJQError(err error) bool {
-	return err == jq.ExecTimeoutError || err == jq.ExecCancelledError
 }

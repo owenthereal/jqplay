@@ -1,0 +1,50 @@
+name: Build
+on:
+  push:
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: ^1.18
+      - name: Run build
+        run: make build
+  docker_build:
+    name: Docker Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run Docker Build
+        run: |
+          TAG=${GITHUB_SHA::8} make docker_build
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: ^1.18
+      - name: Run tests
+        run: |
+          make test
+  vet:
+    name: Vet
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Run vet
+        run: make vet
+  docker_push:
+    name: Docker Push
+    needs: [build, docker_build, test, vet]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - uses: actions/checkout@v2
+      - name: Docker push on master
+        run: |
+          TAG=master make docker_push

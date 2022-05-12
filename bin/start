@@ -1,8 +1,0 @@
-#!/usr/bin/env bash
-# Usage: script/start
-#
-# Builds and starts the jqplay server
-
-set -e
-
-./bin/build && forego start

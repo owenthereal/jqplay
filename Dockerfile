@@ -1,17 +1,24 @@
-FROM golang:1.7
+FROM golang:latest as builder
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
 		nodejs \
 		npm \
-	&& npm install --global grunt-cli bower \
-	&& rm -rf /vr/lib/apt/lists/* \
-	&& ln -s "$(which nodejs)" /usr/bin/node
+	&& npm install --global yarn \
+	&& rm -rf /vr/lib/apt/lists/*
+
+WORKDIR $GOPATH/src/github.com/owenthereal/jqplay
+ENV CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GOBIN=$GOPATH/bin
+COPY . .
+RUN make build
+
+FROM ubuntu:latest
+
+MAINTAINER Owen Ou
+LABEL org.opencontainers.image.source https://github.com/owenthereal/jqplay
+
+COPY --from=builder /go/bin/jqplay /usr/bin/jqplay
 
 ENV PORT 80
-
-ADD . $GOPATH/src/github.com/jingweno/jqplay
-WORKDIR $GOPATH/src/github.com/jingweno/jqplay
-RUN bin/build
 EXPOSE 80
 
-CMD ["bin/jqplay"]
+ENTRYPOINT ["jqplay"]

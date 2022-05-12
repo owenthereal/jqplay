@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"gopkg.in/gin-gonic/gin.v1"
+	"github.com/gin-gonic/gin"
 )
 
 func Timeout(d time.Duration) gin.HandlerFunc {

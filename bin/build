@@ -1,9 +1,0 @@
-#!/usr/bin/env bash
-# Usage: script/build
-#
-# Builds jqplay
-
-set -e
-
-go build -o ./bin/jqplay ./cmd/jqplay
-npm install

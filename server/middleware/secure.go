@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"path/filepath"
 
+	"github.com/gin-gonic/gin"
 	"github.com/unrolled/secure"
-	"gopkg.in/gin-gonic/gin.v1"
 )
 
 const (

@@ -1,9 +1,11 @@
 package main
 
 import (
-	"github.com/jingweno/jqplay/config"
-	"github.com/jingweno/jqplay/jq"
-	"github.com/jingweno/jqplay/server"
+	"context"
+
+	"github.com/owenthereal/jqplay/config"
+	"github.com/owenthereal/jqplay/jq"
+	"github.com/owenthereal/jqplay/server"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -27,9 +29,9 @@ func main() {
 		"host": conf.Host,
 		"port": conf.Port,
 	}).Infof("Starting server at %s:%s", conf.Host, conf.Port)
+
 	srv := server.New(conf)
-	err = srv.Start()
-	if err != nil {
+	if err := srv.Start(context.Background()); err != nil {
 		log.WithError(err).Fatal("error starting sever")
 	}
 }
