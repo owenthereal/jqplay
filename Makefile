@@ -27,6 +27,10 @@ REPO ?= ghcr.io/owenthereal/jqplay
 docker_build:
 	docker buildx build --rm -t $(REPO):$(TAG) .
 
+.PHONY: docker_push
+docker_push: docker_build
+	docker push $(REPO):$(TAG)
+
 .PHONY: setup
 setup:
 	dropdb --if-exists jqplay
