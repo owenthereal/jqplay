@@ -52,11 +52,14 @@ func (s *Server) Start(ctx context.Context) error {
 }
 
 func newHTTPServer(cfg *config.Config, db *DB) (*http.Server, error) {
-	h := &JQHandler{Config: cfg, DB: db}
+	b, err := jqplay.PublicFS.ReadFile("public/index.tmpl")
+	if err != nil {
+		return nil, err
+	}
 
 	tmpl := template.New("index.tmpl")
 	tmpl.Delims("#{", "}")
-	tmpl, err := tmpl.ParseFiles("public/index.tmpl")
+	tmpl, err = tmpl.Parse(string(b))
 	if err != nil {
 		return nil, err
 	}
@@ -71,6 +74,8 @@ func newHTTPServer(cfg *config.Config, db *DB) (*http.Server, error) {
 		gin.Recovery(),
 	)
 	router.SetHTMLTemplate(tmpl)
+
+	h := &JQHandler{Config: cfg, DB: db}
 
 	router.StaticFS("/assets", http.FS(jqplay.PublicFS))
 	router.GET("/", h.handleIndex)

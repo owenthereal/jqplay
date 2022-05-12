@@ -6,8 +6,8 @@ import (
 	"encoding/json"
 	"io"
 
+	_ "github.com/jackc/pgx/v4/stdlib"
 	"github.com/jmoiron/sqlx"
-	_ "github.com/lib/pq"
 	"github.com/owenthereal/jqplay/jq"
 )
 
@@ -49,7 +49,7 @@ func ToJQ(s *Snippet) *jq.JQ {
 }
 
 func ConnectDB(url string) (*DB, error) {
-	db, err := sqlx.Connect("postgres", url)
+	db, err := sqlx.Connect("pgx", url)
 	if err != nil {
 		return nil, err
 	}
