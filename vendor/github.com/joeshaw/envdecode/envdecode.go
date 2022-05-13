@@ -3,6 +3,7 @@
 package envdecode
 
 import (
+	"encoding"
 	"errors"
 	"fmt"
 	"log"
@@ -118,6 +119,10 @@ func decode(target interface{}, strict bool) (int, error) {
 			fallthrough
 
 		case reflect.Struct:
+			if !f.Addr().CanInterface() {
+				continue
+			}
+
 			ss := f.Addr().Interface()
 			_, custom := ss.(Decoder)
 			if custom {
@@ -175,9 +180,14 @@ func decode(target interface{}, strict bool) (int, error) {
 
 		setFieldCount++
 
-		decoder, custom := f.Addr().Interface().(Decoder)
-		if custom {
+		unmarshaler, implementsUnmarshaler := f.Addr().Interface().(encoding.TextUnmarshaler)
+		decoder, implmentsDecoder := f.Addr().Interface().(Decoder)
+		if implmentsDecoder {
 			if err := decoder.Decode(env); err != nil {
+				return 0, err
+			}
+		} else if implementsUnmarshaler {
+			if err := unmarshaler.UnmarshalText([]byte(env)); err != nil {
 				return 0, err
 			}
 		} else if f.Kind() == reflect.Slice {

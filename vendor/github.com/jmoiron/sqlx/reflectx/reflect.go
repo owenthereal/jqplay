@@ -166,20 +166,39 @@ func (m *Mapper) FieldsByName(v reflect.Value, names []string) []reflect.Value {
 // traversals for each mapped name.  Panics if t is not a struct or Indirectable
 // to a struct.  Returns empty int slice for each name not found.
 func (m *Mapper) TraversalsByName(t reflect.Type, names []string) [][]int {
+	r := make([][]int, 0, len(names))
+	m.TraversalsByNameFunc(t, names, func(_ int, i []int) error {
+		if i == nil {
+			r = append(r, []int{})
+		} else {
+			r = append(r, i)
+		}
+
+		return nil
+	})
+	return r
+}
+
+// TraversalsByNameFunc traverses the mapped names and calls fn with the index of
+// each name and the struct traversal represented by that name. Panics if t is not
+// a struct or Indirectable to a struct. Returns the first error returned by fn or nil.
+func (m *Mapper) TraversalsByNameFunc(t reflect.Type, names []string, fn func(int, []int) error) error {
 	t = Deref(t)
 	mustBe(t, reflect.Struct)
 	tm := m.TypeMap(t)
-
-	r := make([][]int, 0, len(names))
-	for _, name := range names {
+	for i, name := range names {
 		fi, ok := tm.Names[name]
 		if !ok {
-			r = append(r, []int{})
+			if err := fn(i, nil); err != nil {
+				return err
+			}
 		} else {
-			r = append(r, fi.Index)
+			if err := fn(i, fi.Index); err != nil {
+				return err
+			}
 		}
 	}
-	return r
+	return nil
 }
 
 // FieldByIndexes returns a value for the field given by the struct traversal
@@ -250,9 +269,7 @@ type typeQueue struct {
 // A copying append that creates a new slice each time.
 func apnd(is []int, i int) []int {
 	x := make([]int, len(is)+1)
-	for p, n := range is {
-		x[p] = n
-	}
+	copy(x, is)
 	x[len(x)-1] = i
 	return x
 }
@@ -412,9 +429,14 @@ QueueLoop:
 
 	flds := &StructMap{Index: m, Tree: root, Paths: map[string]*FieldInfo{}, Names: map[string]*FieldInfo{}}
 	for _, fi := range flds.Index {
-		flds.Paths[fi.Path] = fi
-		if fi.Name != "" && !fi.Embedded {
-			flds.Names[fi.Path] = fi
+		// check if nothing has already been pushed with the same path
+		// sometimes you can choose to override a type using embedded struct
+		fld, ok := flds.Paths[fi.Path]
+		if !ok || fld.Embedded {
+			flds.Paths[fi.Path] = fi
+			if fi.Name != "" && !fi.Embedded {
+				flds.Names[fi.Path] = fi
+			}
 		}
 	}
 
