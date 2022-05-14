@@ -83,6 +83,9 @@ func newHTTPServer(cfg *config.Config, db *DB) (*http.Server, error) {
 	router.POST("/jq", h.handleJqPost)
 	router.POST("/s", h.handleJqSharePost)
 	router.GET("/s/:id", h.handleJqShareGet)
+	router.GET("/ping", func(c *gin.Context) {
+		c.String(http.StatusOK, "pong")
+	})
 
 	return &http.Server{
 		Addr:    ":" + cfg.Port,

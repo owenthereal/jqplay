@@ -24,7 +24,7 @@ COPY --from=builder /go/src/github.com/owenthereal/jqplay/bin/linux_amd64/* /app
 WORKDIR /app/jqplay
 ENV PATH "/app/jqplay:${PATH}"
 
-ENV PORT 80
-EXPOSE 80
+ENV PORT 8080
+EXPOSE 8080
 
 ENTRYPOINT ["jqplay"]
