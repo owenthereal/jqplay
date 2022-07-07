@@ -40,14 +40,19 @@
           <div class="col-sm-12 col-md-6">
             <form name="input" role="form" novalidate>
                 <label for="filter">Filter</label>
-                <input type="text" class="form-control" id="filter" name="q" ng-model="jq.q" autofocus ng-required="true" spellcheck="false">
+                <div ui-ace="{
+                  theme:'github',
+                  mode: 'jsoniq',
+                  workerPath: '/',
+                  onLoad: queryEditorLoaded
+                }" ng-model="jq.q" id="filter" name="q" ng-required="true" class="query-editor"></div>
                 <br>
                 <label for="json">JSON</label>
                 <div ui-ace="{
                   theme:'github',
                   mode: 'jsoniq',
                   workerPath: '/',
-                  onLoad: editorLoaded
+                  onLoad: jsonEditorLoaded
                 }" ng-model="jq.j" ng-required="true" class="json-editor"></div>
             </form>
           </div> <!-- end col -->
@@ -66,7 +71,7 @@
             <div ui-ace="{
               theme:'github',
               mode: 'jsoniq',
-              onLoad: editorLoaded
+              onLoad: jsonEditorLoaded
             }" readonly="true" ng-model="result" class="result-editor"></div>
           </div> <!-- end col -->
       </div> <!-- end row -->

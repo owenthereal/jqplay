@@ -10,12 +10,21 @@ angular.module('jqplay.controllers', []).controller('JqplayCtrl', function Jqpla
   $scope.cmd = "jq ''";
   $scope.result = "";
 
-  $scope.editorLoaded = function(_editor) {
+  $scope.jsonEditorLoaded = function(_editor) {
     _editor.$blockScrolling = Infinity
     _editor.setHighlightActiveLine(false);
     _editor.setFontSize(14);
     _editor.setShowPrintMargin(false);
     _editor.session.setUseWorker(false);
+  };
+
+  $scope.queryEditorLoaded = function(_editor) {
+    _editor.$blockScrolling = Infinity
+    _editor.setHighlightActiveLine(false);
+    _editor.setFontSize(14);
+    _editor.setShowPrintMargin(false);
+    _editor.session.setUseWorker(false);
+    _editor.focus()
   };
 
   $scope.buildCmd = function(jq) {
