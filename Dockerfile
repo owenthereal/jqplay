@@ -16,7 +16,7 @@ FROM gcr.io/distroless/static
 MAINTAINER Owen Ou
 LABEL org.opencontainers.image.source https://github.com/owenthereal/jqplay
 
-USER nonroot:nonroot
+USER nobody:nobody
 
 COPY --from=builder /go/bin/jqplay /app/jqplay/jqplay
 COPY --from=builder /go/src/github.com/owenthereal/jqplay/bin/linux_amd64/* /app/jqplay/bin/linux_amd64/

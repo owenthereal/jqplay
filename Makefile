@@ -38,5 +38,5 @@ setup:
 	psql -d jqplay -f server/db.sql
 
 .PHONY: start
-start: setup build
-	DATABASE_URL="dbname=jqplay sslmode=disable" ./build/jqplay
+start:
+	docker-compose up --build --force-recreate
