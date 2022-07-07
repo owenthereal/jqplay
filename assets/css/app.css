@@ -67,6 +67,12 @@ header a {
   min-width: 5em;
 }
 
+.query-editor {
+  border: 1px solid #DDD;
+  width: 100%;
+  height: 100px;
+}
+
 .json-editor {
   border: 1px solid #DDD;
   width: 100%;
@@ -76,7 +82,7 @@ header a {
 .result-editor {
   border: 1px solid #DDD;
   width: 100%;
-  height: 425px;
+  height: 487px;
 }
 
 #optionsGroup input {
