@@ -1,5 +1,3 @@
-SHELL=/bin/bash -o pipefail
-
 GOBIN ?= $(CURDIR)/build
 .PHONY: build
 build:
@@ -29,7 +27,7 @@ docker_build:
 
 .PHONY: docker_push
 docker_push: docker_build
-	docker push $(REPO):$(TAG)
+	docker buildx build --rm -t $(REPO):$(TAG) --push .
 
 .PHONY: setup
 setup:

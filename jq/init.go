@@ -7,39 +7,36 @@ import (
 	"os/exec"
 	"path/filepath"
 	"regexp"
-	"runtime"
 )
 
 var Path, Version string
 
 func Init() error {
-	pwd, err := os.Getwd()
-	if err != nil {
-		return err
+	path, err := exec.LookPath("jq")
+
+	var binDir string
+	if err == nil {
+		binDir = filepath.Dir(path)
+	} else {
+		dir, err := os.MkdirTemp("", "jqplay")
+		if err != nil {
+			return err
+		}
+
+		if err := copyJqBin(dir); err != nil {
+			return err
+		}
+
+		binDir = dir
 	}
 
-	err = SetPath(pwd)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return SetPath(binDir)
 }
 
 func SetPath(binDir string) error {
-	jqPath := filepath.Join(binDir, "bin", fmt.Sprintf("%s_%s", runtime.GOOS, runtime.GOARCH))
-	Path = filepath.Join(jqPath, "jq")
-
-	_, err := os.Stat(Path)
-	if err != nil {
-		return err
-	}
-
-	os.Setenv("PATH", fmt.Sprintf("%s%c%s", jqPath, os.PathListSeparator, os.Getenv("PATH")))
-
-	err = setVersion()
-
-	return err
+	Path = filepath.Join(binDir, "jq")
+	os.Setenv("PATH", fmt.Sprintf("%s%c%s", binDir, os.PathListSeparator, os.Getenv("PATH")))
+	return setVersion()
 }
 
 func setVersion() error {
