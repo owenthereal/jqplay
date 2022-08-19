@@ -2,7 +2,7 @@ package jq
 
 import (
 	"context"
-	"io/ioutil"
+	"io"
 	"log"
 	"os"
 	"strings"
@@ -21,7 +21,7 @@ func TestMain(m *testing.M) {
 
 func TestJQEvalInvalidInput(t *testing.T) {
 	jq := &JQ{}
-	err := jq.Eval(context.Background(), ioutil.Discard)
+	err := jq.Eval(context.Background(), io.Discard)
 
 	if err == nil {
 		t.Errorf("err should not be nil since it's invalid input")
@@ -53,7 +53,7 @@ func TestJQEvalTimeout(t *testing.T) {
 		Q: `.dependencies | recurse(to_entries | map(.values.dependencies))`,
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
-	err := jq.Eval(ctx, ioutil.Discard)
+	err := jq.Eval(ctx, io.Discard)
 	cancel()
 
 	if err != ExecTimeoutError {
@@ -73,7 +73,7 @@ func TestJQEvalCancelled(t *testing.T) {
 		time.Sleep(3 * time.Second)
 		cancel()
 	}()
-	err := jq.Eval(ctx, ioutil.Discard)
+	err := jq.Eval(ctx, io.Discard)
 
 	if err != ExecCancelledError {
 		t.Errorf("err message should be jq execution timeout, but it's %s", err)
@@ -94,7 +94,7 @@ func TestJQEvalRaceCondition(t *testing.T) {
 				J: `{ "foo": { "bar": { "baz": 123 } } }`,
 				Q: ".",
 			}
-			err := jq.Eval(ctx, ioutil.Discard)
+			err := jq.Eval(ctx, io.Discard)
 			if err != nil {
 				t.Errorf("err should be nil: %s", err)
 			}
