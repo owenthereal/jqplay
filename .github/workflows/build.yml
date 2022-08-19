@@ -59,6 +59,6 @@ jobs:
         uses: docker/build-push-action@v3
         with:
           push: true
-          tags:
-            - ghcr.io/owenthereal/jqplay:latest
-            - ghcr.io/owenthereal/jqplay:${{ env.GITHUB_SHA }}
+          tags: |
+            ghcr.io/owenthereal/jqplay:latest
+            ghcr.io/owenthereal/jqplay:${{ env.GITHUB_SHA }}
