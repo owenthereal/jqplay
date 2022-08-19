@@ -1,0 +1,31 @@
+FROM --platform=$BUILDPLATFORM golang:alpine as gobuilder
+ARG TARGETOS TARGETARCH
+
+RUN apk add --update make nodejs npm && \
+    npm install --global yarn
+
+WORKDIR $GOPATH/src/github.com/owenthereal/jqplay
+
+ENV CGO_ENABLED=0 GOBIN=$GOPATH/bin GOOS=$TARGETOS GOARCH=$TARGETARCH
+COPY . .
+RUN --mount=type=cache,target=/root/.cache/go-build \
+    --mount=type=cache,target=/go/pkg \
+    make build
+
+FROM alpine:latest
+
+MAINTAINER Owen Ou
+LABEL org.opencontainers.image.source https://github.com/owenthereal/jqplay
+
+RUN adduser -D jqplay
+USER jqplay
+
+WORKDIR /app
+ENV PATH="/app:${PATH}"
+
+COPY --from=gobuilder /go/bin/* /app
+
+ENV PORT 8080
+EXPOSE 8080
+
+ENTRYPOINT ["jqplay"]

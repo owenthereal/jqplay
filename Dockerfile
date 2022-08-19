@@ -1,4 +1,34 @@
-FROM golang:latest as builder
+FROM --platform=$BUILDPLATFORM ubuntu as jqbuilder
+
+ARG JQ_TAG=jq-1.6
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    DEBCONF_NONINTERACTIVE_SEEN=true \
+    LC_ALL=C.UTF-8 \
+    LANG=C.UTF-8
+
+RUN apt-get update && \
+    apt-get install -y \
+        build-essential \
+        autoconf \
+        libtool \
+        git \
+        bison \
+        flex \
+        python3 \
+        python3-pip \
+        wget && \
+    pip3 install pipenv
+
+RUN git clone --recurse-submodules https://github.com/stedolan/jq.git && \
+    cd jq && \
+    git checkout $JQ_TAG && \
+    autoreconf -i && \
+    ./configure --disable-dependency-tracking --disable-silent-rules --disable-maintainer-mode --prefix=/usr/local && \
+    make install
+
+FROM --platform=$BUILDPLATFORM golang:latest as gobuilder
+ARG TARGETOS TARGETARCH
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
 		nodejs \
@@ -7,22 +37,26 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 	&& rm -rf /vr/lib/apt/lists/*
 
 WORKDIR $GOPATH/src/github.com/owenthereal/jqplay
-ENV CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GOBIN=$GOPATH/bin
-COPY . .
-RUN make build
 
-FROM gcr.io/distroless/static
+ENV CGO_ENABLED=0 GOBIN=$GOPATH/bin GOOS=$TARGETOS GOARCH=$TARGETARCH
+COPY . .
+RUN --mount=type=cache,target=/root/.cache/go-build \
+    --mount=type=cache,target=/go/pkg \
+    make build
+
+FROM ubuntu
 
 MAINTAINER Owen Ou
 LABEL org.opencontainers.image.source https://github.com/owenthereal/jqplay
 
-USER nobody:nobody
+RUN useradd -m jqplay
+USER jqplay
 
-COPY --from=builder /go/bin/jqplay /app/jqplay/jqplay
-COPY --from=builder /go/src/github.com/owenthereal/jqplay/bin/linux_amd64/* /app/jqplay/bin/linux_amd64/
+WORKDIR /app
+ENV PATH="/app:${PATH}"
 
-WORKDIR /app/jqplay
-ENV PATH "/app/jqplay:${PATH}"
+COPY --from=jqbuilder /usr/local/bin/jq /app
+COPY --from=gobuilder /go/bin/* /app
 
 ENV PORT 8080
 EXPOSE 8080

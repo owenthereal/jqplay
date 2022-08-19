@@ -3,8 +3,8 @@ package jq
 import (
 	"context"
 	"io/ioutil"
+	"log"
 	"os"
-	"path/filepath"
 	"strings"
 	"sync"
 	"testing"
@@ -12,10 +12,8 @@ import (
 )
 
 func TestMain(m *testing.M) {
-	pwd, _ := os.Getwd()
-	err := SetPath(filepath.Join(pwd, ".."))
-	if err != nil {
-		panic("can't set JQ path: " + err.Error())
+	if err := Init(); err != nil {
+		log.Fatal(err)
 	}
 
 	os.Exit(m.Run())
