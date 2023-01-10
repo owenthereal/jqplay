@@ -68,7 +68,8 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-  deploy_to_staging:
+  deployg:
+    name: Deploy
     if: github.ref == 'refs/heads/master'
     needs: [build, docker_build, test, vet]
     uses: owenthereal/jqplay/.github/workflows/deploy.yml@master
