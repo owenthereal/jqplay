@@ -14,7 +14,7 @@ const (
 
 func Secure(isProd bool) gin.HandlerFunc {
 	secureMiddleware := secure.New(secure.Options{
-		SSLRedirect:          true,
+		SSLRedirect:          false,
 		STSSeconds:           315360000,
 		SSLProxyHeaders:      map[string]string{"X-Forwarded-Proto": "https"},
 		STSIncludeSubdomains: true,
