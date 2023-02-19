@@ -72,5 +72,5 @@ jobs:
     name: Deploy
     if: github.ref == 'refs/heads/master'
     needs: [build, docker_build, test, vet]
-    uses: owenthereal/jqplay/.github/workflows/deploy.yml@latest
+    uses: owenthereal/jqplay/.github/workflows/deploy.yml@master
     secrets: inherit
