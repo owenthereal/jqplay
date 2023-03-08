@@ -13,6 +13,10 @@ You also need to have Node & Postgresql installed.
 
 This script will build and start the `jqplay` server with `docker-compose`.
 
+Your Docker needs to have the [buildx](https://docs.docker.com/engine/reference/commandline/buildx/) command.
+
+Point your browser to [`http://localhost:8080/`](http://localhost:8080/).
+
 ## Support
 
 ### Backers
