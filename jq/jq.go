@@ -27,6 +27,7 @@ var (
 		"compact-output": struct{}{},
 		"raw-input":      struct{}{},
 		"raw-output":     struct{}{},
+		"sort-keys":     struct{}{},
 	}
 )
 

@@ -6,6 +6,7 @@ angular.module('jqplay.controllers', []).controller('JqplayCtrl', function Jqpla
     { name: "compact-output", enabled: false },
     { name: "raw-input", enabled: false },
     { name: "raw-output", enabled: false },
+    { name: "sort-keys", enabled: false },
   ];
   $scope.cmd = "jq ''";
   $scope.result = "";
