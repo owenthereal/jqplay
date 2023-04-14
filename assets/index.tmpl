@@ -58,7 +58,8 @@
           </div> <!-- end col -->
 
           <div class="col-sm-12 col-md-6">
-            <div id="optionsGroup" class="pull-right">
+            <label for="result">Result</label>
+            <div id="optionsGroup">
               <div>
                 <span ng-repeat="option in jq.o | orderBy:'name'">
                   <input type="checkbox" id="{{option.name}}" value="{{option.name}}" ng-model="option.enabled">
@@ -67,7 +68,6 @@
                 </span>
               </div>
             </div>
-            <label for="result">Result</label>
             <div ui-ace="{
               theme:'github',
               mode: 'jsoniq',
