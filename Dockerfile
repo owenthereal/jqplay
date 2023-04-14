@@ -30,9 +30,10 @@ RUN git clone --recurse-submodules https://github.com/stedolan/jq.git && \
 FROM --platform=$BUILDPLATFORM golang:latest as gobuilder
 ARG TARGETOS TARGETARCH
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt update && apt install -y --no-install-recommends curl
+RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash
+RUN apt install -y --no-install-recommends \
 		nodejs \
-		npm \
 	&& npm install --global yarn \
 	&& rm -rf /vr/lib/apt/lists/*
 
