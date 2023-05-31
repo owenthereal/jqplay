@@ -20,7 +20,7 @@ RUN apt-get update && \
         wget && \
     pip3 install pipenv
 
-RUN git clone --recurse-submodules https://github.com/stedolan/jq.git && \
+RUN git clone --recurse-submodules https://github.com/jqlang/jq.git && \
     cd jq && \
     git checkout $JQ_TAG && \
     autoreconf -i && \

@@ -2,7 +2,7 @@
 
 [![OpenCollective](https://opencollective.com/jqplay/backers/badge.svg)](#backers) [![OpenCollective](https://opencollective.com/jqplay/sponsors/badge.svg)](#sponsors)
 
-[jqplay](https://jqplay.org) is a playground for [jq](https://github.com/stedolan/jq). Please put it into good use.
+[jqplay](https://jqplay.org) is a playground for [jq](https://github.com/jqlang/jq). Please put it into good use.
 
 ## Development
 

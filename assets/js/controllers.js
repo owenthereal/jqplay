@@ -106,7 +106,7 @@ angular.module('jqplay.controllers', []).controller('JqplayCtrl', function Jqpla
       text: "array/object construction",
       code: "[], {}",
       input_q: "{user, title: .titles[]}",
-      input_j: '{"user":"stedolan","titles":["JQ Primer", "More JQ"]}'
+      input_j: '{"user":"jqlang","titles":["JQ Primer", "More JQ"]}'
     },
     {
       text: "length of a value",
