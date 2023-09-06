@@ -1,6 +1,6 @@
-FROM --platform=$BUILDPLATFORM ubuntu as jqbuilder
+FROM ubuntu as jqbuilder
 
-ARG JQ_TAG=jq-1.6
+ARG JQ_TAG=jq-1.7
 
 ENV DEBIAN_FRONTEND=noninteractive \
     DEBCONF_NONINTERACTIVE_SEEN=true \
@@ -9,33 +9,34 @@ ENV DEBIAN_FRONTEND=noninteractive \
 
 RUN apt-get update && \
     apt-get install -y \
-        build-essential \
-        autoconf \
-        libtool \
-        git \
-        bison \
-        flex \
-        python3 \
-        python3-pip \
-        wget && \
-    pip3 install pipenv
+    build-essential \
+    autoconf \
+    libtool \
+    git
 
 RUN git clone --recurse-submodules https://github.com/jqlang/jq.git && \
     cd jq && \
     git checkout $JQ_TAG && \
     autoreconf -i && \
-    ./configure --disable-dependency-tracking --disable-silent-rules --disable-maintainer-mode --prefix=/usr/local && \
+    ./configure \
+    --disable-dependency-tracking \
+    -disable-valgrind \
+    --with-oniguruma=builtin \
+    --enable-static \
+    --enable-all-static \
+    --prefix=/usr/local && \
     make install
 
-FROM --platform=$BUILDPLATFORM golang:latest as gobuilder
+FROM golang:latest as gobuilder
 ARG TARGETOS TARGETARCH
 
-RUN apt update && apt install -y --no-install-recommends curl
-RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash
+RUN apt update && apt install -y --no-install-recommends curl gpg
+RUN curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
 RUN apt install -y --no-install-recommends \
-		nodejs \
-	&& npm install --global yarn \
-	&& rm -rf /vr/lib/apt/lists/*
+    nodejs \
+    npm \
+    && npm install --global yarn
 
 WORKDIR $GOPATH/src/github.com/owenthereal/jqplay
 
@@ -46,9 +47,6 @@ RUN --mount=type=cache,target=/root/.cache/go-build \
     make build
 
 FROM ubuntu
-
-MAINTAINER Owen Ou
-LABEL org.opencontainers.image.source https://github.com/owenthereal/jqplay
 
 RUN useradd -m jqplay
 USER jqplay

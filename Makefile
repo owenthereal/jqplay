@@ -23,7 +23,7 @@ TAG ?= latest
 REPO ?= ghcr.io/owenthereal/jqplay
 .PHONY: docker_build
 docker_build:
-	docker buildx build --rm -t $(REPO):$(TAG) .
+	docker buildx build --rm -t $(REPO):$(TAG) --load .
 
 .PHONY: docker_push
 docker_push: docker_build
