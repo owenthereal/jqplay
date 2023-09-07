@@ -1,9 +1,14 @@
-# fly.toml file generated for jqplay-org on 2022-07-08T10:09:48-07:00
+# fly.toml app configuration file generated for jqplay-org on 2023-09-06T17:57:06-07:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
 
 app = "jqplay-org"
 kill_signal = "SIGINT"
-kill_timeout = 5
-processes = []
+kill_timeout = "5s"
+
+[experimental]
+  auto_rollback = true
 
 [build]
   dockerfile = "Dockerfile"
@@ -11,31 +16,26 @@ processes = []
 [env]
   GIN_MODE = "release"
 
-[experimental]
-  allowed_public_ports = []
-  auto_rollback = true
-
 [[services]]
-  http_checks = []
-  internal_port = 8080
-  processes = ["app"]
   protocol = "tcp"
-  script_checks = []
+  internal_port = 8080
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 2
+  processes = ["app"]
+
+  [[services.ports]]
+    port = 80
+    handlers = ["http"]
+
+  [[services.ports]]
+    port = 443
+    handlers = ["tls", "http"]
   [services.concurrency]
+    type = "connections"
     hard_limit = 2500
     soft_limit = 2000
-    type = "connections"
-
-  [[services.ports]]
-    handlers = ["http"]
-    port = 80
-
-  [[services.ports]]
-    handlers = ["tls", "http"]
-    port = 443
 
   [[services.tcp_checks]]
-    grace_period = "1s"
     interval = "15s"
-    restart_limit = 0
     timeout = "2s"
