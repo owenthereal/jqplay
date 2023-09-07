@@ -20,7 +20,7 @@ RUN git clone --recurse-submodules https://github.com/jqlang/jq.git && \
     autoreconf -i && \
     ./configure \
     --disable-dependency-tracking \
-    -disable-valgrind \
+    --disable-valgrind \
     --with-oniguruma=builtin \
     --enable-static \
     --enable-all-static \
