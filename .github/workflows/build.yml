@@ -7,9 +7,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-go@v3
+      - uses: actions/setup-go@v4
         with:
-          go-version: ^1.20
+          go-version-file: go.mod
+          check-latest: true
       - name: Run build
         run: make build
   docker_build:
@@ -25,9 +26,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: actions/setup-go@v3
+      - uses: actions/setup-go@v4
         with:
-          go-version: ^1.20
+          go-version-file: go.mod
+          check-latest: true
       - name: Run tests
         run: |
           make test
@@ -68,7 +70,7 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-  deployg:
+  deploy:
     name: Deploy
     if: github.ref == 'refs/heads/master'
     needs: [build, docker_build, test, vet]
