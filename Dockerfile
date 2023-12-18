@@ -1,6 +1,6 @@
 FROM ubuntu as jqbuilder
 
-ARG JQ_TAG=jq-1.7
+ARG JQ_TAG=jq-1.7.1
 
 ENV DEBIAN_FRONTEND=noninteractive \
     DEBCONF_NONINTERACTIVE_SEEN=true \
