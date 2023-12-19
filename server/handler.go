@@ -51,6 +51,8 @@ func (h *JQHandler) handleJqPost(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(c.Request.Context(), jqExecTimeout)
 	defer cancel()
 
+	c.Header("Content-Type", "text/plain; charset=utf-8")
+
 	// Evaling into ResponseWriter sets the status code to 200
 	// appending error message in the end if there's any
 	if err := j.Eval(ctx, c.Writer); err != nil {
