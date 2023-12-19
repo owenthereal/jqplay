@@ -14,7 +14,7 @@
   "homepage": "https://jqplay.org",
   "dependencies": {
     "@bower_components/ace-builds": "ajaxorg/ace-builds#^1",
-    "@bower_components/angular": "angular/bower-angular#1.6.6",
+    "@bower_components/angular": "angular/bower-angular#v1.8.3",
     "@bower_components/angular-ui-ace": "angular-ui/ui-ace#0.2.3",
     "@bower_components/bootstrap": "twbs/bootstrap#3.3.7",
     "@bower_components/jquery": "jquery/jquery-dist#1.9.1 - 3",
