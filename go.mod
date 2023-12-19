@@ -10,7 +10,7 @@ require (
 	github.com/joeshaw/envdecode v0.0.0-20200121155833-099f1fc765bd
 	github.com/oklog/run v1.1.1-0.20200508094559-c7096881717e
 	github.com/sirupsen/logrus v1.8.2-0.20220112234510-85981c045988
-	github.com/unrolled/secure v1.10.0
+	github.com/unrolled/secure v1.13.0
 )
 
 require (
