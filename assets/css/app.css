@@ -1,11 +1,13 @@
 /* ___ Overrides ___ */
 /* BS styles */
-input[type='text'], input[type='password'] {
+input[type='text'],
+input[type='password'] {
   border-radius: 3px;
 }
 
 code {
   white-space: normal;
+  margin-right: 5px
 }
 
 /* --------------------------------------- */
@@ -50,7 +52,7 @@ header a {
   padding: 0 1.5em;
 }
 
-.page-wrap:after{
+.page-wrap:after {
   content: "";
   display: block;
 }
@@ -129,6 +131,7 @@ footer hr {
 .ace_hidden-cursors {
   opacity: 0;
 }
+
 .ace_editor {
   border-radius: 3px;
 }
@@ -157,12 +160,15 @@ label {
 .dbg-bdr-red {
   border: 1px solid red !important;
 }
+
 .dbg-bdr-green {
   border: 1px solid green !important;
 }
+
 .dbg-bdr-orange {
   border: 1px solid orange !important;
 }
+
 .dbg-bdr-green {
   border: 1px solid green !important;
 }

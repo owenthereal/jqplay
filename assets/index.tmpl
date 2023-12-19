@@ -126,7 +126,9 @@
                   <tbody>
                     <tr ng-repeat="sample in samplesLeft">
                       <td>
-                        <code>{{sample.code}}</code>
+                        <code ng-repeat="code in sample.code">
+                          {{code}}
+                        </code>
                       </td>
                       <td>{{sample.text}}</td>
                       <td>
@@ -144,7 +146,9 @@
                   <tbody>
                     <tr ng-repeat="sample in samplesRight">
                       <td>
-                        <code>{{sample.code}}</code>
+                        <code ng-repeat="code in sample.code">
+                          {{code}}
+                        </code>
                       </td>
                       <td>{{sample.text}}</td>
                       <td>
