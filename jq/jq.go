@@ -37,6 +37,15 @@ type JQ struct {
 	O []JQOpt `json:"o"`
 }
 
+func (j *JQ) optIsEnabled(name string) bool {
+	for _, o := range j.O {
+		if o.Name == name {
+			return o.Enabled
+		}
+	}
+	return false
+}
+
 type JQOpt struct {
 	Name    string `json:"name"`
 	Enabled bool   `json:"enabled"`
@@ -87,7 +96,7 @@ func (j *JQ) Validate() error {
 		errMsgs = append(errMsgs, "missing filter")
 	}
 
-	if j.J == "" {
+	if j.J == "" && !j.optIsEnabled("null-input") {
 		errMsgs = append(errMsgs, "missing JSON")
 	}
 
