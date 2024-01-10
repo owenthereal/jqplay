@@ -37,4 +37,8 @@ setup:
 
 .PHONY: start
 start:
-	docker-compose up --build --force-recreate
+	docker compose up --build --force-recreate
+
+.PHONY: watch
+watch:
+	docker compose watch
