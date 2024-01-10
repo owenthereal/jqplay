@@ -120,7 +120,7 @@ func TestJQEvalTimeout(t *testing.T) {
 	err := jq.Eval(ctx, io.Discard)
 	cancel()
 
-	if err != ExecTimeoutError {
+	if err != ErrExecTimeout {
 		t.Errorf("err message should be jq execution timeout, but it's %s", err)
 	}
 }
@@ -139,7 +139,7 @@ func TestJQEvalCancelled(t *testing.T) {
 	}()
 	err := jq.Eval(ctx, io.Discard)
 
-	if err != ExecCancelledError {
+	if err != ErrExecCancelled {
 		t.Errorf("err message should be jq execution timeout, but it's %s", err)
 	}
 }

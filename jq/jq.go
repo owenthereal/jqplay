@@ -19,9 +19,9 @@ func (e *ValidationError) Error() string {
 }
 
 var (
-	ExecTimeoutError   = errors.New("jq execution was timeout")
-	ExecCancelledError = errors.New("jq execution was cancelled")
-	allowedOpts        = map[string]struct{}{
+	ErrExecTimeout   = errors.New("jq execution was timeout")
+	ErrExecCancelled = errors.New("jq execution was cancelled")
+	allowedOpts      = map[string]struct{}{
 		"slurp":          {},
 		"null-input":     {},
 		"compact-output": {},
@@ -83,10 +83,10 @@ func (j *JQ) Eval(ctx context.Context, w io.Writer) error {
 	if err != nil {
 		ctxErr := ctx.Err()
 		if ctxErr == context.DeadlineExceeded {
-			return ExecTimeoutError
+			return ErrExecTimeout
 		}
 		if ctxErr == context.Canceled {
-			return ExecCancelledError
+			return ErrExecCancelled
 		}
 	}
 
