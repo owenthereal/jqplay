@@ -2,6 +2,7 @@ package jq
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"log"
 	"os"
@@ -25,6 +26,69 @@ func TestJQEvalInvalidInput(t *testing.T) {
 
 	if err == nil {
 		t.Errorf("err should not be nil since it's invalid input")
+	}
+}
+
+func TestJQNullInputOption(t *testing.T) {
+	cases := []struct {
+		J      string
+		Q      string
+		O      []JQOpt
+		ErrStr string
+	}{
+		{
+			Q: ".",
+			O: []JQOpt{
+				{
+					Name:    "null-input",
+					Enabled: true,
+				},
+			},
+		},
+		{
+			O: []JQOpt{
+				{
+					Name:    "null-input",
+					Enabled: true,
+				},
+			},
+			ErrStr: "missing filter",
+		},
+		{
+			J: `{"foo": "bar"}`,
+			O: []JQOpt{
+				{
+					Name:    "null-input",
+					Enabled: true,
+				},
+			},
+			ErrStr: "missing filter",
+		},
+	}
+
+	for _, c := range cases {
+		c := c
+		t.Run(fmt.Sprintf("j=%q q=%q o=%v", c.J, c.Q, c.O), func(t *testing.T) {
+			jq := &JQ{
+				J: c.J,
+				Q: c.Q,
+				O: c.O,
+			}
+			err := jq.Validate()
+			if err == nil && c.ErrStr != "" {
+				t.Errorf("err should not be nil: %s", c.ErrStr)
+			}
+
+			if err != nil && c.ErrStr == "" {
+				t.Errorf("err should be nil: %s", err)
+			}
+
+			if err != nil && c.ErrStr != "" {
+				if want, got := c.ErrStr, err.Error(); !strings.Contains(got, want) {
+					t.Errorf(`err not equal: want=%v got=%v`, want, got)
+				}
+			}
+		})
 	}
 }
 

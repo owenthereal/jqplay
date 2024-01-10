@@ -22,12 +22,12 @@ var (
 	ExecTimeoutError   = errors.New("jq execution was timeout")
 	ExecCancelledError = errors.New("jq execution was cancelled")
 	allowedOpts        = map[string]struct{}{
-		"slurp":          struct{}{},
-		"null-input":     struct{}{},
-		"compact-output": struct{}{},
-		"raw-input":      struct{}{},
-		"raw-output":     struct{}{},
-		"sort-keys":      struct{}{},
+		"slurp":          {},
+		"null-input":     {},
+		"compact-output": {},
+		"raw-input":      {},
+		"raw-output":     {},
+		"sort-keys":      {},
 	}
 )
 
@@ -49,6 +49,10 @@ func (j *JQ) optIsEnabled(name string) bool {
 type JQOpt struct {
 	Name    string `json:"name"`
 	Enabled bool   `json:"enabled"`
+}
+
+func (o *JQOpt) String() string {
+	return fmt.Sprintf("%s (%t)", o.Name, o.Enabled)
 }
 
 func (j *JQ) Opts() []string {
