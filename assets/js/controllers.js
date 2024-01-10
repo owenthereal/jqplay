@@ -58,7 +58,7 @@ angular.module('jqplay.controllers', []).controller('JqplayCtrl', function Jqpla
   };
 
   $scope.delayedRun = function (jq) {
-    if ($scope.input.$valid) {
+    if ($scope.input.$valid || (jq.q && jq.o.filter(f => f.name === "null-input" && f.enabled).length > 0)) {
       if ($scope.runTimeout != null) {
         $timeout.cancel($scope.runTimeout);
         $scope.runTimeout = null;

@@ -19,15 +19,15 @@ func (e *ValidationError) Error() string {
 }
 
 var (
-	ExecTimeoutError   = errors.New("jq execution was timeout")
-	ExecCancelledError = errors.New("jq execution was cancelled")
-	allowedOpts        = map[string]struct{}{
-		"slurp":          struct{}{},
-		"null-input":     struct{}{},
-		"compact-output": struct{}{},
-		"raw-input":      struct{}{},
-		"raw-output":     struct{}{},
-		"sort-keys":      struct{}{},
+	ErrExecTimeout   = errors.New("jq execution was timeout")
+	ErrExecCancelled = errors.New("jq execution was cancelled")
+	allowedOpts      = map[string]struct{}{
+		"slurp":          {},
+		"null-input":     {},
+		"compact-output": {},
+		"raw-input":      {},
+		"raw-output":     {},
+		"sort-keys":      {},
 	}
 )
 
@@ -37,9 +37,22 @@ type JQ struct {
 	O []JQOpt `json:"o"`
 }
 
+func (j *JQ) optIsEnabled(name string) bool {
+	for _, o := range j.O {
+		if o.Name == name {
+			return o.Enabled
+		}
+	}
+	return false
+}
+
 type JQOpt struct {
 	Name    string `json:"name"`
 	Enabled bool   `json:"enabled"`
+}
+
+func (o *JQOpt) String() string {
+	return fmt.Sprintf("%s (%t)", o.Name, o.Enabled)
 }
 
 func (j *JQ) Opts() []string {
@@ -70,10 +83,10 @@ func (j *JQ) Eval(ctx context.Context, w io.Writer) error {
 	if err != nil {
 		ctxErr := ctx.Err()
 		if ctxErr == context.DeadlineExceeded {
-			return ExecTimeoutError
+			return ErrExecTimeout
 		}
 		if ctxErr == context.Canceled {
-			return ExecCancelledError
+			return ErrExecCancelled
 		}
 	}
 
@@ -87,7 +100,7 @@ func (j *JQ) Validate() error {
 		errMsgs = append(errMsgs, "missing filter")
 	}
 
-	if j.J == "" {
+	if j.J == "" && !j.optIsEnabled("null-input") {
 		errMsgs = append(errMsgs, "missing JSON")
 	}
 

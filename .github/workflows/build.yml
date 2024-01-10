@@ -42,6 +42,8 @@ jobs:
         run: make vet
   docker_push:
     name: Docker Push
+    permissions:
+      packages: write
     needs: [build, docker_build, test, vet]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/master'
@@ -53,12 +55,14 @@ jobs:
 
       - name: Docker meta
         id: meta
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         with:
           images: ghcr.io/owenthereal/jqplay
+          tags: |
+            type=raw,value=latest,enable={{is_default_branch}}
 
       - name: Login to DockerHub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
