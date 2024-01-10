@@ -42,6 +42,8 @@ jobs:
         run: make vet
   docker_push:
     name: Docker Push
+    permissions:
+      packages: write
     needs: [build, docker_build, test, vet]
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/master'
