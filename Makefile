@@ -6,8 +6,13 @@ build:
 
 .PHONY: test
 test:
-	go test ./... -coverprofile=jqplay.c.out -covermode=atomic -count=1 -race -v
-
+	docker \
+		buildx \
+		build \
+		--rm \
+		--build-arg TIMESTAMP=$$(date +%s) \
+		--target gotest \
+		.
 
 .PHONY: vet
 vet:
@@ -28,12 +33,6 @@ docker_build:
 .PHONY: docker_push
 docker_push: docker_build
 	docker buildx build --rm -t $(REPO):$(TAG) --push .
-
-.PHONY: setup
-setup:
-	dropdb --if-exists jqplay
-	createdb jqplay
-	psql -d jqplay -f server/db.sql
 
 .PHONY: start
 start:

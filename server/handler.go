@@ -1,20 +1,14 @@
 package server
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/owenthereal/jqplay/config"
 	"github.com/owenthereal/jqplay/jq"
 	"github.com/sirupsen/logrus"
-)
-
-const (
-	jqExecTimeout = 15 * time.Second
 )
 
 type JQHandlerContext struct {
@@ -31,6 +25,7 @@ func (c *JQHandlerContext) ShouldInitJQ() bool {
 }
 
 type JQHandler struct {
+	JQExec *jq.JQExec
 	DB     *DB
 	Config *config.Config
 }
@@ -40,22 +35,19 @@ func (h *JQHandler) handleIndex(c *gin.Context) {
 }
 
 func (h *JQHandler) handleJqPost(c *gin.Context) {
-	var j *jq.JQ
-	if err := c.BindJSON(&j); err != nil {
+	var jq jq.JQ
+	if err := c.BindJSON(&jq); err != nil {
 		err = fmt.Errorf("error parsing JSON: %s", err)
 		h.logger(c).WithError(err).Info("error parsing JSON")
 		c.String(http.StatusUnprocessableEntity, err.Error())
 		return
 	}
 
-	ctx, cancel := context.WithTimeout(c.Request.Context(), jqExecTimeout)
-	defer cancel()
-
 	c.Header("Content-Type", "text/plain; charset=utf-8")
 
 	// Evaling into ResponseWriter sets the status code to 200
 	// appending error message in the end if there's any
-	if err := j.Eval(ctx, c.Writer); err != nil {
+	if err := h.JQExec.Eval(c.Request.Context(), jq, c.Writer); err != nil {
 		fmt.Fprint(c.Writer, err.Error())
 		h.logger(c).WithError(err).Info("jq error")
 	}

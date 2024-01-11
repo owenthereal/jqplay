@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"os"
 	"os/exec"
 	"strings"
 )
@@ -21,6 +22,7 @@ func (e *ValidationError) Error() string {
 var (
 	ErrExecTimeout   = errors.New("jq execution was timeout")
 	ErrExecCancelled = errors.New("jq execution was cancelled")
+	ErrExecAborted   = errors.New("jq execution was aborted")
 	allowedOpts      = map[string]struct{}{
 		"slurp":          {},
 		"null-input":     {},
@@ -66,33 +68,6 @@ func (j *JQ) Opts() []string {
 	return opts
 }
 
-func (j *JQ) Eval(ctx context.Context, w io.Writer) error {
-	if err := j.Validate(); err != nil {
-		return err
-	}
-
-	opts := j.Opts()
-	opts = append(opts, j.Q)
-	cmd := exec.CommandContext(ctx, Path, opts...)
-	cmd.Stdin = bytes.NewBufferString(j.J)
-	cmd.Env = make([]string, 0)
-	cmd.Stdout = w
-	cmd.Stderr = w
-
-	err := cmd.Run()
-	if err != nil {
-		ctxErr := ctx.Err()
-		if ctxErr == context.DeadlineExceeded {
-			return ErrExecTimeout
-		}
-		if ctxErr == context.Canceled {
-			return ErrExecCancelled
-		}
-	}
-
-	return err
-}
-
 func (j *JQ) Validate() error {
 	errMsgs := []string{}
 
@@ -119,4 +94,76 @@ func (j *JQ) Validate() error {
 
 func (j JQ) String() string {
 	return fmt.Sprintf("j=%s, q=%s, o=%v", j.J, j.Q, j.Opts())
+}
+
+func NewJQExec() *JQExec {
+	return &JQExec{
+		ResourceLimiter: &resourceLimiter{
+			MemoryLimit:  limitMemory,
+			CPUTimeLimit: limitCPUTime,
+		},
+	}
+}
+
+const (
+	limitMemory  uint64 = 10 * 1024 * 1024 // 10 MiB
+	limitCPUTime uint64 = 10               // 10 percentage
+)
+
+type ResourceLimiter interface {
+	LimitResources(proc *os.Process) error
+}
+
+type resourceLimiter struct {
+	MemoryLimit  uint64
+	CPUTimeLimit uint64
+}
+
+func (r *resourceLimiter) LimitResources(proc *os.Process) error {
+	return limitResources(proc, r.MemoryLimit, r.CPUTimeLimit)
+}
+
+type JQExec struct {
+	ResourceLimiter ResourceLimiter
+}
+
+func (e *JQExec) Eval(ctx context.Context, jq JQ, w io.Writer) error {
+	if err := jq.Validate(); err != nil {
+		return err
+	}
+
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
+	cmd := exec.CommandContext(ctx, Path, append(jq.Opts(), jq.Q)...)
+	cmd.Stdin = bytes.NewBufferString(jq.J)
+	cmd.Env = make([]string, 0)
+	cmd.Stdout = w
+	cmd.Stderr = w
+
+	if err := cmd.Start(); err != nil {
+		return err
+	}
+
+	if err := e.ResourceLimiter.LimitResources(cmd.Process); err != nil {
+		return err
+	}
+
+	err := cmd.Wait()
+	if err != nil {
+		ctxErr := ctx.Err()
+		if ctxErr == context.DeadlineExceeded {
+			return ErrExecTimeout
+		}
+		if ctxErr == context.Canceled {
+			return ErrExecCancelled
+		}
+
+		if strings.Contains(err.Error(), "signal: segmentation fault") ||
+			strings.Contains(err.Error(), "signal: aborted") {
+			return ErrExecAborted
+		}
+	}
+
+	return err
 }

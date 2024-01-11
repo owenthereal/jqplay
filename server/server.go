@@ -11,8 +11,13 @@ import (
 	"github.com/oklog/run"
 	"github.com/owenthereal/jqplay"
 	"github.com/owenthereal/jqplay/config"
+	"github.com/owenthereal/jqplay/jq"
 	"github.com/owenthereal/jqplay/server/middleware"
 	log "github.com/sirupsen/logrus"
+)
+
+const (
+	requestTimeout = 5 * time.Second
 )
 
 func New(c *config.Config) *Server {
@@ -66,7 +71,7 @@ func newHTTPServer(cfg *config.Config, db *DB) (*http.Server, error) {
 
 	router := gin.New()
 	router.Use(
-		middleware.Timeout(25*time.Second),
+		middleware.Timeout(requestTimeout),
 		middleware.LimitContentLength(10),
 		middleware.Secure(cfg.IsProd()),
 		middleware.RequestID(),
@@ -75,7 +80,7 @@ func newHTTPServer(cfg *config.Config, db *DB) (*http.Server, error) {
 	)
 	router.SetHTMLTemplate(tmpl)
 
-	h := &JQHandler{Config: cfg, DB: db}
+	h := &JQHandler{JQExec: jq.NewJQExec(), Config: cfg, DB: db}
 
 	router.StaticFS("/assets", http.FS(jqplay.PublicFS))
 	router.GET("/", h.handleIndex)
