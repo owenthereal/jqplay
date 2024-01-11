@@ -8,26 +8,7 @@ import (
 	"unsafe"
 )
 
-const (
-	limitMemory  uint64 = 1 * 1024 * 1024 // 1 MiB
-	limitCPUTime uint64 = 10              // 50 percentage
-)
-
-func NewJQExec() *JQExec {
-	return &JQExec{
-		ResourceLimiter: &LinuxResourceLimiter{
-			MemoryLimit: limitMemory,
-			CPULImit:    limitCPUTime,
-		},
-	}
-}
-
-type LinuxResourceLimiter struct {
-	MemoryLimit uint64
-	CPULImit    uint64
-}
-
-func (r *LinuxResourceLimiter) LimitResources(proc *os.Process) error {
+func limitResources(proc *os.Process, memoryLimit, cpuLimit uint64) error {
 	if proc == nil {
 		return nil
 	}
@@ -36,7 +17,7 @@ func (r *LinuxResourceLimiter) LimitResources(proc *os.Process) error {
 	var err error
 
 	// limit address space
-	lim := syscall.Rlimit{Cur: r.MemoryLimit, Max: r.MemoryLimit}
+	lim := syscall.Rlimit{Cur: memoryLimit, Max: memoryLimit}
 	_, _, errno := syscall.Syscall6(syscall.SYS_PRLIMIT64, uintptr(pid), syscall.RLIMIT_AS, uintptr(unsafe.Pointer(&lim)), 0, 0, 0)
 	err = errnoToErr(errno)
 	if err != nil {
@@ -44,7 +25,7 @@ func (r *LinuxResourceLimiter) LimitResources(proc *os.Process) error {
 	}
 
 	// limit cpu time
-	lim = syscall.Rlimit{Cur: r.CPULImit, Max: r.CPULImit}
+	lim = syscall.Rlimit{Cur: cpuLimit, Max: cpuLimit}
 	_, _, errno = syscall.Syscall6(syscall.SYS_PRLIMIT64, uintptr(pid), syscall.RLIMIT_CPU, uintptr(unsafe.Pointer(&lim)), 0, 0, 0)
 	err = errnoToErr(errno)
 

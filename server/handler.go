@@ -1,20 +1,14 @@
 package server
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/owenthereal/jqplay/config"
 	"github.com/owenthereal/jqplay/jq"
 	"github.com/sirupsen/logrus"
-)
-
-const (
-	jqExecTimeout = 5 * time.Second
 )
 
 type JQHandlerContext struct {
@@ -49,14 +43,11 @@ func (h *JQHandler) handleJqPost(c *gin.Context) {
 		return
 	}
 
-	ctx, cancel := context.WithTimeout(c.Request.Context(), jqExecTimeout)
-	defer cancel()
-
 	c.Header("Content-Type", "text/plain; charset=utf-8")
 
 	// Evaling into ResponseWriter sets the status code to 200
 	// appending error message in the end if there's any
-	if err := h.JQExec.Eval(ctx, jq, c.Writer); err != nil {
+	if err := h.JQExec.Eval(c.Request.Context(), jq, c.Writer); err != nil {
 		fmt.Fprint(c.Writer, err.Error())
 		h.logger(c).WithError(err).Info("jq error")
 	}

@@ -125,7 +125,7 @@ func TestJQEvalAborted(t *testing.T) {
 		J: `{"dependencies":{"capnp":{"version":"0.1.4","dependencies":{"es6-promise":{"version":"1.0.0","dependencies":{"es6-promise":{"version":"1.0.0"}}}}}}}`,
 		Q: `.dependencies | recurse(to_entries | map(.values.dependencies))`,
 	}
-	err := NewJQExec().Eval(context.Background(), jq, io.Discard)
+	err := newLimitJQExec().Eval(context.Background(), jq, io.Discard)
 	assert.ErrorIs(t, err, ErrExecAborted)
 }
 
@@ -153,6 +153,22 @@ func TestJQEvalRaceCondition(t *testing.T) {
 
 func newNoLimitJQExec() *JQExec {
 	return &JQExec{
-		ResourceLimiter: &NoResourceLimiter{},
+		ResourceLimiter: &noResourceLimiter{},
 	}
+}
+
+func newLimitJQExec() *JQExec {
+	return &JQExec{
+		ResourceLimiter: &resourceLimiter{
+			MemoryLimit:  1 * 1024 * 1024, // 1 MiB
+			CPUTimeLimit: 1,               // 1 percentage
+		},
+	}
+}
+
+type noResourceLimiter struct {
+}
+
+func (r *noResourceLimiter) LimitResources(proc *os.Process) error {
+	return nil
 }

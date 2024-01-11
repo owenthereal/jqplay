@@ -96,15 +96,31 @@ func (j JQ) String() string {
 	return fmt.Sprintf("j=%s, q=%s, o=%v", j.J, j.Q, j.Opts())
 }
 
+func NewJQExec() *JQExec {
+	return &JQExec{
+		ResourceLimiter: &resourceLimiter{
+			MemoryLimit:  limitMemory,
+			CPUTimeLimit: limitCPUTime,
+		},
+	}
+}
+
+const (
+	limitMemory  uint64 = 10 * 1024 * 1024 // 10 MiB
+	limitCPUTime uint64 = 10               // 10 percentage
+)
+
 type ResourceLimiter interface {
 	LimitResources(proc *os.Process) error
 }
 
-type NoResourceLimiter struct {
+type resourceLimiter struct {
+	MemoryLimit  uint64
+	CPUTimeLimit uint64
 }
 
-func (r *NoResourceLimiter) LimitResources(proc *os.Process) error {
-	return nil
+func (r *resourceLimiter) LimitResources(proc *os.Process) error {
+	return limitResources(proc, r.MemoryLimit, r.CPUTimeLimit)
 }
 
 type JQExec struct {
