@@ -27,6 +27,18 @@ RUN git clone --recurse-submodules https://github.com/jqlang/jq.git && \
     --prefix=/usr/local && \
     make install
 
+FROM golang:latest as gotest
+
+COPY --from=jqbuilder /usr/local/bin/jq /usr/local/bin/jq
+
+WORKDIR $GOPATH/src/github.com/owenthereal/jqplay
+
+ARG TIMESTAMP
+RUN --mount=target=. \
+    --mount=type=cache,target=/root/.cache/go-build \
+    --mount=type=cache,target=/go/pkg \
+    go test ./... -count=1 -race -v
+
 FROM golang:latest as gobuilder
 ARG TARGETOS TARGETARCH
 

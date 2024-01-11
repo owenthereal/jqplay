@@ -7,9 +7,11 @@ build:
 .PHONY: test
 test:
 	docker \
+		buildx \
 		build \
 		--rm \
-		-f Dockerfile.test \
+		--build-arg TIMESTAMP=$$(date +%s) \
+		--target gotest \
 		.
 
 .PHONY: vet
