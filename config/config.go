@@ -15,7 +15,7 @@ type Config struct {
 	GinMode     string `env:"GIN_MODE,default=debug"`
 	DatabaseURL string `env:"DATABASE_URL,required"`
 	AssetHost   string `env:"ASSET_HOST"`
-	SENTRY_DSN  string `env:"SENTRY_DSN"`
+	SentryDSN   string `env:"SENTRY_DSN"`
 	JQVer       string
 
 	Logger *slog.Logger
@@ -35,7 +35,7 @@ func Load() (*Config, error) {
 	conf.JQVer = jq.Version
 
 	conf.Logger = log.NewJSONLogger()
-	if dsn := conf.SENTRY_DSN; dsn != "" {
+	if dsn := conf.SentryDSN; dsn != "" {
 		if err := sentry.Init(sentry.ClientOptions{
 			Dsn:              dsn,
 			EnableTracing:    true,
