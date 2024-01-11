@@ -1,16 +1,19 @@
 package middleware
 
 import (
+	"fmt"
 	"time"
 
+	"log/slog"
+
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
 )
 
-func Logger() gin.HandlerFunc {
+func Logger(logger *slog.Logger) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		requestID, _ := c.Get("request_id")
-		logger := logrus.WithField("request_id", requestID)
+
+		logger := logger.With("request_id", requestID)
 		c.Set("logger", logger)
 
 		start := time.Now()
@@ -20,13 +23,14 @@ func Logger() gin.HandlerFunc {
 		method := c.Request.Method
 		path := c.Request.URL.Path
 		latency := end.Sub(start)
-		logger.WithFields(logrus.Fields{
-			"method":    method,
-			"path":      path,
-			"status":    c.Writer.Status(),
-			"client_ip": c.ClientIP(),
-			"latency":   latency,
-			"bytes":     c.Writer.Size(),
-		}).Infof("%s %s", method, path)
+		logger.Info(
+			fmt.Sprintf("%s %s", method, path),
+			"method", method,
+			"path", path,
+			"status", c.Writer.Status(),
+			"client_ip", c.ClientIP(),
+			"latency", latency,
+			"bytes", c.Writer.Size(),
+		)
 	}
 }

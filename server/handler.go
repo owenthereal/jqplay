@@ -3,12 +3,12 @@ package server
 import (
 	"encoding/json"
 	"fmt"
+	"log/slog"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"github.com/owenthereal/jqplay/config"
 	"github.com/owenthereal/jqplay/jq"
-	"github.com/sirupsen/logrus"
 )
 
 type JQHandlerContext struct {
@@ -38,7 +38,7 @@ func (h *JQHandler) handleJqPost(c *gin.Context) {
 	var jq jq.JQ
 	if err := c.BindJSON(&jq); err != nil {
 		err = fmt.Errorf("error parsing JSON: %s", err)
-		h.logger(c).WithError(err).Info("error parsing JSON")
+		h.logger(c).Error("error parsing JSON", "error", err)
 		c.String(http.StatusUnprocessableEntity, err.Error())
 		return
 	}
@@ -49,7 +49,7 @@ func (h *JQHandler) handleJqPost(c *gin.Context) {
 	// appending error message in the end if there's any
 	if err := h.JQExec.Eval(c.Request.Context(), jq, c.Writer); err != nil {
 		fmt.Fprint(c.Writer, err.Error())
-		h.logger(c).WithError(err).Info("jq error")
+		h.logger(c).Error("jq error", "error", err)
 	}
 }
 
@@ -74,7 +74,7 @@ func (h *JQHandler) handleJqSharePost(c *gin.Context) {
 	var jq *jq.JQ
 	if err := c.BindJSON(&jq); err != nil {
 		err = fmt.Errorf("error parsing JSON: %s", err)
-		h.logger(c).WithError(err).Info("error parsing JSON")
+		h.logger(c).Error("error parsing JSON", "error", err)
 		c.String(http.StatusUnprocessableEntity, err.Error())
 		return
 	}
@@ -86,7 +86,7 @@ func (h *JQHandler) handleJqSharePost(c *gin.Context) {
 
 	id, err := h.DB.UpsertSnippet(FromJQ(jq))
 	if err != nil {
-		h.logger(c).WithError(err).Info("error upserting snippet")
+		h.logger(c).Error("error upserting snippet", "error", err)
 		c.String(http.StatusUnprocessableEntity, "error sharing snippet")
 		return
 	}
@@ -99,7 +99,7 @@ func (h *JQHandler) handleJqShareGet(c *gin.Context) {
 
 	s, err := h.DB.GetSnippet(id)
 	if err != nil {
-		h.logger(c).WithError(err).WithField("id", id).Info("error getting snippet")
+		h.logger(c).Error("error getting snippet", "error", err, "id", id)
 		c.Redirect(http.StatusFound, "/")
 		return
 	}
@@ -116,7 +116,7 @@ func (h *JQHandler) handleJqShareGet(c *gin.Context) {
 	})
 }
 
-func (h *JQHandler) logger(c *gin.Context) *logrus.Entry {
+func (h *JQHandler) logger(c *gin.Context) *slog.Logger {
 	l, _ := c.Get("logger")
-	return l.(*logrus.Entry)
+	return l.(*slog.Logger)
 }
