@@ -97,13 +97,14 @@ func (j JQ) String() string {
 }
 
 type ResourceLimiter interface {
-	LimitResources(proc *os.Process)
+	LimitResources(proc *os.Process) error
 }
 
 type NoResourceLimiter struct {
 }
 
-func (r *NoResourceLimiter) LimitResources(proc *os.Process) {
+func (r *NoResourceLimiter) LimitResources(proc *os.Process) error {
+	return nil
 }
 
 type JQExec struct {
@@ -115,6 +116,9 @@ func (e *JQExec) Eval(ctx context.Context, jq JQ, w io.Writer) error {
 		return err
 	}
 
+	ctx, cancel := context.WithCancel(ctx)
+	defer cancel()
+
 	cmd := exec.CommandContext(ctx, Path, append(jq.Opts(), jq.Q)...)
 	cmd.Stdin = bytes.NewBufferString(jq.J)
 	cmd.Env = make([]string, 0)
@@ -125,7 +129,9 @@ func (e *JQExec) Eval(ctx context.Context, jq JQ, w io.Writer) error {
 		return err
 	}
 
-	e.ResourceLimiter.LimitResources(cmd.Process)
+	if err := e.ResourceLimiter.LimitResources(cmd.Process); err != nil {
+		return err
+	}
 
 	err := cmd.Wait()
 	if err != nil {
