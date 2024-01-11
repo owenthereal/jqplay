@@ -106,8 +106,8 @@ func NewJQExec() *JQExec {
 }
 
 const (
-	limitMemory  uint64 = 10 * 1024 * 1024 // 10 MiB
-	limitCPUTime uint64 = 10               // 10 percentage
+	limitMemory  uint64 = 32 * 1024 * 1024 // 32 MiB
+	limitCPUTime uint64 = 20               // 20 percentage
 )
 
 type ResourceLimiter interface {
