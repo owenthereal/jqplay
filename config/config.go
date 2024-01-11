@@ -1,8 +1,12 @@
 package config
 
 import (
+	"log/slog"
+
+	"github.com/getsentry/sentry-go"
 	"github.com/joeshaw/envdecode"
 	"github.com/owenthereal/jqplay/jq"
+	"github.com/owenthereal/jqplay/log"
 )
 
 type Config struct {
@@ -11,7 +15,10 @@ type Config struct {
 	GinMode     string `env:"GIN_MODE,default=debug"`
 	DatabaseURL string `env:"DATABASE_URL,required"`
 	AssetHost   string `env:"ASSET_HOST"`
+	SENTRY_DSN  string `env:"SENTRY_DSN"`
 	JQVer       string
+
+	Logger *slog.Logger
 }
 
 func (c *Config) IsProd() bool {
@@ -26,6 +33,21 @@ func Load() (*Config, error) {
 	}
 
 	conf.JQVer = jq.Version
+
+	conf.Logger = log.NewJSONLogger()
+	if dsn := conf.SENTRY_DSN; dsn != "" {
+		if err := sentry.Init(sentry.ClientOptions{
+			Dsn:              dsn,
+			EnableTracing:    true,
+			TracesSampleRate: 0.2,
+			AttachStacktrace: true,
+			Environment:      conf.GinMode,
+		}); err != nil {
+			return nil, err
+		}
+
+		conf.Logger = log.WrapWithSentryLogger(conf.Logger)
+	}
 
 	return conf, nil
 }

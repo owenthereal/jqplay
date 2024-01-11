@@ -3,17 +3,19 @@ package server
 import (
 	"context"
 	"html/template"
+	"log/slog"
 	"net/http"
+	"os"
 	"syscall"
 	"time"
 
+	sentrygin "github.com/getsentry/sentry-go/gin"
 	"github.com/gin-gonic/gin"
 	"github.com/oklog/run"
 	"github.com/owenthereal/jqplay"
 	"github.com/owenthereal/jqplay/config"
 	"github.com/owenthereal/jqplay/jq"
 	"github.com/owenthereal/jqplay/server/middleware"
-	log "github.com/sirupsen/logrus"
 )
 
 const (
@@ -49,7 +51,7 @@ func (s *Server) Start(ctx context.Context) error {
 		defer cancel()
 
 		if err := srv.Shutdown(ctx); err != nil {
-			log.WithError(err).Error("error shutting down server")
+			s.Config.Logger.Error("error shutting down server", "error", err)
 		}
 	})
 
@@ -71,11 +73,14 @@ func newHTTPServer(cfg *config.Config, db *DB) (*http.Server, error) {
 
 	router := gin.New()
 	router.Use(
+		sentrygin.New(sentrygin.Options{
+			Repanic: true,
+		}),
 		middleware.Timeout(requestTimeout),
 		middleware.LimitContentLength(10),
 		middleware.Secure(cfg.IsProd()),
 		middleware.RequestID(),
-		middleware.Logger(),
+		middleware.Logger(slog.New(slog.NewJSONHandler(os.Stderr, nil))),
 		gin.Recovery(),
 	)
 	router.SetHTMLTemplate(tmpl)
