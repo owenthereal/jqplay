@@ -6,8 +6,11 @@ build:
 
 .PHONY: test
 test:
-	go test ./... -coverprofile=jqplay.c.out -covermode=atomic -count=1 -race -v
-
+	docker \
+		build \
+		--rm \
+		-f Dockerfile.test \
+		.
 
 .PHONY: vet
 vet:

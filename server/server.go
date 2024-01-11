@@ -66,7 +66,7 @@ func newHTTPServer(cfg *config.Config, db *DB) (*http.Server, error) {
 
 	router := gin.New()
 	router.Use(
-		middleware.Timeout(25*time.Second),
+		middleware.Timeout(8*time.Second),
 		middleware.LimitContentLength(10),
 		middleware.Secure(cfg.IsProd()),
 		middleware.RequestID(),
