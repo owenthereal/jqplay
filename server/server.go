@@ -3,9 +3,7 @@ package server
 import (
 	"context"
 	"html/template"
-	"log/slog"
 	"net/http"
-	"os"
 	"syscall"
 	"time"
 
@@ -73,16 +71,20 @@ func newHTTPServer(cfg *config.Config, db *DB) (*http.Server, error) {
 
 	router := gin.New()
 	router.Use(
-		sentrygin.New(sentrygin.Options{
-			Repanic: true,
-		}),
 		middleware.Timeout(requestTimeout),
 		middleware.LimitContentLength(10),
 		middleware.Secure(cfg.IsProd()),
 		middleware.RequestID(),
-		middleware.Logger(slog.New(slog.NewJSONHandler(os.Stderr, nil))),
+		middleware.Logger(cfg.Logger),
 		gin.Recovery(),
 	)
+	if cfg.SentryDSN != "" {
+		router.Use(
+			sentrygin.New(sentrygin.Options{
+				Repanic: true,
+			}),
+		)
+	}
 	router.SetHTMLTemplate(tmpl)
 
 	h := &JQHandler{JQExec: jq.NewJQExec(), Config: cfg, DB: db}

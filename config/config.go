@@ -38,6 +38,7 @@ func Load() (*Config, error) {
 	if dsn := conf.SentryDSN; dsn != "" {
 		if err := sentry.Init(sentry.ClientOptions{
 			Dsn:              dsn,
+			Debug:            !conf.IsProd(),
 			EnableTracing:    true,
 			TracesSampleRate: 0.2,
 			AttachStacktrace: true,

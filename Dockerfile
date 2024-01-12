@@ -12,7 +12,9 @@ RUN apt-get update && \
     build-essential \
     autoconf \
     libtool \
-    git
+    git \
+    ; \
+    apt-get clean
 
 RUN git clone --recurse-submodules https://github.com/jqlang/jq.git && \
     cd jq && \
@@ -59,6 +61,17 @@ RUN --mount=type=cache,target=/root/.cache/go-build \
     make build
 
 FROM ubuntu
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    DEBCONF_NONINTERACTIVE_SEEN=true \
+    LC_ALL=C.UTF-8 \
+    LANG=C.UTF-8
+
+RUN apt-get update && \
+    apt-get install -y \
+    ca-certificates \
+    && \
+    apt-get clean
 
 RUN useradd -m jqplay
 USER jqplay
