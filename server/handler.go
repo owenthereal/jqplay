@@ -1,8 +1,11 @@
 package server
 
 import (
+	"bytes"
+	"database/sql"
 	"encoding/json"
 	"fmt"
+	"io"
 	"log/slog"
 	"net/http"
 
@@ -35,10 +38,9 @@ func (h *JQHandler) handleIndex(c *gin.Context) {
 }
 
 func (h *JQHandler) handleJqPost(c *gin.Context) {
-	var jq jq.JQ
-	if err := c.BindJSON(&jq); err != nil {
+	var j jq.JQ
+	if err := c.BindJSON(&j); err != nil {
 		err = fmt.Errorf("error parsing JSON: %s", err)
-		h.logger(c).Error("error parsing JSON", "error", err)
 		c.String(http.StatusUnprocessableEntity, err.Error())
 		return
 	}
@@ -47,9 +49,13 @@ func (h *JQHandler) handleJqPost(c *gin.Context) {
 
 	// Evaling into ResponseWriter sets the status code to 200
 	// appending error message in the end if there's any
-	if err := h.JQExec.Eval(c.Request.Context(), jq, c.Writer); err != nil {
+	out := bytes.NewBuffer(nil)
+	if err := h.JQExec.Eval(c.Request.Context(), j, io.MultiWriter(c.Writer, out)); err != nil {
+		if err == jq.ErrExecAborted || err == jq.ErrExecTimeout {
+			h.logger(c).Error("jq error", "error", err, "out", out.String())
+		}
+
 		fmt.Fprint(c.Writer, err.Error())
-		h.logger(c).Error("jq error", "error", err)
 	}
 }
 
@@ -74,7 +80,6 @@ func (h *JQHandler) handleJqSharePost(c *gin.Context) {
 	var jq *jq.JQ
 	if err := c.BindJSON(&jq); err != nil {
 		err = fmt.Errorf("error parsing JSON: %s", err)
-		h.logger(c).Error("error parsing JSON", "error", err)
 		c.String(http.StatusUnprocessableEntity, err.Error())
 		return
 	}
@@ -99,7 +104,9 @@ func (h *JQHandler) handleJqShareGet(c *gin.Context) {
 
 	s, err := h.DB.GetSnippet(id)
 	if err != nil {
-		h.logger(c).Error("error getting snippet", "error", err, "id", id)
+		if err != sql.ErrNoRows {
+			h.logger(c).Error("error getting snippet", "error", err, "id", id)
+		}
 		c.Redirect(http.StatusFound, "/")
 		return
 	}
