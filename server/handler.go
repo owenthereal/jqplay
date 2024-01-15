@@ -52,7 +52,7 @@ func (h *JQHandler) handleJqPost(c *gin.Context) {
 	out := bytes.NewBuffer(nil)
 	if err := h.JQExec.Eval(c.Request.Context(), j, io.MultiWriter(c.Writer, out)); err != nil {
 		if err == jq.ErrExecAborted || err == jq.ErrExecTimeout {
-			h.logger(c).Error("jq error", "error", err, "out", out.String())
+			h.logger(c).Error("jq error", "error", err, "out", out.String(), "in", j)
 		}
 
 		fmt.Fprint(c.Writer, err.Error())
