@@ -12,7 +12,7 @@ require (
 	github.com/oklog/run v1.1.1-0.20200508094559-c7096881717e
 	github.com/samber/slog-multi v1.0.2
 	github.com/samber/slog-sentry/v2 v2.4.0
-	github.com/stretchr/testify v1.8.3
+	github.com/stretchr/testify v1.8.4
 	github.com/unrolled/secure v1.14.0
 )
 
