@@ -106,7 +106,7 @@ func NewJQExec() *JQExec {
 }
 
 const (
-	limitMemory  uint64 = 32 * 1024 * 1024 // 32 MiB
+	limitMemory  uint64 = 48 * 1024 * 1024 // 48 MiB
 	limitCPUTime uint64 = 20               // 20 percentage
 )
 
