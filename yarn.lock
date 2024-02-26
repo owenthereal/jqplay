@@ -15,9 +15,10 @@
   version "1.8.3"
   resolved "https://codeload.github.com/angular/bower-angular/tar.gz/142f3c4bc7d43b6de39581a0d886bbf97f8b62ef"
 
-"@bower_components/bootstrap@twbs/bootstrap#v3.4.1":
-  version "3.4.1"
-  resolved "https://codeload.github.com/twbs/bootstrap/tar.gz/68b0d231a13201eb14acd3dc84e51543d16e5f7e"
+"@bower_components/bootstrap@twbs/bootstrap#v5.3.3":
+  version "5.3.3"
+  uid "6e1f75f420f68e1d52733b8e407fc7c3766c9dba"
+  resolved "https://codeload.github.com/twbs/bootstrap/tar.gz/6e1f75f420f68e1d52733b8e407fc7c3766c9dba"
 
 "@bower_components/jquery@jquery/jquery-dist#1.9.1 - 3":
   version "3.6.4"
