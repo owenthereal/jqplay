@@ -10,7 +10,7 @@ require (
 	github.com/jmoiron/sqlx v1.3.5
 	github.com/joeshaw/envdecode v0.0.0-20200121155833-099f1fc765bd
 	github.com/oklog/run v1.1.1-0.20200508094559-c7096881717e
-	github.com/samber/slog-multi v1.0.2
+	github.com/samber/slog-multi v1.0.3
 	github.com/samber/slog-sentry/v2 v2.4.2
 	github.com/stretchr/testify v1.9.0
 	github.com/unrolled/secure v1.14.0
@@ -26,6 +26,8 @@ require (
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator/v10 v10.14.0 // indirect
 	github.com/goccy/go-json v0.10.2 // indirect
+	github.com/hashicorp/errwrap v1.0.0 // indirect
+	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect
 	github.com/jackc/puddle/v2 v2.2.1 // indirect
