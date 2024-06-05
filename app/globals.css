@@ -1,24 +1,38 @@
-/* styles/globals.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --tab-bg: #ffffff;
-  --tab-text: #000000;
+  --tab-bg-light: #FAFBFC;
+  --tab-text-light: #24292E;
+  --tab-border-light: #E1E4E8;
 }
 
 .dark {
-  --tab-bg: #1e1e1e;
-  --tab-text: #d4d4d4;
+  --tab-bg-dark: #1E1E1E;
+  --tab-text-dark: #C9D1D9;
+  --tab-border-dark: #30363D;
 }
 
 .tab-title {
   display: inline-block;
-  padding: 0.5rem 1rem;
-  background-color: var(--tab-bg);
-  color: var(--tab-text);
+  padding: 0.25rem 0.5rem;
+  background-color: var(--tab-bg-light);
+  color: var(--tab-text-light);
+  border: 1px solid var(--tab-border-light);
+  border-bottom: none;
   border-top-left-radius: 0.375rem;
   border-top-right-radius: 0.375rem;
   font-weight: 500;
+  font-size: 16px;
+  margin-bottom: -1px;
+  margin-right: -1px;
+  text-align: center;
+  width: 70px;
+}
+
+.dark .tab-title {
+  background-color: var(--tab-bg-dark);
+  color: var(--tab-text-dark);
+  border-color: var(--tab-border-dark);
 }

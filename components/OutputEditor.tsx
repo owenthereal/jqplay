@@ -6,10 +6,24 @@ interface OutputEditorProps {
 }
 
 const OutputEditor: React.FC<OutputEditorProps> = ({ darkMode, result }) => (
-    <div className="w-full max-w-7xl">
-        <h2 className="tab-title">Output</h2>
-        <div className="border border-gray-700 rounded dark:border-gray-700 border-gray-300">
-            <Editor height="40vh" width="100%" defaultLanguage="json" value={result} theme={darkMode ? 'vs-dark' : 'light'} options={{ readOnly: true }} />
+    <div className="w-full max-w-7xl mb-6">
+        <div className="flex items-center">
+            <h2 className="tab-title">Output</h2>
+        </div>
+        <div className="border dark:border-gray-600 border-gray-300 rounded-tl-none rounded-tr-none">
+            <Editor
+                height="30vh"
+                width="100%"
+                defaultLanguage="json"
+                value={result}
+                theme={darkMode ? 'vs-dark' : 'light'}
+                options={{
+                    readOnly: true,
+                    minimap: { enabled: false },
+                    scrollbar: { vertical: 'auto', horizontal: 'auto' },
+                    fontSize: 14,
+                }}
+            />
         </div>
     </div>
 );

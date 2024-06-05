@@ -10,17 +10,20 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        'vscode-bg': '#1e1e1e',
-        'vscode-text': '#d4d4d4',
-        'vscode-border': '#3c3c3c',
-        'vscode-light-bg': '#ffffff',
-        'vscode-light-text': '#000000',
-        'vscode-light-border': '#cccccc',
-      },
-      backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+        'github-dark': {
+          DEFAULT: '#0D1117',
+          'text': '#C9D1D9',
+          'border': '#30363D',
+          'input': '#1E2228',
+          'hover': '#21262D',
+        },
+        'github-light': {
+          DEFAULT: '#FFFFFF',
+          'text': '#24292E',
+          'border': '#E1E4E8',
+          'input': '#FAFBFC',
+          'hover': '#F6F8FA',
+        },
       },
     },
   },
