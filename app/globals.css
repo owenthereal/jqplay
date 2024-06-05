@@ -1,33 +1,24 @@
+/* styles/globals.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  --tab-bg: #ffffff;
+  --tab-text: #000000;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+.dark {
+  --tab-bg: #1e1e1e;
+  --tab-text: #d4d4d4;
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
-}
-
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
-  }
+.tab-title {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  background-color: var(--tab-bg);
+  color: var(--tab-text);
+  border-top-left-radius: 0.375rem;
+  border-top-right-radius: 0.375rem;
+  font-weight: 500;
 }
