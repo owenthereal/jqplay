@@ -1,3 +1,4 @@
+// components/OutputEditor.tsx
 import Editor from '@monaco-editor/react';
 
 interface OutputEditorProps {
@@ -6,13 +7,13 @@ interface OutputEditorProps {
 }
 
 const OutputEditor: React.FC<OutputEditorProps> = ({ darkMode, result }) => (
-    <div className="w-full max-w-7xl mb-6">
+    <div className="w-full flex flex-col flex-grow">
         <div className="flex items-center">
             <h2 className="tab-title">Output</h2>
         </div>
-        <div className="border dark:border-gray-600 border-gray-300 rounded-tl-none rounded-tr-none">
+        <div className="border dark:border-gray-600 border-gray-300 rounded-tl-none rounded-tr-none flex-grow">
             <Editor
-                height="30vh"
+                height="100%"
                 width="100%"
                 defaultLanguage="json"
                 value={result}

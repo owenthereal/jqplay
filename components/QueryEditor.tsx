@@ -1,23 +1,24 @@
 import Editor from '@monaco-editor/react';
 
-interface QueryEditorProps {
+interface JQQueryEditorProps {
   darkMode: boolean;
   handleChange: (value: string | undefined) => void;
 }
 
-const QueryEditor: React.FC<QueryEditorProps> = ({ darkMode, handleChange }) => (
-  <div className="w-full md:w-1/2 mb-6 md:mb-0">
+const JQQueryEditor: React.FC<JQQueryEditorProps> = ({ darkMode, handleChange }) => (
+  <div className="w-full md:w-1/2 flex flex-col flex-grow md:mb-0">
     <div className="flex items-center">
       <h2 className="tab-title">Query</h2>
     </div>
-    <div className="border dark:border-gray-600 border-gray-300 rounded-tl-none rounded-tr-none">
+    <div className="border dark:border-gray-600 border-gray-300 rounded-tl-none rounded-tr-none flex-grow">
       <Editor
-        height="30vh"
+        height="100%"
         width="100%"
         defaultLanguage="plaintext"
         theme={darkMode ? 'vs-dark' : 'light'}
         onChange={handleChange}
         options={{
+          readOnly: false,
           minimap: { enabled: false },
           scrollbar: { vertical: 'auto', horizontal: 'auto' },
           fontSize: 14,
@@ -27,4 +28,4 @@ const QueryEditor: React.FC<QueryEditorProps> = ({ darkMode, handleChange }) => 
   </div>
 );
 
-export default QueryEditor;
+export default JQQueryEditor;

@@ -6,18 +6,19 @@ interface JSONEditorProps {
 }
 
 const JSONEditor: React.FC<JSONEditorProps> = ({ darkMode, handleChange }) => (
-    <div className="w-full md:w-1/2 mb-6 md:mb-0">
+    <div className="w-full md:w-1/2 flex flex-col flex-grow md:mb-0">
         <div className="flex items-center">
             <h2 className="tab-title">JSON</h2>
         </div>
-        <div className="border dark:border-gray-600 border-gray-300 rounded-tl-none rounded-tr-none">
+        <div className="border dark:border-gray-600 border-gray-300 rounded-tl-none rounded-tr-none flex-grow">
             <Editor
-                height="30vh"
+                height="100%"
                 width="100%"
                 defaultLanguage="json"
                 theme={darkMode ? 'vs-dark' : 'light'}
                 onChange={handleChange}
                 options={{
+                    readOnly: false,
                     minimap: { enabled: false },
                     scrollbar: { vertical: 'auto', horizontal: 'auto' },
                     fontSize: 14,

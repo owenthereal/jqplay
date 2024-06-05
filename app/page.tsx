@@ -130,14 +130,18 @@ export default function Home() {
 
   return (
     <div className={darkMode ? 'dark' : ''}>
-      <div className="flex flex-col items-center justify-center min-h-screen p-6 bg-gray-900 text-gray-100 dark:bg-gray-900 dark:text-gray-100 bg-white text-black">
+      <div className="flex flex-col min-h-screen p-6 bg-gray-900 text-gray-100 dark:bg-gray-900 dark:text-gray-100 bg-white text-black">
         <Header darkMode={darkMode} toggleDarkMode={toggleDarkMode} onShare={handleShare} />
-        <div className="flex flex-col md:flex-row md:space-x-6 w-full max-w-7xl">
+        <div className="flex-grow flex flex-col md:flex-row md:space-x-6 w-full mx-auto mb-6">
           <JSONEditor darkMode={darkMode} handleChange={handleJSONEditorChange} />
           <QueryEditor darkMode={darkMode} handleChange={handleQueryEditorChange} />
         </div>
-        <FlagsSelector darkMode={darkMode} flags={flags} setFlags={handleFlagsChange} />
-        <OutputEditor darkMode={darkMode} result={result} />
+        <div className="flex-grow flex flex-col md:flex-row md:space-x-6 w-full mx-auto mb-6">
+          <FlagsSelector darkMode={darkMode} flags={flags} setFlags={handleFlagsChange} />
+        </div>
+        <div className="flex-grow flex flex-col md:flex-row md:space-x-6 w-full mx-auto">
+          <OutputEditor darkMode={darkMode} result={result} />
+        </div>
       </div>
     </div >
   );

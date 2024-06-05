@@ -17,7 +17,7 @@ const flagsOptions = [
     { value: '-R', label: '-R (Raw input)' },
 ];
 
-const FlagsSelector: React.FC<FlagsProps> = ({ darkMode, flags, setFlags }) => {
+const Flags: React.FC<FlagsProps> = ({ darkMode, flags, setFlags }) => {
     const handleFlagChange = (selectedOptions: any) => {
         setFlags(selectedOptions ? selectedOptions.map((option: any) => option.value) : []);
     };
@@ -25,21 +25,21 @@ const FlagsSelector: React.FC<FlagsProps> = ({ darkMode, flags, setFlags }) => {
     const customStyles = {
         control: (styles: any) => ({
             ...styles,
-            backgroundColor: darkMode ? '#1E2228' : '#FAFBFC',
+            backgroundColor: darkMode ? '#1E1E1E' : '#FAFBFC',
             borderColor: darkMode ? '#30363D' : '#E1E4E8',
             color: darkMode ? '#C9D1D9' : '#24292E',
         }),
         menu: (styles: any) => ({
             ...styles,
-            backgroundColor: darkMode ? '#1E2228' : '#FFFFFF',
+            backgroundColor: darkMode ? '#1E1E1E' : '#FFFFFF',
             color: darkMode ? '#C9D1D9' : '#24292E',
         }),
         option: (styles: any, { isFocused }: any) => ({
             ...styles,
-            backgroundColor: isFocused ? (darkMode ? '#30363D' : '#F6F8FA') : (darkMode ? '#1E2228' : '#FFFFFF'),
+            backgroundColor: isFocused ? (darkMode ? '#30363D' : '#F6F8FA') : (darkMode ? '#1E1E1E' : '#FFFFFF'),
             color: darkMode ? '#C9D1D9' : '#24292E',
             ':active': {
-                backgroundColor: isFocused ? (darkMode ? '#444C56' : '#D4D4D4') : (darkMode ? '#1E2228' : '#FFFFFF'),
+                backgroundColor: isFocused ? (darkMode ? '#444C56' : '#D4D4D4') : (darkMode ? '#1E1E1E' : '#FFFFFF'),
             },
         }),
         multiValue: (styles: any) => ({
@@ -74,21 +74,20 @@ const FlagsSelector: React.FC<FlagsProps> = ({ darkMode, flags, setFlags }) => {
     };
 
     return (
-        <div className="w-full max-w-7xl mb-6 mt-8">
+        <div className="w-full flex flex-col">
             <div className="flex items-center">
                 <h2 className="tab-title">Flags</h2>
             </div>
             <Select
                 isMulti
-                value={flagsOptions.filter((option) => flags.includes(option.value))}
+                value={flagsOptions.filter(option => flags.includes(option.value))}
                 onChange={handleFlagChange}
                 options={flagsOptions}
                 styles={customStyles}
-                classNamePrefix="select"
                 placeholder="Select flags"
             />
         </div>
     );
 };
 
-export default FlagsSelector;
+export default Flags;
