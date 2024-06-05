@@ -7,6 +7,25 @@ import QueryEditor from '../components/QueryEditor';
 import FlagsSelector from '../components/FlagsSelector';
 import OutputEditor from '../components/OutputEditor';
 
+class RunError extends Error {
+  runId: number;
+
+  constructor(runID: number, message: string) {
+    super(message);
+    this.runId = runID;
+  }
+}
+
+class RunResult {
+  runId: number;
+  result: string;
+
+  constructor(runID: number, result: string) {
+    this.runId = runID;
+    this.result = result;
+  }
+}
+
 export default function Home() {
   const [result, setResult] = useState<string>('');
   const [darkMode, setDarkMode] = useState<boolean>(true);
@@ -17,7 +36,8 @@ export default function Home() {
   const flagsRef = useRef<string[]>([]);
 
   const workerRef = useRef<Worker | null>(null);
-  const runTimeoutIdRef = useRef<NodeJS.Timeout | null>(null);
+  const runIdRef = useRef<number | null>(null);
+  const runTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const terminateWorker = () => {
     if (workerRef.current) {
@@ -27,9 +47,12 @@ export default function Home() {
   };
 
   const clearRunTimeout = () => {
-    if (runTimeoutIdRef.current) {
-      clearTimeout(runTimeoutIdRef.current);
-      runTimeoutIdRef.current = null;
+    if (runTimeoutRef.current) {
+      clearTimeout(runTimeoutRef.current);
+      runTimeoutRef.current = null;
+    }
+    if (runIdRef.current) {
+      runIdRef.current = null;
     }
   };
 
@@ -42,44 +65,53 @@ export default function Home() {
 
   const handleJQRun = (json: string, query: string, flags: string[]) => {
     clearRunTimeout();
+    terminateWorker();
+    setResult('');
 
     if (json === '' || query === '') {
-      setResult('');
       return;
     }
 
     setResult('Running...');
-    runTimeoutIdRef.current = setTimeout(() => {
-      runJQ(json, query, flags, 30000)
+
+    const runId = Math.floor(new Date().getTime() / 1000);
+    runIdRef.current = runId
+
+    runTimeoutRef.current = setTimeout(() => {
+      runJQ(runId, json, query, flags, 30000)
         .then((result) => {
-          setResult(result);
+          if (runIdRef.current === result.runId) {
+            setResult(result.result);
+          }
         })
-        .catch((error) => {
-          setResult(`Error: ${error.message}`);
+        .catch((error: RunError) => {
+          if (runIdRef.current === error.runId) {
+            setResult(`Error: ${error.message}`);
+          }
         });
     }, 500);
   };
 
-  const runJQ = (json: string, query: string, flags: string[], timeout: number): Promise<string> => {
+  const runJQ = (runId: number, json: string, query: string, flags: string[], timeout: number): Promise<RunResult> => {
     terminateWorker();
 
-    return new Promise<string>((resolve, reject) => {
+    return new Promise<RunResult>((resolve, reject) => {
       const worker = new Worker(new URL('../workers/worker.ts', import.meta.url));
       workerRef.current = worker;
 
       const timeoutId = setTimeout(() => {
         worker.terminate();
         workerRef.current = null;
-        reject(new Error('jq timed out'));
+        reject(new RunError(runId, 'jq timed out'));
       }, timeout);
 
       worker.onmessage = function (event) {
         clearTimeout(timeoutId);
 
         if (event.data.error) {
-          reject(new Error(event.data.error));
+          reject(new RunError(runId, event.data.error));
         } else {
-          resolve(event.data.result);
+          resolve(new RunResult(runId, event.data.result));
         }
 
         worker.terminate();
@@ -88,7 +120,7 @@ export default function Home() {
 
       worker.onerror = function (error) {
         clearTimeout(timeoutId);
-        reject(new Error(`Worker error: ${error.message}`));
+        reject(new RunError(runId, `Worker error: ${error.message}`));
         worker.terminate();
         workerRef.current = null;
       };
