@@ -1,55 +1,107 @@
 'use client'
 
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import Editor from '@monaco-editor/react';
 
 export default function Home() {
   const [result, setResult] = useState<string>('');
 
-  const handleRun = useCallback(async () => {
-    setResult('Running...');
-    try {
-      const result = await runJQ(
-        '{"dependencies":{"capnp":{"version":"0.1.4","dependencies":{"es6-promise":{"version":"1.0.0","dependencies":{"es6-promise":{"version":"1.0.0"}}}}}}}',
-        '.dependencies | recurse(to_entries | map(.values.dependencies))',
-        [],
-        5000)
-      setResult(result);
-    } catch (err: any) {
-      setResult(err.toString());
+  const jsonRef = useRef<string>('');
+  const queryRef = useRef<string>('');
+
+  const workerRef = useRef<Worker | null>(null);
+  const runTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const terminateWorker = () => {
+    if (workerRef.current) {
+      workerRef.current.terminate();
+      workerRef.current = null;
     }
-  }, [])
+  };
+
+  const clearRunTimeout = () => {
+    if (runTimeoutRef.current) {
+      clearTimeout(runTimeoutRef.current);
+      runTimeoutRef.current = null;
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      clearRunTimeout();
+      terminateWorker();
+    };
+  }, []);
+
+  const handleJQRun = (json: string, query: string) => {
+    if (json === '' || query === '') {
+      setResult('');
+      clearRunTimeout();
+    } else {
+      setResult('Running...');
+      clearRunTimeout();
+      runTimeoutRef.current = setTimeout(() => {
+        runJQ(json, query, [], 5000)
+          .then((result) => {
+            setResult(result);
+          })
+          .catch((error) => {
+            setResult(error.message);
+          });
+      }, 500);
+    }
+  };
+
+  const runJQ = (json: string, query: string, flags: string[], timeout: number): Promise<string> => {
+    terminateWorker();
+
+    return new Promise<string>((resolve, reject) => {
+      const worker = new Worker(new URL('../workers/worker.ts', import.meta.url));
+      workerRef.current = worker;
+
+      const timeoutId = setTimeout(() => {
+        worker.terminate();
+        workerRef.current = null;
+        reject(new Error('jq timed out'));
+      }, timeout);
+
+      worker.onmessage = function (event) {
+        clearTimeout(timeoutId);
+        resolve(event.data.result);
+        worker.terminate();
+        workerRef.current = null;
+      };
+
+      worker.onerror = function (error) {
+        clearTimeout(timeoutId);
+        reject(new Error(`Worker error: ${error.message}`));
+        worker.terminate();
+        workerRef.current = null;
+      };
+
+      worker.postMessage({ json, query, flags });
+    });
+  };
+
+  const handleQueryEditorChange = (value: string | undefined) => {
+    if (value !== undefined) {
+      queryRef.current = value;
+      handleJQRun(jsonRef.current, queryRef.current);
+    }
+  };
+
+  const handleJSONEditorChange = (value: string | undefined) => {
+    if (value !== undefined) {
+      jsonRef.current = value;
+      handleJQRun(jsonRef.current, queryRef.current);
+    }
+  };
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <button onClick={handleRun}>Run JQ</button>
-      <p>
-        {result}
-      </p>
+      <Editor height="20vh" width="100%" defaultLanguage="plaintext" onChange={handleQueryEditorChange} />
+      <Editor height="50vh" width="100%" defaultLanguage="json" onChange={handleJSONEditorChange} />
+      <Editor height="50vh" width="100%" defaultLanguage="json" value={result} options={{ readOnly: true }} />
     </main>
   );
-}
-
-function runJQ(json: string, query: string, flags: string[], timeout: number): Promise<string> {
-  return new Promise<string>((resolve, reject) => {
-    const worker = new Worker(new URL('../workers/worker.ts', import.meta.url))
-
-    const timeoutId = setTimeout(() => {
-      worker.terminate();
-      reject(new Error('jq timed out'));
-    }, timeout);
-
-    worker.onmessage = function (event) {
-      clearTimeout(timeoutId);
-      resolve(event.data.result);
-      worker.terminate();
-    };
-
-    worker.onerror = function (error) {
-      clearTimeout(timeoutId);
-      reject(new Error(`Worker error: ${error.message}`));
-      worker.terminate();
-    };
-
-    worker.postMessage({ json: json, query: query, flags: flags });
-  });
 }
