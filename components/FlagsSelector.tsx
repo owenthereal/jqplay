@@ -1,6 +1,7 @@
 import React from 'react';
-import Select from 'react-select';
+import dynamic from 'next/dynamic';
 
+const Select = dynamic(() => import('react-select'), { ssr: false });
 interface FlagsProps {
     darkMode: boolean;
     flags: string[];

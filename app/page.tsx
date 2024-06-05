@@ -121,10 +121,17 @@ export default function Home() {
     setDarkMode(!darkMode);
   };
 
+  const handleShare = () => {
+    const shareUrl = `${window.location.origin}/?json=${encodeURIComponent(jsonRef.current)}&query=${encodeURIComponent(queryRef.current)}&flags=${encodeURIComponent(flagsRef.current.join(','))}`;
+    navigator.clipboard.writeText(shareUrl).then(() => {
+      alert('Share link copied to clipboard');
+    });
+  };
+
   return (
     <div className={darkMode ? 'dark' : ''}>
       <div className="flex flex-col items-center justify-center min-h-screen p-6 bg-gray-900 text-gray-100 dark:bg-gray-900 dark:text-gray-100 bg-white text-black">
-        <Header darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+        <Header darkMode={darkMode} toggleDarkMode={toggleDarkMode} onShare={handleShare} />
         <div className="flex flex-col md:flex-row md:space-x-6 w-full max-w-7xl">
           <JSONEditor darkMode={darkMode} handleChange={handleJSONEditorChange} />
           <QueryEditor darkMode={darkMode} handleChange={handleQueryEditorChange} />
@@ -132,6 +139,6 @@ export default function Home() {
         <FlagsSelector darkMode={darkMode} flags={flags} setFlags={handleFlagsChange} />
         <OutputEditor darkMode={darkMode} result={result} />
       </div>
-    </div>
+    </div >
   );
 }
