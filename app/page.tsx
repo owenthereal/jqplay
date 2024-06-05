@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react';
+import { useSystemDarkMode } from '../hooks/useSystemDarkMode';
 import Header from '../components/Header';
 import JSONEditor from '../components/JSONEditor';
 import QueryEditor from '../components/QueryEditor';
@@ -27,8 +28,10 @@ class RunResult {
 }
 
 export default function Home() {
+  const systemDarkMode = useSystemDarkMode();
+  const [darkMode, setDarkMode] = useState<boolean>(systemDarkMode);
+
   const [result, setResult] = useState<string>('');
-  const [darkMode, setDarkMode] = useState<boolean>(true);
   const [flags, setFlags] = useState<string[]>([]);
 
   const jsonRef = useRef<string>('');
@@ -55,6 +58,10 @@ export default function Home() {
       runIdRef.current = null;
     }
   };
+
+  useEffect(() => {
+    setDarkMode(systemDarkMode);
+  }, [systemDarkMode]);
 
   useEffect(() => {
     return () => {
