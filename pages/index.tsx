@@ -28,6 +28,7 @@ class RunResult {
 export default function Home({ darkMode, toggleDarkMode }: { darkMode: boolean, toggleDarkMode: () => void }) {
     const [result, setResult] = useState<string>('');
     const [options, setOptions] = useState<string[]>([]);
+    const [minEditorHeight, setMinEditorHeight] = useState<number>(0);
 
     const jsonRef = useRef<string>('');
     const queryRef = useRef<string>('');
@@ -53,6 +54,23 @@ export default function Home({ darkMode, toggleDarkMode }: { darkMode: boolean, 
             runIdRef.current = null;
         }
     };
+
+    useEffect(() => {
+        const updateMinHeight = () => {
+            let height = (window.innerHeight - 64 - 64 * 2) / 2;
+            if (height < 35) {
+                height = 35;
+            }
+            setMinEditorHeight(height);
+        };
+
+        updateMinHeight();
+        window.addEventListener('resize', updateMinHeight);
+
+        return () => {
+            window.removeEventListener('resize', updateMinHeight);
+        };
+    }, []);
 
     useEffect(() => {
         return () => {
@@ -160,10 +178,10 @@ export default function Home({ darkMode, toggleDarkMode }: { darkMode: boolean, 
             <Header darkMode={darkMode} toggleDarkMode={toggleDarkMode} onShare={handleShare} />
             <Container sx={{ flexGrow: 1, py: 2, display: 'flex', flexDirection: 'column', minWidth: '100%' }}>
                 <Grid container spacing={2} sx={{ flexGrow: 1 }}>
-                    <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', minHeight: '35vh' }}>
+                    <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', minHeight: minEditorHeight }}>
                         <JSONEditor darkMode={darkMode} handleChange={handleJSONEditorChange} />
                     </Grid>
-                    <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', minHeight: '35vh' }}>
+                    <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', minHeight: minEditorHeight }}>
                         <QueryEditor darkMode={darkMode} handleChange={handleQueryEditorChange} />
                     </Grid>
                 </Grid>
@@ -171,7 +189,7 @@ export default function Home({ darkMode, toggleDarkMode }: { darkMode: boolean, 
                     <OptionsSelector options={options} setOptions={handleOptionsSelectorChange} />
                 </Box>
                 <Grid container spacing={1} sx={{ flexGrow: 1 }}>
-                    <Grid item xs={12} md={12} sx={{ display: 'flex', flexDirection: 'column', minHeight: '35vh' }}>
+                    <Grid item xs={12} md={12} sx={{ display: 'flex', flexDirection: 'column', minHeight: minEditorHeight }}>
                         <OutputEditor darkMode={darkMode} result={result} />
                     </Grid>
                 </Grid>
