@@ -8,11 +8,11 @@ interface OptionsProps {
 
 const flagOptions: { [key: string]: string } = {
     '-c': '-c (Compact output)',
-    '-M': '-M (Monochrome output)',
+    '-n': '-n (Null input)',
+    '-R': '-R (Raw input)',
     '-r': '-r (Raw output)',
     '-s': '-s (Slurp: read into array)',
     '-S': '-S (Sort keys)',
-    '-R': '-R (Raw input)',
 };
 
 const OptionsSelector: React.FC<OptionsProps> = ({ options, setOptions }) => {
