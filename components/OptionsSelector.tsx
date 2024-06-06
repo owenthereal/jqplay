@@ -1,5 +1,5 @@
 import { Box, Paper, MenuItem, Select, FormControl, InputLabel, Chip, SelectChangeEvent, OutlinedInput } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 interface OptionsProps {
     options: string[];
@@ -15,17 +15,23 @@ const flagOptions: { [key: string]: string } = {
     '-R': '-R (Raw input)',
 };
 
-const OptionsSelector: React.FC<OptionsProps> = ({ options, setOptions }: OptionsProps) => {
+const OptionsSelector: React.FC<OptionsProps> = ({ options, setOptions }) => {
     const [open, setOpen] = useState(false);
+    const [focus, setFocus] = useState(false);
+
     const handleOptionsChange = (event: SelectChangeEvent<string[]>) => {
-        event.stopPropagation();
         setOptions(event.target.value as string[]);
         setOpen(false);
+        setFocus(false);
     };
 
     const handleDelete = (optionToDelete: string) => (event: React.MouseEvent) => {
-        event.stopPropagation();
-        setOptions(options.filter((option) => option !== optionToDelete));
+        const newOptions = options.filter((option) => option !== optionToDelete);
+        setOptions(newOptions);
+        if (newOptions.length === 0) {
+            setOpen(false);
+            setFocus(true);
+        }
     };
 
     return (
@@ -53,6 +59,7 @@ const OptionsSelector: React.FC<OptionsProps> = ({ options, setOptions }: Option
                             ))}
                         </Box>
                     )}
+                    autoFocus={focus}
                 >
                     {Object.entries(flagOptions).map(([value, label]) => (
                         <MenuItem key={value} value={value}>
