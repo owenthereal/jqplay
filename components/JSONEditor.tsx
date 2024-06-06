@@ -1,4 +1,5 @@
 import Editor from '@monaco-editor/react';
+import { Box, Typography, Paper } from '@mui/material';
 
 interface JSONEditorProps {
     darkMode: boolean;
@@ -6,11 +7,11 @@ interface JSONEditorProps {
 }
 
 const JSONEditor: React.FC<JSONEditorProps> = ({ darkMode, handleChange }) => (
-    <div className="w-full md:w-1/2 flex flex-col flex-grow md:mb-0">
-        <div className="flex items-center">
-            <h2 className="tab-title">JSON</h2>
-        </div>
-        <div className="border dark:border-gray-600 border-gray-300 rounded-tl-none rounded-tr-none flex-grow">
+    <Box component={Paper} sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
+        <Typography variant="h6" sx={{ p: 1 }}>
+            JSON
+        </Typography>
+        <Box sx={{ flexGrow: 1, borderTop: '1px solid', borderColor: 'divider' }}>
             <Editor
                 height="100%"
                 width="100%"
@@ -24,8 +25,8 @@ const JSONEditor: React.FC<JSONEditorProps> = ({ darkMode, handleChange }) => (
                     fontSize: 14,
                 }}
             />
-        </div>
-    </div>
+        </Box>
+    </Box>
 );
 
 export default JSONEditor;

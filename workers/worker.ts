@@ -1,9 +1,9 @@
 import jq from 'jq-wasm';
 
 addEventListener('message', (event: any) => {
-    const { json, query, flags } = event.data;
+    const { json, query, options } = event.data;
 
-    jq.raw(json, query, flags)
+    jq.raw(json, query, options)
         .then((result: string) => {
             postMessage({ result: result });
         })
