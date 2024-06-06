@@ -43,7 +43,7 @@ const Editor: React.FC<EditorProps> = ({ title, darkMode, handleChange, value, l
             <Typography variant="h6" sx={{ p: 1 }}>
                 {title}
             </Typography>
-            <Box sx={{ flexGrow: 1, borderColor: 'divider' }}>
+            <Box sx={{ flexGrow: 1 }}>
                 <MonacoEditor
                     height="100%"
                     width="100%"

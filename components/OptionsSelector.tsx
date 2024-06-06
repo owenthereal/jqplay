@@ -15,7 +15,7 @@ const flagOptions: { [key: string]: string } = {
     '-R': '-R (Raw input)',
 };
 
-const OptionsSelector: React.FC<OptionsProps> = ({ options: options, setOptions: setOptions }) => {
+const OptionsSelector: React.FC<OptionsProps> = ({ options, setOptions }: OptionsProps) => {
     const [open, setOpen] = useState(false);
     const handleOptionsChange = (event: SelectChangeEvent<string[]>) => {
         event.stopPropagation();
