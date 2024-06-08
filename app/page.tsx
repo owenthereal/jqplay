@@ -1,15 +1,11 @@
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import type { AppProps } from 'next/app';
+'use client'
+
 import { useState, useEffect } from 'react';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import React from 'react';
+import Home from '../components/Home';
 
-const theme = createTheme({
-    palette: {
-        mode: 'dark', // Use 'light' for light mode
-    },
-});
-
-function MyApp({ Component, pageProps }: AppProps) {
+export default function Page() {
     const [darkMode, setDarkMode] = useState(true);
 
     useEffect(() => {
@@ -33,10 +29,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 
     return (
         <ThemeProvider theme={appliedTheme}>
-            <CssBaseline />
-            <Component {...pageProps} darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
+            <Home darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
         </ThemeProvider>
     );
 }
-
-export default MyApp;

@@ -1,8 +1,7 @@
 import { AppBar, Toolbar, IconButton, Box, Tooltip, Typography } from '@mui/material';
-import { Brightness4, Brightness7, Share, Settings } from '@mui/icons-material';
+import { Brightness4, Brightness7, Share } from '@mui/icons-material';
 import Logo from './Logo';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 
 interface HeaderProps {
     darkMode: boolean;
@@ -11,7 +10,6 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ darkMode, toggleDarkMode, onShare }) => {
-    const router = useRouter();
     const toolbarStyle = {
         backgroundColor: darkMode ? '#333333' : '#f5f5f5',
         color: darkMode ? '#ffffff' : '#333333',
