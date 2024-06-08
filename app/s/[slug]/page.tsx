@@ -17,12 +17,20 @@ const SnippetPage = ({ params }: { params: { slug: string } }) => {
     useEffect(() => {
         if (slug) {
             fetch(`/api/snippets/${slug}`)
-                .then((res) => res.json())
+                .then((res) => {
+                    if (res.status >= 400) {
+                        throw new Error('Failed to fetch snippet');
+                    } else {
+                        return res.json()
+                    }
+                })
                 .then((data) => setSnippet(data))
-                .catch(() => alert('Failed to fetch snippet'));
+                .catch(() => {
+                    window.location.href = window.location.origin;
+                })
         } else {
             // redirect to home if no slug
-            window.location.href = '/';
+            window.location.href = window.location.origin;
         }
     }, [slug]);
 
