@@ -1,35 +1,23 @@
 'use client'
 
-import { useState, useEffect } from 'react';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import React from 'react';
-import Home from '../components/Home';
+import React, { useEffect, useState } from 'react';
+import Playground from '@/components/Playground';
 
 export default function Page() {
-    const [darkMode, setDarkMode] = useState(true);
+    const [initialJson, setInitialJson] = useState('');
+    const [initialQuery, setInitialQuery] = useState('');
+    const [initialOptions, setInitialOptions] = useState<string[]>([]);
 
     useEffect(() => {
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme) {
-            setDarkMode(savedTheme === 'dark');
-        }
+        setTimeout(() => {
+            setInitialJson('{"foo": "bar"}');
+            setInitialQuery('.');
+            setInitialOptions(["-c"]);
+        }, 2000);
+
     }, []);
 
-    const toggleDarkMode = () => {
-        const newMode = !darkMode;
-        setDarkMode(newMode);
-        localStorage.setItem('theme', newMode ? 'dark' : 'light');
-    };
-
-    const appliedTheme = createTheme({
-        palette: {
-            mode: darkMode ? 'dark' : 'light',
-        },
-    });
-
     return (
-        <ThemeProvider theme={appliedTheme}>
-            <Home darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
-        </ThemeProvider>
+        <Playground InitialJson={initialJson} InitialQuery={initialQuery} InitialOptions={initialOptions} />
     );
 }

@@ -2,14 +2,15 @@ import { AppBar, Toolbar, IconButton, Box, Tooltip, Typography } from '@mui/mate
 import { Brightness4, Brightness7, Share } from '@mui/icons-material';
 import Logo from './Logo';
 import Link from 'next/link';
+import { useTheme } from './ThemeProvider';
 
 interface HeaderProps {
-    darkMode: boolean;
-    toggleDarkMode: () => void;
     onShare: () => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ darkMode, toggleDarkMode, onShare }) => {
+const Header: React.FC<HeaderProps> = ({ onShare }) => {
+    const { darkMode, toggleDarkMode } = useTheme();
+
     const toolbarStyle = {
         backgroundColor: darkMode ? '#333333' : '#f5f5f5',
         color: darkMode ? '#ffffff' : '#333333',

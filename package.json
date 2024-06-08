@@ -6,7 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "postinstall": "prisma generate",
+    "setup-db": "node scripts/setup-db.js",
+    "prisma:push": "npm run setup-db && npx prisma db push",
+    "prisma:migrate": "npm run setup-db && npx prisma migrate dev"
   },
   "dependencies": {
     "@emotion/react": "^11.11.4",
@@ -14,15 +18,21 @@
     "@monaco-editor/react": "^4.6.0",
     "@mui/icons-material": "^5.15.19",
     "@mui/material": "^5.15.19",
+    "@prisma/client": "^5.15.0",
     "jq-wasm": "^0.0.5",
     "next": "14.2.3",
+    "pg": "^8.12.0",
+    "prisma": "^5.15.0",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@types/node": "^20",
+    "@types/pg": "^8.11.6",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/uuid": "^9.0.8",
     "eslint": "^8",
     "eslint-config-next": "14.2.3",
     "postcss": "^8",

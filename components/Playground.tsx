@@ -1,10 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
 import { Box, Container, Grid } from '@mui/material';
-import Header from '../components/Header';
-import JSONEditor from '../components/JSONEditor';
-import QueryEditor from '../components/QueryEditor';
-import OptionsSelector from '../components/OptionsSelector';
-import OutputEditor from '../components/OutputEditor';
+import Header from './Header';
+import JSONEditor from './JSONEditor';
+import QueryEditor from './QueryEditor';
+import OptionsSelector from './OptionsSelector';
+import OutputEditor from './OutputEditor';
+import { ThemeProvider } from './ThemeProvider';
 
 class RunError extends Error {
     runId: number;
@@ -25,14 +26,26 @@ class RunResult {
     }
 }
 
-export default function Home({ darkMode, toggleDarkMode }: { darkMode: boolean, toggleDarkMode: () => void }) {
+export default function PlaygroundLayout(props: PlaygroundProps) {
+    return (
+        <ThemeProvider>
+            <Playground InitialJson={props.InitialJson} InitialQuery={props.InitialQuery} InitialOptions={props.InitialOptions} />
+        </ThemeProvider>
+    );
+}
+
+interface PlaygroundProps {
+    InitialJson?: string;
+    InitialQuery?: string;
+    InitialOptions?: string[];
+}
+
+function Playground(props: PlaygroundProps) {
     const [result, setResult] = useState<string>('');
+    const [json, setJson] = useState<string>('');
+    const [query, setQuery] = useState<string>('');
     const [options, setOptions] = useState<string[]>([]);
     const [minEditorHeight, setMinEditorHeight] = useState<number>(0);
-
-    const jsonRef = useRef<string>('');
-    const queryRef = useRef<string>('');
-    const optionsRef = useRef<string[]>([]);
 
     const workerRef = useRef<Worker | null>(null);
     const runIdRef = useRef<number | null>(null);
@@ -55,29 +68,33 @@ export default function Home({ darkMode, toggleDarkMode }: { darkMode: boolean, 
         }
     };
 
-    useEffect(() => {
-        const updateMinHeight = () => {
-            let height = (window.innerHeight - 64 - 64 * 2) / 2;
-            if (height < 35) {
-                height = 35;
-            }
-            setMinEditorHeight(height);
-        };
+    const updateMinHeight = () => {
+        const calculatedHeight = (window.innerHeight - 64 - 64 * 2) / 2;
+        const minHeight = 35;
+        setMinEditorHeight(Math.max(calculatedHeight, minHeight));
+    };
 
+    useEffect(() => {
         updateMinHeight();
         window.addEventListener('resize', updateMinHeight);
 
         return () => {
             window.removeEventListener('resize', updateMinHeight);
-        };
-    }, []);
-
-    useEffect(() => {
-        return () => {
             clearRunTimeout();
             terminateWorker();
         };
     }, []);
+
+    // initial values
+    useEffect(() => {
+        setJson(props.InitialJson || '');
+        setQuery(props.InitialQuery || '');
+        setOptions(props.InitialOptions || []);
+    }, [props.InitialJson, props.InitialQuery, props.InitialOptions]);
+
+    useEffect(() => {
+        handleJQRun(json, query, options);
+    }, [json, query, options]);
 
 
     const handleJQRun = (json: string, query: string, options: string[]) => {
@@ -148,26 +165,22 @@ export default function Home({ darkMode, toggleDarkMode }: { darkMode: boolean, 
 
     const handleJSONEditorChange = (value: string | undefined) => {
         if (value !== undefined) {
-            jsonRef.current = value;
-            handleJQRun(jsonRef.current, queryRef.current, optionsRef.current);
+            setJson(value);
         }
     };
 
     const handleQueryEditorChange = (value: string | undefined) => {
         if (value !== undefined) {
-            queryRef.current = value;
-            handleJQRun(jsonRef.current, queryRef.current, optionsRef.current);
+            setQuery(value);
         }
     };
 
     const handleOptionsSelectorChange = (options: string[]) => {
         setOptions(options);
-        optionsRef.current = options;
-        handleJQRun(jsonRef.current, queryRef.current, optionsRef.current);
     };
 
     const handleShare = () => {
-        const shareUrl = `${window.location.origin}/?json=${encodeURIComponent(jsonRef.current)}&query=${encodeURIComponent(queryRef.current)}&options=${encodeURIComponent(optionsRef.current.join(','))}`;
+        const shareUrl = `${window.location.origin}/?json=${encodeURIComponent(json)}&query=${encodeURIComponent(query)}&options=${encodeURIComponent(options.join(','))}`;
         navigator.clipboard.writeText(shareUrl).then(() => {
             alert('Share link copied to clipboard');
         });
@@ -175,14 +188,14 @@ export default function Home({ darkMode, toggleDarkMode }: { darkMode: boolean, 
 
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', bgcolor: 'background.default', color: 'text.primary' }}>
-            <Header darkMode={darkMode} toggleDarkMode={toggleDarkMode} onShare={handleShare} />
+            <Header onShare={handleShare} />
             <Container sx={{ flexGrow: 1, py: 2, display: 'flex', flexDirection: 'column', minWidth: '100%' }}>
                 <Grid container spacing={2} sx={{ flexGrow: 1 }}>
                     <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', minHeight: minEditorHeight }}>
-                        <JSONEditor darkMode={darkMode} handleChange={handleJSONEditorChange} />
+                        <JSONEditor value={json} handleChange={handleJSONEditorChange} />
                     </Grid>
                     <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', minHeight: minEditorHeight }}>
-                        <QueryEditor darkMode={darkMode} handleChange={handleQueryEditorChange} />
+                        <QueryEditor value={query} handleChange={handleQueryEditorChange} />
                     </Grid>
                 </Grid>
                 <Box sx={{ mt: 2 }}>
@@ -190,7 +203,7 @@ export default function Home({ darkMode, toggleDarkMode }: { darkMode: boolean, 
                 </Box>
                 <Grid container spacing={1} sx={{ flexGrow: 1 }}>
                     <Grid item xs={12} md={12} sx={{ display: 'flex', flexDirection: 'column', minHeight: minEditorHeight }}>
-                        <OutputEditor darkMode={darkMode} result={result} />
+                        <OutputEditor result={result} />
                     </Grid>
                 </Grid>
             </Container>

@@ -1,12 +1,18 @@
 import Editor from './Editor';
+import { useSnippet } from './SnippetProvider';
+import { useTheme } from './ThemeProvider';
 
 interface JSONEditorProps {
-    darkMode: boolean;
+    value?: string;
     handleChange: (value: string | undefined) => void;
 }
 
-const JSONEditor: React.FC<JSONEditorProps> = ({ darkMode, handleChange }) => (
-    <Editor title="JSON" darkMode={darkMode} language="json" handleChange={handleChange} />
-);
+const JSONEditor: React.FC<JSONEditorProps> = ({ value, handleChange }) => {
+    const { darkMode } = useTheme();
+
+    return (
+        <Editor title="JSON" darkMode={darkMode} language="json" value={value} handleChange={handleChange} />
+    );
+}
 
 export default JSONEditor;
