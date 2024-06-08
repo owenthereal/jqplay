@@ -2,13 +2,13 @@ import { NextResponse } from 'next/server';
 import prisma from '../../../../lib/prisma';
 import { version as uuidVersion, validate as uuidValidate } from 'uuid';
 
-export async function GET(req: Request, { params }: { params: { id: string } }) {
-    const { id } = params;
+export async function GET(req: Request, { params }: { params: { slug: string } }) {
+    const { slug } = params;
 
     try {
-        const whereClause = uuidValidateV4(id)
-            ? { id }
-            : { slug: id };
+        const whereClause = uuidValidateV4(slug)
+            ? { slug }
+            : { slug: slug };
 
         const snippet = await prisma.snippets.findFirst({
             where: whereClause

@@ -179,11 +179,32 @@ function Playground(props: PlaygroundProps) {
         setOptions(options);
     };
 
-    const handleShare = () => {
-        const shareUrl = `${window.location.origin}/?json=${encodeURIComponent(json)}&query=${encodeURIComponent(query)}&options=${encodeURIComponent(options.join(','))}`;
-        navigator.clipboard.writeText(shareUrl).then(() => {
-            alert('Share link copied to clipboard');
-        });
+    const handleShare = async () => {
+        try {
+            const response = await fetch('/api/snippets', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    json,
+                    query,
+                    options,
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to save snippet');
+            }
+
+            const data = await response.json();
+            const snippetUrl = `${window.location.origin}/s/${data.slug}`;
+
+            // Redirect to the new snippet URL
+            window.location.href = snippetUrl;
+        } catch (error: any) {
+            alert(error.message);
+        }
     };
 
     return (
