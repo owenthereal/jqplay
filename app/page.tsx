@@ -1,23 +1,25 @@
 'use client'
 
-import React, { useEffect, useState } from 'react';
-import Playground from '@/components/Playground';
+import { useSearchParams } from 'next/navigation';
+import Playground from '../components/Playground';
 
-export default function Page() {
-    const [initialJson, setInitialJson] = useState('');
-    const [initialQuery, setInitialQuery] = useState('');
-    const [initialOptions, setInitialOptions] = useState<string[]>([]);
+const Page = () => {
+    const searchParams = useSearchParams();
+    const j = searchParams.get('j');
+    const q = searchParams.get('q');
+    const o = searchParams.get('o');
 
-    useEffect(() => {
-        setTimeout(() => {
-            setInitialJson('{"foo": "bar"}');
-            setInitialQuery('.');
-            setInitialOptions(["-c"]);
-        }, 2000);
-
-    }, []);
+    const initialQuery = typeof q === 'string' ? decodeURIComponent(q) : '';
+    const initialJson = typeof j === 'string' ? decodeURIComponent(j) : '';
+    const initialOptions = o ? [decodeURIComponent(o)] : [];
 
     return (
-        <Playground InitialJson={initialJson} InitialQuery={initialQuery} InitialOptions={initialOptions} />
+        <Playground
+            InitialJson={initialJson}
+            InitialQuery={initialQuery}
+            InitialOptions={initialOptions}
+        />
     );
-}
+};
+
+export default Page;
