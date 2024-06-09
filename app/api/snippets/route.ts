@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import prisma from '../../../lib/prisma';
-import { v4 as uuidv4 } from 'uuid';
+import { generateSlug } from '@/lib/utils';
 
 export async function POST(req: Request) {
     try {
@@ -20,11 +20,11 @@ export async function POST(req: Request) {
             return NextResponse.json({ errors: validationErrors }, { status: 422 });
         }
 
-        const id = uuidv4();
-        const slug = id.replace(/-/g, '');
-        const newSnippet = await prisma.snippets.create({
-            data: {
-                id,
+        const slug = generateSlug({ json, query, options });
+        const newSnippet = await prisma.snippets.upsert({
+            where: { slug },
+            update: { json, query, options },
+            create: {
                 json,
                 query,
                 options,
@@ -32,7 +32,7 @@ export async function POST(req: Request) {
             },
         });
 
-        return NextResponse.json({ slug: newSnippet.slug }, { status: 201 });
+        return NextResponse.json({ slug: newSnippet.slug }, { status: 200 });
     } catch (error) {
         return NextResponse.json({ error: 'Failed to save snippet' }, { status: 500 });
     }
