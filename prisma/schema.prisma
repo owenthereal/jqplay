@@ -15,7 +15,7 @@ datasource db {
 
 model snippets {
   id        String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  slug      String?  @unique
+  slug      String   @unique
   json      String
   query     String
   options   String[]
