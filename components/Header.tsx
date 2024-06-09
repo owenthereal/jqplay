@@ -33,18 +33,18 @@ const Header: React.FC<HeaderProps> = ({ onShare }) => {
                 </Box>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <Tooltip title="Share">
-                        <IconButton color="inherit" onClick={onShare}>
+                        <IconButton color="inherit" onClick={onShare} aria-label="Share">
                             <Share />
                         </IconButton>
                     </Tooltip>
                     <Tooltip title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}>
-                        <IconButton color="inherit" onClick={toggleDarkMode}>
+                        <IconButton color="inherit" onClick={toggleDarkMode} aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'} >
                             {darkMode ? <Brightness7 /> : <Brightness4 />}
                         </IconButton>
                     </Tooltip>
                 </Box>
             </Toolbar>
-        </AppBar>
+        </AppBar >
     );
 };
 

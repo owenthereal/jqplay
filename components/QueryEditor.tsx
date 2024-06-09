@@ -1,10 +1,9 @@
 import Editor from './Editor';
-import { useSnippet } from './SnippetProvider';
 import { useTheme } from './ThemeProvider';
 
 interface QueryEditorProps {
   value?: string;
-  handleChange: (value: string | undefined) => void;
+  handleChange?: (value: string | undefined) => void;
 }
 
 const QueryEditor: React.FC<QueryEditorProps> = ({ value, handleChange }) => {

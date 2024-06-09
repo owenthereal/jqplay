@@ -1,10 +1,9 @@
 import Editor from './Editor';
-import { useSnippet } from './SnippetProvider';
 import { useTheme } from './ThemeProvider';
 
 interface JSONEditorProps {
     value?: string;
-    handleChange: (value: string | undefined) => void;
+    handleChange?: (value: string | undefined) => void;
 }
 
 const JSONEditor: React.FC<JSONEditorProps> = ({ value, handleChange }) => {

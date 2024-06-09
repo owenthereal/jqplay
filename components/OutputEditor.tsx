@@ -2,7 +2,7 @@ import Editor from './Editor';
 import { useTheme } from './ThemeProvider';
 
 interface OutputEditorProps {
-    result: string;
+    result?: string;
 }
 
 const OutputEditor: React.FC<OutputEditorProps> = ({ result }) => {

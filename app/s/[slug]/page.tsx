@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { Box, CircularProgress } from '@mui/material';
 import Playground from '../../../components/Playground';
 
 interface Snippet {
@@ -35,7 +36,11 @@ const SnippetPage = ({ params }: { params: { slug: string } }) => {
     }, [slug]);
 
     if (!snippet) {
-        return <div>Loading...</div>;
+        return (
+            <Box sx={{ display: 'flex' }}>
+                <CircularProgress />
+            </Box>
+        )
     }
 
     return (

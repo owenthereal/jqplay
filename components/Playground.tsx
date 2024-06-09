@@ -240,7 +240,7 @@ function Playground(props: PlaygroundProps) {
                         <QueryEditor value={query} handleChange={handleQueryEditorChange} />
                     </Grid>
                 </Grid>
-                <Box sx={{ mt: 2 }}>
+                <Box>
                     <OptionsSelector options={options} setOptions={handleOptionsSelectorChange} />
                 </Box>
                 <Grid container spacing={1} sx={{ flexGrow: 1 }}>
