@@ -1,12 +1,12 @@
 import Editor from './Editor';
-import { useTheme } from './ThemeProvider';
+import { useDarkMode } from './ThemeProvider';
 
 interface OutputEditorProps {
     result?: string;
 }
 
 const OutputEditor: React.FC<OutputEditorProps> = ({ result }) => {
-    const { darkMode } = useTheme();
+    const { darkMode } = useDarkMode();
 
     return (
         <Editor title="Output" darkMode={darkMode} language="json" readOnly={true} value={result} />

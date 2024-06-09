@@ -1,15 +1,19 @@
-import { AppBar, Toolbar, IconButton, Box, Tooltip, Typography } from '@mui/material';
-import { Brightness4, Brightness7, Share } from '@mui/icons-material';
+import { AppBar, Toolbar, IconButton, Box, Tooltip, Typography, Modal } from '@mui/material';
+import { Brightness4, Brightness7, Help, Share } from '@mui/icons-material';
 import Logo from './Logo';
 import Link from 'next/link';
-import { useTheme } from './ThemeProvider';
+import { useDarkMode } from './ThemeProvider';
+import { MouseEvent, useState } from 'react';
+import CheatSheetDialog from './CheatSheetDialog';
 
 interface HeaderProps {
     onShare: () => void;
+    onExampleClick: (json: string, query: string) => void;
 }
 
-const Header: React.FC<HeaderProps> = ({ onShare }) => {
-    const { darkMode, toggleDarkMode } = useTheme();
+const Header: React.FC<HeaderProps> = ({ onShare, onExampleClick }) => {
+    const { darkMode, toggleDarkMode } = useDarkMode();
+    const [cheatsheetOpen, setCheatSheetOpen] = useState(false);
 
     const toolbarStyle = {
         backgroundColor: darkMode ? '#333333' : '#f5f5f5',
@@ -19,6 +23,19 @@ const Header: React.FC<HeaderProps> = ({ onShare }) => {
     const subtitleStyle = {
         color: darkMode ? '#cccccc' : '#666666',
     };
+
+    function handleCheatsheetOpen(event: MouseEvent<HTMLButtonElement>): void {
+        setCheatSheetOpen(true);
+    }
+
+    function handleCheatsheetClose(): void {
+        setCheatSheetOpen(false);
+    }
+
+    function handleExampleClick(json: string, query: string): void {
+        setCheatSheetOpen(false);
+        onExampleClick(json, query);
+    }
 
     return (
         <AppBar position="static" style={toolbarStyle}>
@@ -42,6 +59,12 @@ const Header: React.FC<HeaderProps> = ({ onShare }) => {
                             {darkMode ? <Brightness7 /> : <Brightness4 />}
                         </IconButton>
                     </Tooltip>
+                    <Tooltip title="Cheatsheet">
+                        <IconButton color="inherit" onClick={handleCheatsheetOpen} aria-label="Cheatsheet">
+                            <Help />
+                        </IconButton>
+                    </Tooltip>
+                    <CheatSheetDialog onExampleClick={handleExampleClick} open={cheatsheetOpen} onClose={handleCheatsheetClose} />
                 </Box>
             </Toolbar>
         </AppBar >

@@ -1,5 +1,5 @@
 import { Box, Paper, MenuItem, Select, FormControl, InputLabel, Chip, SelectChangeEvent, OutlinedInput, useTheme, Typography } from '@mui/material';
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 
 interface OptionsProps {
     options: string[];
@@ -24,7 +24,7 @@ const OptionsSelector: React.FC<OptionsProps> = ({ options, setOptions }) => {
         setSelectState({ open: false, focus: false });
     };
 
-    const handleDelete = (optionToDelete: string) => (event: React.MouseEvent) => {
+    const handleDelete = (optionToDelete: string) => () => {
         const newOptions = options.filter((option) => option !== optionToDelete);
         setOptions(newOptions);
         if (newOptions.length === 0) {
@@ -35,7 +35,7 @@ const OptionsSelector: React.FC<OptionsProps> = ({ options, setOptions }) => {
     return (
         <Box component={Paper} sx={{ mb: 2, p: 2 }}>
             <FormControl fullWidth variant="outlined" sx={{ mt: 1 }}>
-                <InputLabel id="options-label" sx={{ fontSize: theme.typography.subtitle2.fontSize }}>Options</InputLabel>
+                <InputLabel id="options-label">Options</InputLabel>
                 <Select
                     labelId="options-label"
                     multiple
@@ -44,23 +44,13 @@ const OptionsSelector: React.FC<OptionsProps> = ({ options, setOptions }) => {
                     onOpen={() => setSelectState({ ...selectState, open: true })}
                     onClose={() => setSelectState({ ...selectState, open: false })}
                     onChange={handleOptionsChange}
-                    input={
-                        <OutlinedInput
-                            id="select-multiple-chip"
-                            label="Options"
-                            sx={{ fontSize: theme.typography.subtitle2.fontSize }}
-                        />
-                    }
+                    input={<OutlinedInput id="select-multiple-chip" label="Options" />}
                     renderValue={(selected) => (
                         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
                             {(selected as string[]).map((value) => (
                                 <Chip
                                     key={value}
-                                    label={
-                                        <Typography variant="subtitle2">
-                                            {flagOptions[value]}
-                                        </Typography>
-                                    }
+                                    label={<Typography fontSize={theme.typography.fontSize}>{flagOptions[value]}</Typography>}
                                     onMouseDown={(event) => event.stopPropagation()}
                                     onDelete={handleDelete(value)}
                                 />
@@ -71,12 +61,12 @@ const OptionsSelector: React.FC<OptionsProps> = ({ options, setOptions }) => {
                 >
                     {Object.entries(flagOptions).map(([value, label]) => (
                         <MenuItem key={value} value={value}>
-                            {label}
+                            <Typography fontSize={theme.typography.fontSize}>{label}</Typography>
                         </MenuItem>
                     ))}
                 </Select>
             </FormControl>
-        </Box >
+        </Box>
     );
 };
 

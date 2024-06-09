@@ -3,6 +3,7 @@ import { editor } from 'monaco-editor';
 import { Box, Typography, Paper, useTheme, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import React from 'react';
+import SectionTitle from './SectionTitle';
 
 interface EditorProps {
     title: string;
@@ -44,23 +45,7 @@ const Editor: React.FC<EditorProps> = ({ title, darkMode, handleChange, value, l
 
     return (
         <Box component={Paper} sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1, borderRadius: 0, marginBottom: 2 }}>
-            <Box
-                sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    backgroundColor: darkMode ? theme.palette.grey[800] : theme.palette.grey[100],
-                    color: darkMode ? theme.palette.common.white : theme.palette.text.primary,
-                    padding: theme.spacing(1),
-                    borderBottom: `1px solid ${darkMode ? theme.palette.grey[700] : theme.palette.grey[300]}`,
-                    borderTopLeftRadius: theme.shape.borderRadius,
-                    borderTopRightRadius: theme.shape.borderRadius,
-                }}
-            >
-                <Typography variant="subtitle2" sx={{ fontWeight: 'bold' }}>
-                    {title}
-                </Typography>
-            </Box>
+            <SectionTitle title={title} />
             <Box sx={{ flexGrow: 1 }}>
                 <MonacoEditor
                     height="100%"
@@ -74,7 +59,8 @@ const Editor: React.FC<EditorProps> = ({ title, darkMode, handleChange, value, l
                         readOnly: readOnly,
                         minimap: { enabled: false },
                         scrollbar: { vertical: 'auto', horizontal: 'auto' },
-                        fontSize: 14,
+                        fontSize: theme.typography.fontSize,
+                        fontFamily: theme.typography.fontFamily,
                         lineNumbers: 'on',
                         automaticLayout: true,
                     }}

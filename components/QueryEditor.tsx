@@ -1,5 +1,5 @@
 import Editor from './Editor';
-import { useTheme } from './ThemeProvider';
+import { useDarkMode } from './ThemeProvider';
 
 interface QueryEditorProps {
   value?: string;
@@ -7,7 +7,7 @@ interface QueryEditorProps {
 }
 
 const QueryEditor: React.FC<QueryEditorProps> = ({ value, handleChange }) => {
-  const { darkMode } = useTheme();
+  const { darkMode } = useDarkMode();
 
   return (
     <Editor title="Query" darkMode={darkMode} language="plaintext" value={value} handleChange={handleChange} />

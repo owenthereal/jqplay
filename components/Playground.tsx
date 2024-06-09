@@ -8,6 +8,7 @@ import OutputEditor from './OutputEditor';
 import { ThemeProvider } from './ThemeProvider';
 import { ErrorSnackbar, SnackbarError } from './ErrorSnackbar';
 import { currentUnixTimestamp, generateErrorId } from '@/lib/utils';
+import Cheatsheet from './CheatSheet';
 
 class RunError extends Error {
     runId: number;
@@ -215,11 +216,15 @@ function Playground(props: PlaygroundProps) {
         }
     };
 
+    const onExampleClick = (json: string, query: string) => {
+        setJson(json);
+        setQuery(query);
+    }
+
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', bgcolor: 'background.default', color: 'text.primary' }}>
-            <Header onShare={handleShare} />
+            <Header onShare={handleShare} onExampleClick={onExampleClick} />
             <Container sx={{ flexGrow: 1, py: 2, display: 'flex', flexDirection: 'column', minWidth: '100%' }}>
-                <ErrorSnackbar message={error?.message} errorId={error?.errorId} />
                 <Grid container spacing={2} sx={{ flexGrow: 1 }}>
                     <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', minHeight: minEditorHeight }}>
                         <JSONEditor value={json} handleChange={handleJSONEditorChange} />
@@ -236,6 +241,7 @@ function Playground(props: PlaygroundProps) {
                         <OutputEditor result={result} />
                     </Grid>
                 </Grid>
+                <ErrorSnackbar message={error?.message} errorId={error?.errorId} />
             </Container>
         </Box>
     );
