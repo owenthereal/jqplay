@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, ReactNode, useEffect, FC } from 'react';
-import { ThemeProvider as MuiThemeProvider, createTheme } from '@mui/material/styles';
+import { ThemeProvider as MuiThemeProvider, createTheme, Theme } from '@mui/material/styles';
 
 interface ThemeContextType {
     darkMode: boolean;
@@ -39,10 +39,53 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
     const theme = createTheme({
         palette: {
             mode: darkMode ? 'dark' : 'light',
+            primary: {
+                main: darkMode ? '#61dafb' : '#007acc',
+            },
+            secondary: {
+                main: darkMode ? '#282c34' : '#f6f8fa',
+            },
+            background: {
+                default: darkMode ? '#1e1e1e' : '#ffffff',
+            },
+            text: {
+                primary: darkMode ? '#d4d4d4' : '#000000',
+                secondary: darkMode ? '#858585' : '#333333',
+            },
+            action: {
+                hover: darkMode ? '#333333' : '#e0e0e0',
+            },
         },
         typography: {
             fontSize: 14,
-            fontFamily: 'Menlo, Monaco, "Courier New", monospace',
+            fontFamily: 'Roboto, Arial, Helvetica, sans-serif',
+            h6: {
+                fontWeight: 600,
+                fontSize: '1rem',
+                lineHeight: 1.5,
+            },
+            subtitle1: {
+                fontWeight: 600,
+                fontSize: '0.875rem',
+                lineHeight: 1.5,
+            },
+            subtitle2: {
+                fontWeight: 600,
+                fontSize: '0.75rem',
+                lineHeight: 1.5,
+            },
+            body1: {
+                fontWeight: 400,
+                fontSize: 14,
+            },
+            // editor font
+            body2: {
+                fontSize: 14,
+                fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace',
+            },
+        },
+        shape: {
+            borderRadius: 4,
         },
     });
 

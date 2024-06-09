@@ -59,8 +59,8 @@ const Editor: React.FC<EditorProps> = ({ title, darkMode, handleChange, value, l
                         readOnly: readOnly,
                         minimap: { enabled: false },
                         scrollbar: { vertical: 'auto', horizontal: 'auto' },
-                        fontSize: theme.typography.fontSize,
-                        fontFamily: theme.typography.fontFamily,
+                        fontSize: theme.typography.body2.fontSize ? parseInt(theme.typography.body2.fontSize.toString()) : 12,
+                        fontFamily: theme.typography.body2.fontFamily,
                         lineNumbers: 'on',
                         automaticLayout: true,
                     }}

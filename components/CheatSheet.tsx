@@ -24,16 +24,16 @@ const Cheatsheet: React.FC<CheatsheetProps> = ({ onExampleClick }) => {
     const theme = useTheme();
 
     return (
-        <Box sx={{ p: 2, bgcolor: 'background.paper', borderRadius: 1, boxShadow: 3 }}>
+        <Box sx={{ p: 2, borderRadius: 1, boxShadow: 3 }}>
             <SectionTitle title="Cheatsheet" />
             <Grid container spacing={2} mt={1}>
                 {cheatsheetData.map((row, index) => (
                     <Grid item xs={12} sm={6} key={index} onClick={() => onExampleClick(row.json, row.query)} sx={{ cursor: 'pointer' }}>
                         <Paper sx={{ p: 2, height: '100%' }}>
-                            <Typography variant="body2" component="div" sx={{ fontFamily: 'monospace', color: theme.palette.text.secondary, backgroundColor: theme.palette.background.default, padding: theme.spacing(0.5), borderRadius: theme.shape.borderRadius, whiteSpace: 'pre-wrap' }}>
+                            <Typography variant="body1" component="div" sx={{ fontFamily: 'monospace', color: theme.palette.text.secondary, backgroundColor: theme.palette.background.default, padding: theme.spacing(0.5), borderRadius: theme.shape.borderRadius, whiteSpace: 'pre-wrap' }}>
                                 {`\`${row.query}\``}
                             </Typography>
-                            <Typography variant="body2" sx={{ color: theme.palette.text.secondary, mt: 1 }}>
+                            <Typography variant="body1" sx={{ color: theme.palette.text.secondary, mt: 1 }}>
                                 {row.description}
                             </Typography>
                         </Paper>
