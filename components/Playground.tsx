@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect } from 'react';
-import { Box, Container, Grid } from '@mui/material';
+import { useState, useRef, useEffect, useCallback } from 'react';
+import { Box, Container, Grid, Alert, Snackbar } from '@mui/material';
 import Header from './Header';
 import JSONEditor from './JSONEditor';
 import QueryEditor from './QueryEditor';
@@ -46,19 +46,21 @@ function Playground(props: PlaygroundProps) {
     const [query, setQuery] = useState<string>('');
     const [options, setOptions] = useState<string[]>([]);
     const [minEditorHeight, setMinEditorHeight] = useState<number>(0);
+    const [error, setError] = useState<string>('');
+    const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
 
     const workerRef = useRef<Worker | null>(null);
     const runIdRef = useRef<number | null>(null);
     const runTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-    const terminateWorker = () => {
+    const terminateWorker = useCallback(() => {
         if (workerRef.current) {
             workerRef.current.terminate();
             workerRef.current = null;
         }
-    };
+    }, [workerRef]);
 
-    const clearRunTimeout = () => {
+    const clearRunTimeout = useCallback(() => {
         if (runTimeoutRef.current) {
             clearTimeout(runTimeoutRef.current);
             runTimeoutRef.current = null;
@@ -66,7 +68,7 @@ function Playground(props: PlaygroundProps) {
         if (runIdRef.current) {
             runIdRef.current = null;
         }
-    };
+    }, [runTimeoutRef, runIdRef]);
 
     const updateMinHeight = () => {
         const calculatedHeight = (window.innerHeight - 64 - 64 * 2) / 2;
@@ -180,6 +182,12 @@ function Playground(props: PlaygroundProps) {
     };
 
     const handleShare = async () => {
+        if (json === '' || query === '') {
+            setError('JSON and Query cannot be empty.');
+            setSnackbarOpen(true);
+            return;
+        }
+
         try {
             const response = await fetch('/api/snippets', {
                 method: 'POST',
@@ -193,24 +201,37 @@ function Playground(props: PlaygroundProps) {
                 }),
             });
 
+            const data = await response.json();
             if (!response.ok) {
-                throw new Error('Failed to save snippet');
+                throw new Error(data.errors ? data.errors.join(', ') : response.statusText)
             }
 
-            const data = await response.json();
             const snippetUrl = `${window.location.origin}/s/${data.slug}`;
 
             // Redirect to the new snippet URL
             window.location.href = snippetUrl;
         } catch (error: any) {
-            alert(error.message);
+            setError(error.message);
+            setSnackbarOpen(true);
         }
+    };
+
+    const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setSnackbarOpen(false);
     };
 
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', bgcolor: 'background.default', color: 'text.primary' }}>
             <Header onShare={handleShare} />
             <Container sx={{ flexGrow: 1, py: 2, display: 'flex', flexDirection: 'column', minWidth: '100%' }}>
+                <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleClose}>
+                    <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+                        {error}
+                    </Alert>
+                </Snackbar>
                 <Grid container spacing={2} sx={{ flexGrow: 1 }}>
                     <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', minHeight: minEditorHeight }}>
                         <JSONEditor value={json} handleChange={handleJSONEditorChange} />
