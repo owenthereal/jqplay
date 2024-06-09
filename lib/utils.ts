@@ -10,7 +10,7 @@ interface Snippet {
     options: string[];
 }
 
-export function generateSlug(s: Snippet): string {
+export function generateSlug(s: Snippet, hashLen: number = 15): string {
     // Create a SHA-1 hash instance
     const hash = crypto.createHash('sha1');
 
@@ -25,7 +25,6 @@ export function generateSlug(s: Snippet): string {
     const base64Encoded = sum.toString('base64url'); // base64url is URL-safe by default
 
     // Ensure the substring does not end with an underscore
-    let hashLen = 11;
     while (hashLen <= base64Encoded.length && base64Encoded[hashLen - 1] === '_') {
         hashLen++;
     }
