@@ -9,7 +9,6 @@
     "lint": "next lint",
     "postinstall": "prisma generate",
     "setup-db": "node scripts/setup-db.js",
-    "prisma:push": "npm run setup-db && npx prisma db push",
     "prisma:migrate": "npm run setup-db && npx prisma migrate dev"
   },
   "dependencies": {
