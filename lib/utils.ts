@@ -18,7 +18,7 @@ export function generateSlug(s: Snippet): string {
     hash.update(s.json);
     hash.update(s.query);
     // Join options array into a single string before hashing
-    hash.update(s.options.join(''));
+    hash.update(s.options.sort().join(''));
 
     // Generate the hash digest and encode it to a URL-safe base64 string
     const sum = hash.digest();
