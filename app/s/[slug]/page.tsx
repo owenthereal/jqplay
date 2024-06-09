@@ -1,8 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Box, CircularProgress } from '@mui/material';
+import { Box, CircularProgress, Typography } from '@mui/material';
 import Playground from '../../../components/Playground';
+import { SnackbarError, ErrorSnackbar } from '@/components/ErrorSnackbar';
+import { currentUnixTimestamp } from '@/lib/utils';
 
 interface Snippet {
     json: string;
@@ -10,37 +12,43 @@ interface Snippet {
     options: string[];
 }
 
-
 const SnippetPage = ({ params }: { params: { slug: string } }) => {
     const slug = params.slug;
     const [snippet, setSnippet] = useState<Snippet | null>(null);
+    const [error, setError] = useState<SnackbarError | null>(null);
 
     useEffect(() => {
-        if (slug) {
-            fetch(`/api/snippets/${slug}`)
-                .then((res) => {
-                    if (res.status >= 400) {
-                        throw new Error('Failed to fetch snippet');
-                    } else {
-                        return res.json()
-                    }
-                })
-                .then((data) => setSnippet(data))
-                .catch(() => {
+        const fetchSnippet = async () => {
+            try {
+                const res = await fetch(`/api/snippets/${slug}`);
+                if (!res.ok) {
+                    throw new Error('Failed to fetch snippet');
+                }
+                const data: Snippet = await res.json();
+                setSnippet(data);
+            } catch (error: any) {
+                setError({ message: error.message, errorId: currentUnixTimestamp() });
+                setTimeout(() => {
                     window.location.href = window.location.origin;
-                })
+                }, 3000);
+            }
+        };
+
+        if (slug) {
+            fetchSnippet();
         } else {
-            // redirect to home if no slug
+            // Redirect to home if no slug
             window.location.href = window.location.origin;
         }
     }, [slug]);
 
     if (!snippet) {
         return (
-            <Box sx={{ display: 'flex' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
                 <CircularProgress />
+                <ErrorSnackbar message={error?.message} errorId={error?.errorId} />
             </Box>
-        )
+        );
     }
 
     return (

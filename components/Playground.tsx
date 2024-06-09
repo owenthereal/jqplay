@@ -6,6 +6,8 @@ import QueryEditor from './QueryEditor';
 import OptionsSelector from './OptionsSelector';
 import OutputEditor from './OutputEditor';
 import { ThemeProvider } from './ThemeProvider';
+import { ErrorSnackbar, SnackbarError } from './ErrorSnackbar';
+import { currentUnixTimestamp, generateErrorId } from '@/lib/utils';
 
 class RunError extends Error {
     runId: number;
@@ -46,8 +48,7 @@ function Playground(props: PlaygroundProps) {
     const [query, setQuery] = useState<string>('');
     const [options, setOptions] = useState<string[]>([]);
     const [minEditorHeight, setMinEditorHeight] = useState<number>(0);
-    const [error, setError] = useState<string>('');
-    const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
+    const [error, setError] = useState<SnackbarError | null>(null);
 
     const workerRef = useRef<Worker | null>(null);
     const runIdRef = useRef<number | null>(null);
@@ -110,7 +111,7 @@ function Playground(props: PlaygroundProps) {
 
         setResult('Running...');
 
-        const runId = Math.floor(new Date().getTime() / 1000);
+        const runId = currentUnixTimestamp();
         runIdRef.current = runId
 
         runTimeoutRef.current = setTimeout(() => {
@@ -183,8 +184,7 @@ function Playground(props: PlaygroundProps) {
 
     const handleShare = async () => {
         if (json === '' || query === '') {
-            setError('JSON and Query cannot be empty.');
-            setSnackbarOpen(true);
+            setError({ message: 'JSON and Query cannot be empty.', errorId: generateErrorId() });
             return;
         }
 
@@ -211,27 +211,15 @@ function Playground(props: PlaygroundProps) {
             // Redirect to the new snippet URL
             window.location.href = snippetUrl;
         } catch (error: any) {
-            setError(error.message);
-            setSnackbarOpen(true);
+            setError({ message: error.message, errorId: generateErrorId() });
         }
-    };
-
-    const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
-        if (reason === 'clickaway') {
-            return;
-        }
-        setSnackbarOpen(false);
     };
 
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', bgcolor: 'background.default', color: 'text.primary' }}>
             <Header onShare={handleShare} />
             <Container sx={{ flexGrow: 1, py: 2, display: 'flex', flexDirection: 'column', minWidth: '100%' }}>
-                <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleClose}>
-                    <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
-                        {error}
-                    </Alert>
-                </Snackbar>
+                <ErrorSnackbar message={error?.message} errorId={error?.errorId} />
                 <Grid container spacing={2} sx={{ flexGrow: 1 }}>
                     <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', minHeight: minEditorHeight }}>
                         <JSONEditor value={json} handleChange={handleJSONEditorChange} />
