@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { Box, Container, Grid, Alert, Snackbar } from '@mui/material';
+import { Box, Container, Grid, Link, Typography } from '@mui/material';
 import Header from './Header';
 import JSONEditor from './JSONEditor';
 import QueryEditor from './QueryEditor';
@@ -8,7 +8,6 @@ import OutputEditor from './OutputEditor';
 import { ThemeProvider } from './ThemeProvider';
 import { ErrorSnackbar, SnackbarError } from './ErrorSnackbar';
 import { currentUnixTimestamp, generateErrorId } from '@/lib/utils';
-import Cheatsheet from './CheatSheet';
 
 class RunError extends Error {
     runId: number;
@@ -241,6 +240,15 @@ function Playground(props: PlaygroundProps) {
                         <OutputEditor result={result} />
                     </Grid>
                 </Grid>
+                <Box sx={{ textAlign: 'center' }}>
+                    <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+                        jqplay is open-source and licensed under the MIT license. View the&nbsp;
+                        <Link href="https://github.com/owenthereal/jqplay" style={{ textDecoration: 'none', color: 'inherit' }}>
+                            source code
+                        </Link>
+                        &nbsp;on GitHub.
+                    </Typography>
+                </Box>>
                 <ErrorSnackbar message={error?.message} errorId={error?.errorId} />
             </Container>
         </Box>
