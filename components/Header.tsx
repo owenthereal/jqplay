@@ -49,11 +49,6 @@ const Header: React.FC<HeaderProps> = ({ onShare, onExampleClick }) => {
                     </Typography>
                 </Box>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Tooltip title="Share">
-                        <IconButton color="inherit" onClick={onShare} aria-label="Share">
-                            <Share />
-                        </IconButton>
-                    </Tooltip>
                     <Tooltip title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}>
                         <IconButton color="inherit" onClick={toggleDarkMode} aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'} >
                             {darkMode ? <Brightness7 /> : <Brightness4 />}
@@ -62,6 +57,11 @@ const Header: React.FC<HeaderProps> = ({ onShare, onExampleClick }) => {
                     <Tooltip title="Cheatsheet">
                         <IconButton color="inherit" onClick={handleCheatsheetOpen} aria-label="Cheatsheet">
                             <Help />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Share">
+                        <IconButton color="inherit" onClick={onShare} aria-label="Share">
+                            <Share />
                         </IconButton>
                     </Tooltip>
                     <CheatSheetDialog onExampleClick={handleExampleClick} open={cheatsheetOpen} onClose={handleCheatsheetClose} />

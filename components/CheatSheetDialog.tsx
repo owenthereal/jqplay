@@ -13,23 +13,25 @@ import {
     Paper,
     useTheme,
     IconButton,
+    Box,
+    Link
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import SectionTitle from './SectionTitle';
 
 const cheatsheetData = [
-    { query: '.', description: 'unchanged input', json: '{ "foo": { "bar": { "baz": 123 } } }' },
-    { query: '.foo', description: 'value at key', json: '{ "foo": { "bar": "baz" } }' },
-    { query: '.[]', description: 'array operation', json: '[1, 2, 3]' },
-    { query: '{foo: .foo, bar: .bar}', description: 'object construction', json: '{ "foo": 1, "bar": 2 }' },
-    { query: 'length', description: 'length of a value', json: '[1, 2, 3]' },
-    { query: 'keys', description: 'keys in an array', json: '{ "foo": 1, "bar": 2 }' },
-    { query: '.[] | select(.foo == "bar")', description: 'input unchanged if foo returns true', json: '[{ "foo": "bar" }, { "foo": "baz" }]' },
-    { query: 'map(.foo)', description: 'invoke filter foo for each input', json: '[{ "foo": 1 }, { "foo": 2 }]' },
-    { query: 'if .foo then .bar else .baz end', description: 'conditionals', json: '{ "foo": true, "bar": "yes", "baz": "no" }' },
-    { query: '"\\(.foo)"', description: 'string interpolation', json: '{ "foo": "bar" }' },
-    { query: 'add', description: 'sum all the numbers in an array', json: '[1, 2, 3]' },
-    { query: '.foo | contains(["bar"])', description: 'checks if a value is in the input', json: '{ "foo": ["bar", "baz"] }' }
+    { query: '.', description: 'Return unchanged input', json: '{ "foo": { "bar": { "baz": 123 } } }' },
+    { query: '.foo', description: 'Extract value at key "foo"', json: '{ "foo": { "bar": "baz" } }' },
+    { query: '.foo.bar', description: 'Extract nested value at key "foo.bar"', json: '{ "foo": { "bar": "baz" } }' },
+    { query: '.[]', description: 'Iterate over array elements', json: '[1, 2, 3]' },
+    { query: '{foo: .foo, bar: .bar}', description: 'Construct an object with keys "foo" and "bar"', json: '{ "foo": 1, "bar": 2 }' },
+    { query: 'length', description: 'Get the length of an array or string', json: '[1, 2, 3]' },
+    { query: 'keys', description: 'Get keys of an object as an array', json: '{ "foo": 1, "bar": 2 }' },
+    { query: '.[] | select(.foo == "bar")', description: 'Filter array elements where "foo" equals "bar"', json: '[{ "foo": "bar" }, { "foo": "baz" }]' },
+    { query: 'map(.foo)', description: 'Map over array and extract "foo" from each element', json: '[{ "foo": 1 }, { "foo": 2 }]' },
+    { query: 'if .foo then .bar else .baz end', description: 'Conditional logic', json: '{ "foo": true, "bar": "yes", "baz": "no" }' },
+    { query: '"\\(.foo)"', description: 'String interpolation with "foo"', json: '{ "foo": "bar" }' },
+    { query: 'add', description: 'Sum all numbers in an array', json: '[1, 2, 3]' },
+    { query: '.foo | contains(["bar"])', description: 'Check if "foo" contains "bar"', json: '{ "foo": ["bar", "baz"] }' }
 ];
 
 interface CheatsheetDialogProps {
@@ -74,8 +76,21 @@ const CheatsheetDialog: React.FC<CheatsheetDialogProps> = ({ open, onClose, onEx
                                     sx={{ cursor: 'pointer', '&:hover': { backgroundColor: theme.palette.action.hover } }}
                                 >
                                     <TableCell>
-                                        <Typography fontSize={theme.typography.fontSize} component="span" sx={{ color: theme.palette.text.secondary }}>
-                                            <code>{row.query}</code>
+                                        <Typography fontSize={theme.typography.fontSize} component="span">
+                                            <Box
+                                                component="code"
+                                                sx={{
+                                                    display: 'inline-block',
+                                                    padding: '2px 4px',
+                                                    backgroundColor: theme.palette.mode === 'dark' ? '#2d2d2d' : '#f9f2f4',
+                                                    borderRadius: '4px',
+                                                    fontFamily: 'Monaco, Menlo, "Courier New", monospace',
+                                                    fontSize: '0.875em',
+                                                    color: theme.palette.mode === 'dark' ? '#9cdcfe' : '#a31515',
+                                                }}
+                                            >
+                                                {row.query}
+                                            </Box>
                                         </Typography>
                                     </TableCell>
                                     <TableCell>
@@ -88,6 +103,11 @@ const CheatsheetDialog: React.FC<CheatsheetDialogProps> = ({ open, onClose, onEx
                         </TableBody>
                     </Table>
                 </TableContainer>
+                <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
+                    <Link href="https://jqlang.github.io/jq/manual/" target="_blank" style={{ textDecoration: 'none', color: 'inherit' }}>
+                        More Examples and References
+                    </Link>
+                </Box>
             </DialogContent>
         </Dialog>
     );
