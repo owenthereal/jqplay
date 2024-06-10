@@ -27,6 +27,7 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
+    "@flydotio/dockerfile": "^0.5.7",
     "@types/node": "^20",
     "@types/pg": "^8.11.6",
     "@types/react": "^18",

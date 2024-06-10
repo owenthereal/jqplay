@@ -2,8 +2,9 @@
 
 import { useSearchParams } from 'next/navigation';
 import Playground from '../components/Playground';
+import { Suspense } from 'react';
 
-const Page = () => {
+const PlaygroundWithParams = () => {
     const searchParams = useSearchParams();
     const j = searchParams.get('j');
     const q = searchParams.get('q');
@@ -19,6 +20,14 @@ const Page = () => {
             InitialQuery={initialQuery}
             InitialOptions={initialOptions}
         />
+    );
+}
+
+const Page = () => {
+    return (
+        <Suspense>
+            <PlaygroundWithParams />
+        </Suspense>
     );
 };
 

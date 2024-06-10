@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { Box, CircularProgress, Typography } from '@mui/material';
 import Playground from '../../../components/Playground';
 import { SnackbarError, ErrorSnackbar } from '@/components/ErrorSnackbar';
-import { currentUnixTimestamp } from '@/lib/utils';
+import { generateErrorId } from '@/lib/utils';
 
 interface Snippet {
     json: string;
@@ -27,7 +27,7 @@ const SnippetPage = ({ params }: { params: { slug: string } }) => {
                 const data: Snippet = await res.json();
                 setSnippet(data);
             } catch (error: any) {
-                setError({ message: error.message, errorId: currentUnixTimestamp() });
+                setError({ message: error.message, errorId: generateErrorId() });
                 setTimeout(() => {
                     window.location.href = window.location.origin;
                 }, 3000);
