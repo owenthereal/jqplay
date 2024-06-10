@@ -104,9 +104,11 @@ const CheatsheetDialog: React.FC<CheatsheetDialogProps> = ({ open, onClose, onEx
                     </Table>
                 </TableContainer>
                 <Box sx={{ mt: 2, display: 'flex', justifyContent: 'center' }}>
-                    <Link href="https://jqlang.github.io/jq/manual/" target="_blank" style={{ textDecoration: 'none', color: 'inherit' }}>
-                        More Examples and References
-                    </Link>
+                    <Typography variant="body1" sx={{ color: 'text.secondary' }}>
+                        <Link href="https://jqlang.github.io/jq/manual/" target="_blank" style={{ textDecoration: 'none', color: 'inherit' }}>
+                            More Examples and References
+                        </Link>
+                    </Typography>
                 </Box>
             </DialogContent>
         </Dialog>
