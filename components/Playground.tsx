@@ -59,7 +59,7 @@ function Playground(props: PlaygroundProps) {
             workerRef.current.terminate();
             workerRef.current = null;
         }
-    }, [workerRef]);
+    }, []);
 
     const clearRunTimeout = useCallback(() => {
         if (runTimeoutRef.current) {
@@ -69,7 +69,7 @@ function Playground(props: PlaygroundProps) {
         if (runIdRef.current) {
             runIdRef.current = null;
         }
-    }, [runTimeoutRef, runIdRef]);
+    }, []);
 
     const updateMinHeight = () => {
         const calculatedHeight = (window.innerHeight - 64 - 64 * 2) / 2;
@@ -86,7 +86,7 @@ function Playground(props: PlaygroundProps) {
             clearRunTimeout();
             terminateWorker();
         };
-    }, []);
+    }, [clearRunTimeout, terminateWorker]);
 
     // initial values
     useEffect(() => {
@@ -95,41 +95,7 @@ function Playground(props: PlaygroundProps) {
         setOptions(props.InitialOptions || []);
     }, [props.InitialJson, props.InitialQuery, props.InitialOptions]);
 
-    useEffect(() => {
-        handleJQRun(json, query, options);
-    }, [json, query, options]);
-
-
-    const handleJQRun = (json: string, query: string, options: string[]) => {
-        clearRunTimeout();
-        terminateWorker();
-        setResult('');
-
-        if (json === '' || query === '') {
-            return;
-        }
-
-        setResult('Running...');
-
-        const runId = currentUnixTimestamp();
-        runIdRef.current = runId
-
-        runTimeoutRef.current = setTimeout(() => {
-            runJQ(runId, json, query, options, 30000)
-                .then((result) => {
-                    if (runIdRef.current === result.runId) {
-                        setResult(result.result);
-                    }
-                })
-                .catch((error: RunError) => {
-                    if (runIdRef.current === error.runId) {
-                        setResult(`Error: ${error.message}`);
-                    }
-                });
-        }, 500);
-    };
-
-    const runJQ = (runId: number, json: string, query: string, options: string[], timeout: number): Promise<RunResult> => {
+    const runJQ = useCallback((runId: number, json: string, query: string, options: string[], timeout: number): Promise<RunResult> => {
         terminateWorker();
 
         return new Promise<RunResult>((resolve, reject) => {
@@ -164,7 +130,40 @@ function Playground(props: PlaygroundProps) {
 
             worker.postMessage({ json, query, options });
         });
-    };
+    }, [terminateWorker]);
+
+    const handleJQRun = useCallback((json: string, query: string, options: string[]) => {
+        clearRunTimeout();
+        terminateWorker();
+        setResult('');
+
+        if (json === '' || query === '') {
+            return;
+        }
+
+        setResult('Running...');
+
+        const runId = currentUnixTimestamp();
+        runIdRef.current = runId;
+
+        runTimeoutRef.current = setTimeout(() => {
+            runJQ(runId, json, query, options, 30000)
+                .then((result) => {
+                    if (runIdRef.current === result.runId) {
+                        setResult(result.result);
+                    }
+                })
+                .catch((error: RunError) => {
+                    if (runIdRef.current === error.runId) {
+                        setResult(`Error: ${error.message}`);
+                    }
+                });
+        }, 500);
+    }, [clearRunTimeout, terminateWorker, runJQ]);
+
+    useEffect(() => {
+        handleJQRun(json, query, options);
+    }, [json, query, options, handleJQRun]);
 
     const handleJSONEditorChange = (value: string | undefined) => {
         if (value !== undefined) {
@@ -203,7 +202,7 @@ function Playground(props: PlaygroundProps) {
 
             const data = await response.json();
             if (!response.ok) {
-                throw new Error(data.errors ? data.errors.join(', ') : response.statusText)
+                throw new Error(data.errors ? data.errors.join(', ') : response.statusText);
             }
 
             const snippetUrl = `${window.location.origin}/s/${data.slug}`;
@@ -218,7 +217,7 @@ function Playground(props: PlaygroundProps) {
     const onExampleClick = (json: string, query: string) => {
         setJson(json);
         setQuery(query);
-    }
+    };
 
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', bgcolor: 'background.default', color: 'text.primary' }}>
@@ -248,7 +247,7 @@ function Playground(props: PlaygroundProps) {
                         </Link>
                         &nbsp;on GitHub.
                     </Typography>
-                </Box>>
+                </Box>
                 <ErrorSnackbar message={error?.message} errorId={error?.errorId} />
             </Container>
         </Box>
