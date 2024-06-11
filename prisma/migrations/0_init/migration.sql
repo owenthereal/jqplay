@@ -8,7 +8,7 @@ CREATE TABLE "snippets" (
     "json" TEXT NOT NULL,
     "query" TEXT NOT NULL,
     "options" TEXT[],
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "snippets_pkey" PRIMARY KEY ("id")
 );
