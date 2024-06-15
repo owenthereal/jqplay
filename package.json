@@ -19,7 +19,7 @@
     "@mui/material": "^5.15.19",
     "@prisma/client": "^5.15.0",
     "@sentry/nextjs": "^8.9.2",
-    "jq-wasm": "^0.0.6",
+    "jq-wasm": "^0.0.7",
     "next": "14.2.3",
     "pg": "^8.12.0",
     "prisma": "^5.15.0",
