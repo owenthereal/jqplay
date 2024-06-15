@@ -2,6 +2,7 @@
 
 # Adjust NODE_VERSION as desired
 ARG NODE_VERSION=22.1.0
+
 FROM node:${NODE_VERSION}-slim as base
 
 LABEL fly_launch_runtime="Next.js/Prisma"
@@ -16,9 +17,13 @@ ENV NODE_ENV="production"
 # Throw-away build stage to reduce size of final image
 FROM base as build
 
+ARG NEXT_PUBLIC_SENTRY_DSN=
+ARG SENTRY_AUTH_TOKEN=
+ENV NEXT_PUBLIC_SENTRY_DSN=${NEXT_PUBLIC_SENTRY_DSN} SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN}
+
 # Install packages needed to build node modules
 RUN apt-get update -qq && \
-    apt-get install --no-install-recommends -y build-essential node-gyp openssl pkg-config python-is-python3
+    apt-get install --no-install-recommends -y build-essential node-gyp openssl pkg-config python-is-python3 ca-certificates
 
 # Install node modules
 COPY --link package-lock.json package.json ./

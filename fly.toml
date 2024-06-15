@@ -20,7 +20,8 @@ size = 'shared-cpu-2x'
 memory = 1024
 
 [[http_service.checks]]
-interval = "15s"
+grace_period = "3s"
+interval = "30s"
 timeout = "5s"
 method = "GET"
 path = "/api/health"
