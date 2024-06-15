@@ -5,7 +5,7 @@ primary_region = 'sea'
 dockerfile = "Dockerfile"
 
 [deploy]
-release_command = 'npx prisma migrate deploy'
+release_command = 'npx --yes prisma migrate deploy'
 
 [http_service]
 internal_port = 3000
@@ -16,8 +16,8 @@ min_machines_running = 2
 processes = ['app']
 
 [[vm]]
-size = 'shared-cpu-2x'
-memory = 1024
+size = 'shared-cpu-1x'
+memory = 512
 
 [[http_service.checks]]
 grace_period = "3s"
