@@ -46,7 +46,7 @@ const Editor: React.FC<EditorProps> = ({ title, darkMode, handleChange, value, l
     return (
         <Box component={Paper} sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1, borderRadius: 0, marginBottom: 2 }}>
             <SectionTitle title={title} />
-            <Box sx={{ flexGrow: 1 }}>
+            <Box sx={{ flexGrow: 1, height: "100%", width: "100%" }}>
                 <MonacoEditor
                     height="100%"
                     width="100%"

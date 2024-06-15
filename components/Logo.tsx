@@ -9,7 +9,7 @@ const Logo: React.FC<LogoProps> = ({ darkMode }) => {
 
     return (
         <svg
-            width="120"
+            width="130"
             height="40"
             viewBox="0 0 120 40"
             fill="none"
