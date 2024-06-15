@@ -23,6 +23,7 @@ var optionsMap = map[string]string{
 	"compact-output": "-c",
 	"raw-output":     "-r",
 	"raw-input":      "-R",
+	"sort-keys":      "-S",
 }
 
 type OldSnippet struct {
@@ -104,7 +105,7 @@ func main() {
 			new,
 		)
 		if err != nil {
-			log.Fatal(err)
+			log.Printf("error upserting snippet: %s %v", old.Slug, err)
 		}
 	}
 

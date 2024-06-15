@@ -3,6 +3,7 @@ GOBIN ?= $(CURDIR)/build
 build:
 	yarn
 	go build -o $(GOBIN)/jqplay ./cmd/jqplay
+	go build -o $(GOBIN)/jqplay-next-migrate ./cmd/migrate
 
 .PHONY: test
 test:
