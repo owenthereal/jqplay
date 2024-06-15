@@ -11,7 +11,7 @@ const Logo: React.FC<LogoProps> = ({ darkMode }) => {
         <svg
             width="130"
             height="40"
-            viewBox="0 0 120 40"
+            viewBox="0 0 130 40"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
             role="img"

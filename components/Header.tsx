@@ -1,4 +1,4 @@
-import { AppBar, Toolbar, IconButton, Box, Tooltip, Typography, Modal } from '@mui/material';
+import { AppBar, Toolbar, IconButton, Box, Tooltip, Typography } from '@mui/material';
 import { Brightness4, Brightness7, Help, Share } from '@mui/icons-material';
 import Logo from './Logo';
 import Link from 'next/link';
@@ -44,7 +44,7 @@ const Header: React.FC<HeaderProps> = ({ onShare, onExampleClick }) => {
                     <Link href="/" passHref style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
                         <Logo darkMode={darkMode} />
                     </Link>
-                    <Typography variant="subtitle1" sx={subtitleStyle} ml={2}>
+                    <Typography variant="subtitle1" sx={subtitleStyle} ml={1}>
                         A playground for <Link href="https://jqlang.github.io/jq" passHref style={{ textDecoration: 'none', color: 'inherit' }}>jq</Link>
                     </Typography>
                 </Box>
