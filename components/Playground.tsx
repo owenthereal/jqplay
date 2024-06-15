@@ -9,6 +9,8 @@ import { ThemeProvider } from './ThemeProvider';
 import { ErrorSnackbar, SnackbarError } from './ErrorSnackbar';
 import { currentUnixTimestamp, generateErrorId } from '@/lib/utils';
 
+const runTimeout = 60000;
+
 class RunError extends Error {
     runId: number;
 
@@ -147,7 +149,7 @@ function Playground(props: PlaygroundProps) {
         runIdRef.current = runId;
 
         runTimeoutRef.current = setTimeout(() => {
-            runJQ(runId, json, query, options, 30000)
+            runJQ(runId, json, query, options, runTimeout)
                 .then((result) => {
                     if (runIdRef.current === result.runId) {
                         setResult(result.result);
