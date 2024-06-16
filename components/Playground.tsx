@@ -29,22 +29,21 @@ class RunResult {
         this.result = result;
     }
 }
+export interface PlaygroundProps {
+    json?: string;
+    query?: string;
+    options?: string[];
+}
 
-export default function PlaygroundLayout(props: PlaygroundProps) {
+export function Playground(props: PlaygroundProps) {
     return (
         <ThemeProvider>
-            <Playground InitialJson={props.InitialJson} InitialQuery={props.InitialQuery} InitialOptions={props.InitialOptions} />
+            <PlaygroundElement json={props.json} query={props.query} options={props.options} />
         </ThemeProvider>
     );
 }
 
-interface PlaygroundProps {
-    InitialJson?: string;
-    InitialQuery?: string;
-    InitialOptions?: string[];
-}
-
-function Playground(props: PlaygroundProps) {
+function PlaygroundElement(props: PlaygroundProps) {
     const [result, setResult] = useState<string>('');
     const [json, setJson] = useState<string>('');
     const [query, setQuery] = useState<string>('');
@@ -92,10 +91,10 @@ function Playground(props: PlaygroundProps) {
 
     // initial values
     useEffect(() => {
-        setJson(props.InitialJson || '');
-        setQuery(props.InitialQuery || '');
-        setOptions(props.InitialOptions || []);
-    }, [props.InitialJson, props.InitialQuery, props.InitialOptions]);
+        setJson(props.json || '');
+        setQuery(props.query || '');
+        setOptions(props.options || []);
+    }, [props.json, props.query, props.options]);
 
     const runJQ = useCallback((runId: number, json: string, query: string, options: string[], timeout: number): Promise<RunResult> => {
         terminateWorker();

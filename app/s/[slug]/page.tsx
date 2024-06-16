@@ -1,20 +1,14 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Box, CircularProgress, Typography } from '@mui/material';
-import Playground from '../../../components/Playground';
+import { Box, CircularProgress } from '@mui/material';
+import { Playground, PlaygroundProps } from '@/components/Playground';
 import { SnackbarError, ErrorSnackbar } from '@/components/ErrorSnackbar';
 import { generateErrorId } from '@/lib/utils';
 
-interface Snippet {
-    json: string;
-    query: string;
-    options: string[];
-}
-
-const SnippetPage = ({ params }: { params: { slug: string } }) => {
+const Page = ({ params }: { params: { slug: string } }) => {
     const slug = params.slug;
-    const [snippet, setSnippet] = useState<Snippet | null>(null);
+    const [playgroundProps, setPlaygroundProps] = useState<PlaygroundProps | null>(null);
     const [error, setError] = useState<SnackbarError | null>(null);
 
     useEffect(() => {
@@ -24,8 +18,8 @@ const SnippetPage = ({ params }: { params: { slug: string } }) => {
                 if (!res.ok) {
                     throw new Error('Failed to fetch snippet');
                 }
-                const data: Snippet = await res.json();
-                setSnippet(data);
+                const data: PlaygroundProps = await res.json();
+                setPlaygroundProps(data);
             } catch (error: any) {
                 setError({ message: error.message, errorId: generateErrorId() });
                 setTimeout(() => {
@@ -42,7 +36,7 @@ const SnippetPage = ({ params }: { params: { slug: string } }) => {
         }
     }, [slug]);
 
-    if (!snippet) {
+    if (!playgroundProps) {
         return (
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
                 <CircularProgress />
@@ -53,11 +47,11 @@ const SnippetPage = ({ params }: { params: { slug: string } }) => {
 
     return (
         <Playground
-            InitialJson={snippet.json}
-            InitialQuery={snippet.query}
-            InitialOptions={snippet.options}
+            json={playgroundProps.json}
+            query={playgroundProps.query}
+            options={playgroundProps.options}
         />
     );
 };
 
-export default SnippetPage;
+export default Page;
