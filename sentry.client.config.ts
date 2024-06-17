@@ -26,5 +26,9 @@ Sentry.init({
       maskAllText: true,
       blockAllMedia: true,
     }),
+    Sentry.feedbackIntegration({
+      colorScheme: localStorage.getItem('theme') === 'dark' ? 'dark' : 'light',
+      isEmailRequired: true,
+    }),
   ],
 });
