@@ -3,9 +3,9 @@
 
 
 "@bower_components/ace-builds@ajaxorg/ace-builds#^1":
-  version "1.33.1"
-  uid "98d379e25ea28dcc97c580c33a92f508176f763d"
-  resolved "https://codeload.github.com/ajaxorg/ace-builds/tar.gz/98d379e25ea28dcc97c580c33a92f508176f763d"
+  version "1.35.0"
+  uid d34e38448f5c350f5dfae38778332142049c8271
+  resolved "https://codeload.github.com/ajaxorg/ace-builds/tar.gz/d34e38448f5c350f5dfae38778332142049c8271"
 
 "@bower_components/angular-ui-ace@angular-ui/ui-ace#0.2.3":
   version "0.0.0"
