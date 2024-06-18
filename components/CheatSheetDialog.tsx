@@ -46,7 +46,7 @@ const CheatsheetDialog: React.FC<CheatsheetDialogProps> = ({ open, onClose, onEx
     return (
         <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
             <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Typography variant="h6">Cheatsheet</Typography>
+                Cheatsheet
                 <IconButton aria-label="close" onClick={onClose} sx={{ color: theme.palette.grey[500] }}>
                     <CloseIcon />
                 </IconButton>
