@@ -31,3 +31,11 @@ export function generateSlug(s: Snippet, hashLen: number = 15): string {
 
     return base64Encoded.substring(0, hashLen);
 }
+
+export function normalizeLineBreaks(text: string | undefined | null) {
+    if (!text) {
+        return '';
+    }
+
+    return text.replace(/\r\n|\r/g, '\n');
+}

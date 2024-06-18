@@ -7,7 +7,7 @@ import OptionsSelector from './OptionsSelector';
 import OutputEditor from './OutputEditor';
 import { ThemeProvider } from './ThemeProvider';
 import { ErrorSnackbar, SnackbarError } from './ErrorSnackbar';
-import { currentUnixTimestamp, generateErrorId } from '@/lib/utils';
+import { currentUnixTimestamp, generateErrorId, normalizeLineBreaks } from '@/lib/utils';
 
 const runTimeout = 60000;
 
@@ -129,7 +129,7 @@ function PlaygroundElement(props: PlaygroundProps) {
                 workerRef.current = null;
             };
 
-            worker.postMessage({ json, query, options });
+            worker.postMessage({ json: normalizeLineBreaks(json), query: normalizeLineBreaks(query), options });
         });
     }, [terminateWorker]);
 
