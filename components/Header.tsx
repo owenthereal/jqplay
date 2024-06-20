@@ -1,4 +1,4 @@
-import { AppBar, Toolbar, IconButton, Box, Tooltip, Typography } from '@mui/material';
+import { AppBar, Toolbar, IconButton, Box, Tooltip, Typography, useMediaQuery, useTheme } from '@mui/material';
 import { Brightness4, Brightness7, ContentCopy, Help, Share } from '@mui/icons-material';
 import Logo from './Logo';
 import Link from 'next/link';
@@ -16,6 +16,9 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ onShare, onExampleClick, onCopyClick, enableCopyButton }) => {
     const { darkMode, toggleDarkMode } = useDarkMode();
     const [cheatsheetOpen, setCheatSheetOpen] = useState(false);
+
+    const theme = useTheme();
+    const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
     const toolbarStyle = {
         backgroundColor: darkMode ? '#333333' : '#f5f5f5',
@@ -46,9 +49,11 @@ const Header: React.FC<HeaderProps> = ({ onShare, onExampleClick, onCopyClick, e
                     <Link href="/" passHref style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
                         <Logo darkMode={darkMode} />
                     </Link>
-                    <Typography variant="subtitle1" sx={subtitleStyle} ml={1}>
-                        A playground for <Link href="https://jqlang.github.io/jq" passHref style={{ textDecoration: 'none', color: 'inherit' }}>jq</Link>
-                    </Typography>
+                    {!isSmallScreen && (
+                        <Typography variant="subtitle1" sx={subtitleStyle} ml={1}>
+                            A playground for <Link href="https://jqlang.github.io/jq" passHref style={{ textDecoration: 'none', color: 'inherit' }}>jq</Link>
+                        </Typography>
+                    )}
                 </Box>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <Tooltip title={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}>
