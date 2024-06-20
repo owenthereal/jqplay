@@ -3,13 +3,13 @@
 import { useEffect, useState } from 'react';
 import { Box, CircularProgress } from '@mui/material';
 import { Playground, PlaygroundProps } from '@/components/Playground';
-import { SnackbarError, ErrorSnackbar } from '@/components/ErrorSnackbar';
-import { generateErrorId } from '@/lib/utils';
+import { NotificationProps, Notification } from '@/components/Notification';
+import { generateMessageId } from '@/lib/utils';
 
 const Page = ({ params }: { params: { slug: string } }) => {
     const slug = params.slug;
     const [playgroundProps, setPlaygroundProps] = useState<PlaygroundProps | null>(null);
-    const [error, setError] = useState<SnackbarError | null>(null);
+    const [notification, setNotification] = useState<NotificationProps | null>(null);
 
     useEffect(() => {
         const fetchSnippet = async () => {
@@ -21,7 +21,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
                 const data: PlaygroundProps = await res.json();
                 setPlaygroundProps(data);
             } catch (error: any) {
-                setError({ message: error.message, errorId: generateErrorId() });
+                setNotification({ message: error.message, messageId: generateMessageId() });
                 setTimeout(() => {
                     window.location.href = window.location.origin;
                 }, 3000);
@@ -40,7 +40,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
         return (
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
                 <CircularProgress />
-                <ErrorSnackbar message={error?.message} errorId={error?.errorId} />
+                <Notification message={notification?.message} messageId={notification?.messageId} />
             </Box>
         );
     }

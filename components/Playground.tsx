@@ -6,8 +6,8 @@ import QueryEditor from './QueryEditor';
 import OptionsSelector from './OptionsSelector';
 import OutputEditor from './OutputEditor';
 import { ThemeProvider } from './ThemeProvider';
-import { ErrorSnackbar, SnackbarError } from './ErrorSnackbar';
-import { currentUnixTimestamp, generateErrorId, normalizeLineBreaks } from '@/lib/utils';
+import { Notification, NotificationProps } from './Notification';
+import { currentUnixTimestamp, generateMessageId, normalizeLineBreaks } from '@/lib/utils';
 
 const runTimeout = 60000;
 
@@ -49,7 +49,7 @@ function PlaygroundElement(props: PlaygroundProps) {
     const [query, setQuery] = useState<string>('');
     const [options, setOptions] = useState<string[]>([]);
     const [minEditorHeight, setMinEditorHeight] = useState<number>(0);
-    const [error, setError] = useState<SnackbarError | null>(null);
+    const [notification, setNotification] = useState<NotificationProps | null>(null);
 
     const workerRef = useRef<Worker | null>(null);
     const runIdRef = useRef<number | null>(null);
@@ -184,7 +184,7 @@ function PlaygroundElement(props: PlaygroundProps) {
 
     const handleShare = async () => {
         if (json === '' || query === '') {
-            setError({ message: 'JSON and Query cannot be empty.', errorId: generateErrorId() });
+            setNotification({ message: 'JSON and Query cannot be empty.', messageId: generateMessageId(), serverity: 'error' });
             return;
         }
 
@@ -211,7 +211,7 @@ function PlaygroundElement(props: PlaygroundProps) {
             // Redirect to the new snippet URL
             window.location.href = snippetUrl;
         } catch (error: any) {
-            setError({ message: error.message, errorId: generateErrorId() });
+            setNotification({ message: error.message, messageId: generateMessageId(), serverity: 'error' });
         }
     };
 
@@ -220,9 +220,17 @@ function PlaygroundElement(props: PlaygroundProps) {
         setQuery(query);
     };
 
+    const onCopyClick = () => {
+        navigator.clipboard.writeText(`jq ${options.join(' ')} '${query}'`).then(() => {
+            setNotification({ message: 'Copied jq command', messageId: generateMessageId(), serverity: 'success' });
+        }).catch((e: any) => {
+            setNotification({ message: e.message, messageId: generateMessageId(), serverity: 'error' });
+        });
+    };
+
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', bgcolor: 'background.default', color: 'text.primary' }}>
-            <Header onShare={handleShare} onExampleClick={onExampleClick} />
+            <Header onShare={handleShare} onExampleClick={onExampleClick} onCopyClick={onCopyClick} enableCopyButton={query.length > 0} />
             <Container sx={{ flexGrow: 1, py: 2, display: 'flex', flexDirection: 'column', minWidth: '100%' }}>
                 <Grid container spacing={2} sx={{ flexGrow: 1 }}>
                     <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', minHeight: minEditorHeight }}>
@@ -249,7 +257,7 @@ function PlaygroundElement(props: PlaygroundProps) {
                         &nbsp;on GitHub.
                     </Typography>
                 </Box>
-                <ErrorSnackbar message={error?.message} errorId={error?.errorId} />
+                <Notification message={notification?.message} messageId={notification?.messageId} serverity={notification?.serverity} />
             </Container>
         </Box>
     );

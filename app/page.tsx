@@ -1,11 +1,11 @@
 'use client'
 
 import { useSearchParams } from 'next/navigation';
-import { Playground, PlaygroundProps } from '../components/Playground';
+import { Playground, PlaygroundProps } from '@/components/Playground';
 import { Suspense, useEffect, useState } from 'react';
 import { Box, CircularProgress } from '@mui/material';
-import { ErrorSnackbar, SnackbarError } from '@/components/ErrorSnackbar';
-import { generateErrorId } from '@/lib/utils';
+import { Notification, NotificationProps } from '@/components/Notification';
+import { generateMessageId } from '@/lib/utils';
 
 const PlaygroundWithParams = () => {
     const searchParams = useSearchParams();
@@ -14,7 +14,7 @@ const PlaygroundWithParams = () => {
     const o = searchParams.get('o');
 
     const [playgroundProps, setPlaygroundProps] = useState<PlaygroundProps | null>(null);
-    const [error, setError] = useState<SnackbarError | null>(null);
+    const [notification, setNotification] = useState<NotificationProps | null>(null);
 
     useEffect(() => {
         try {
@@ -24,7 +24,7 @@ const PlaygroundWithParams = () => {
 
             setPlaygroundProps({ json: initialJson, query: initialQuery, options: initialOptions });
         } catch (error: any) {
-            setError({ message: error.message, errorId: generateErrorId() });
+            setNotification({ message: error.message, messageId: generateMessageId(), serverity: 'error' });
             setTimeout(() => {
                 window.location.href = window.location.origin;
             }, 3000);
@@ -35,7 +35,7 @@ const PlaygroundWithParams = () => {
         return (
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
                 <CircularProgress />
-                <ErrorSnackbar message={error?.message} errorId={error?.errorId} />
+                <Notification message={notification?.message} messageId={notification?.messageId} serverity={notification?.serverity} />
             </Box>
         );
     }

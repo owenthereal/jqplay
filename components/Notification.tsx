@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { Snackbar, Alert } from '@mui/material';
 
-export interface SnackbarError {
+export interface NotificationProps {
     message?: string;
-    errorId?: string;
+    messageId?: string;
+    serverity?: 'error' | 'warning' | 'info' | 'success';
 }
 
-export const ErrorSnackbar: React.FC<SnackbarError> = ({ message, errorId }) => {
+export const Notification: React.FC<NotificationProps> = ({ message, messageId, serverity }) => {
     const [snackbarOpen, setSnackbarOpen] = useState<boolean>(false);
 
     useEffect(() => {
-        if (errorId && message) {
+        if (messageId && message) {
             setSnackbarOpen(true);
         }
-    }, [errorId, message]);
+    }, [messageId, message]);
 
     const handleClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
         if (reason === 'clickaway') {
@@ -24,7 +25,7 @@ export const ErrorSnackbar: React.FC<SnackbarError> = ({ message, errorId }) => 
 
     return (
         <Snackbar open={snackbarOpen} autoHideDuration={6000} onClose={handleClose}>
-            <Alert onClose={handleClose} severity="error" sx={{ width: '100%' }}>
+            <Alert onClose={handleClose} severity={serverity || 'info'} sx={{ width: '100%' }}>
                 {message}
             </Alert>
         </Snackbar>

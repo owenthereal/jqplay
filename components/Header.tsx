@@ -1,5 +1,5 @@
 import { AppBar, Toolbar, IconButton, Box, Tooltip, Typography } from '@mui/material';
-import { Brightness4, Brightness7, Help, Share } from '@mui/icons-material';
+import { Brightness4, Brightness7, ContentCopy, Help, Share } from '@mui/icons-material';
 import Logo from './Logo';
 import Link from 'next/link';
 import { useDarkMode } from './ThemeProvider';
@@ -9,9 +9,11 @@ import CheatSheetDialog from './CheatSheetDialog';
 interface HeaderProps {
     onShare: () => void;
     onExampleClick: (json: string, query: string) => void;
+    onCopyClick: () => void;
+    enableCopyButton: boolean;
 }
 
-const Header: React.FC<HeaderProps> = ({ onShare, onExampleClick }) => {
+const Header: React.FC<HeaderProps> = ({ onShare, onExampleClick, onCopyClick, enableCopyButton }) => {
     const { darkMode, toggleDarkMode } = useDarkMode();
     const [cheatsheetOpen, setCheatSheetOpen] = useState(false);
 
@@ -53,6 +55,13 @@ const Header: React.FC<HeaderProps> = ({ onShare, onExampleClick }) => {
                         <IconButton color="inherit" onClick={toggleDarkMode} aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'} >
                             {darkMode ? <Brightness7 /> : <Brightness4 />}
                         </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Copy jq command to clipboard">
+                        <div>
+                            <IconButton color="inherit" onClick={onCopyClick} aria-label="Copy jq command to clipboard" disabled={!enableCopyButton}>
+                                <ContentCopy />
+                            </IconButton>
+                        </div>
                     </Tooltip>
                     <Tooltip title="Cheatsheet">
                         <IconButton color="inherit" onClick={handleCheatsheetOpen} aria-label="Cheatsheet">
