@@ -34,6 +34,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@types/uuid": "^9.0.8",
+    "comlink": "^4.4.1",
     "eslint": "^8",
     "eslint-config-next": "14.2.3",
     "postcss": "^8",

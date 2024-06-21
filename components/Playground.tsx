@@ -8,8 +8,9 @@ import OutputEditor from './OutputEditor';
 import { ThemeProvider } from './ThemeProvider';
 import { Notification, NotificationProps } from './Notification';
 import { currentUnixTimestamp, generateMessageId, normalizeLineBreaks } from '@/lib/utils';
+import { JQWorker } from '@/workers';
 
-const runTimeout = 60000;
+const runTimeout = 30000;
 
 class RunError extends Error {
     runId: number;
@@ -51,7 +52,7 @@ function PlaygroundElement(props: PlaygroundProps) {
     const [minEditorHeight, setMinEditorHeight] = useState<number>(0);
     const [notification, setNotification] = useState<NotificationProps | null>(null);
 
-    const workerRef = useRef<Worker | null>(null);
+    const workerRef = useRef<JQWorker | null>(null);
     const runIdRef = useRef<number | null>(null);
     const runTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -100,36 +101,25 @@ function PlaygroundElement(props: PlaygroundProps) {
         terminateWorker();
 
         return new Promise<RunResult>((resolve, reject) => {
-            const worker = new Worker(new URL('../workers/worker.ts', import.meta.url));
+            const worker = new JQWorker();
             workerRef.current = worker;
 
             const timeoutId = setTimeout(() => {
-                worker.terminate();
-                workerRef.current = null;
+                terminateWorker();
                 reject(new RunError(runId, 'jq timed out'));
             }, timeout);
 
-            worker.onmessage = function (event) {
-                clearTimeout(timeoutId);
-
-                if (event.data.error) {
-                    reject(new RunError(runId, event.data.error));
-                } else {
-                    resolve(new RunResult(runId, event.data.result));
-                }
-
-                worker.terminate();
-                workerRef.current = null;
-            };
-
-            worker.onerror = function (error) {
-                clearTimeout(timeoutId);
-                reject(new RunError(runId, `Worker error: ${error.message}`));
-                worker.terminate();
-                workerRef.current = null;
-            };
-
-            worker.postMessage({ json: normalizeLineBreaks(json), query: normalizeLineBreaks(query), options });
+            workerRef.current.jq(normalizeLineBreaks(json), normalizeLineBreaks(query), options)
+                .then((result) => {
+                    clearTimeout(timeoutId);
+                    terminateWorker();
+                    resolve(new RunResult(runId, result));
+                })
+                .catch((error: any) => {
+                    clearTimeout(timeoutId);
+                    terminateWorker();
+                    reject(new RunError(runId, `Worker error: ${error.message}`));
+                });
         });
     }, [terminateWorker]);
 
