@@ -4,17 +4,33 @@ import type { Worker as WorkerInterface } from "./process";
 export class JQWorker {
     #worker: Comlink.Remote<WorkerInterface>;
     #webWorker: Worker;
+    #timeout: number;
 
-    constructor() {
-        this.#webWorker = new Worker(new URL("./process.ts", import.meta.url), { type: "module" });
-        this.#worker = Comlink.wrap<WorkerInterface>(this.#webWorker);
+    constructor(timeout: number) {
+        this.#timeout = timeout;
+        try {
+            this.#webWorker = new Worker(new URL("./process.ts", import.meta.url), { type: "module" });
+            this.#worker = Comlink.wrap<WorkerInterface>(this.#webWorker);
+        } catch (error) {
+            throw new Error('Failed to initialize worker');
+        }
     }
 
     jq(json: string, query: string, options: any): Promise<string> {
-        return this.#worker.jq(json, query, options);
+        const timeoutPromise = new Promise<never>((_, reject) => {
+            setTimeout(() => {
+                this.terminate();
+                reject(new Error('jq timed out'));
+            }, this.#timeout);
+        });
+
+        const resultPromise = this.#worker.jq(json, query, options);
+        return Promise.race([resultPromise, timeoutPromise]);
     }
 
     terminate() {
-        this.#webWorker.terminate();
+        if (this.#webWorker) {
+            this.#webWorker.terminate();
+        }
     }
 }

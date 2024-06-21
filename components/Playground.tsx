@@ -101,24 +101,17 @@ function PlaygroundElement(props: PlaygroundProps) {
         terminateWorker();
 
         return new Promise<RunResult>((resolve, reject) => {
-            const worker = new JQWorker();
+            const worker = new JQWorker(timeout);
             workerRef.current = worker;
-
-            const timeoutId = setTimeout(() => {
-                terminateWorker();
-                reject(new RunError(runId, 'jq timed out'));
-            }, timeout);
 
             workerRef.current.jq(normalizeLineBreaks(json), normalizeLineBreaks(query), options)
                 .then((result) => {
-                    clearTimeout(timeoutId);
                     terminateWorker();
                     resolve(new RunResult(runId, result));
                 })
                 .catch((error: any) => {
-                    clearTimeout(timeoutId);
                     terminateWorker();
-                    reject(new RunError(runId, `Worker error: ${error.message}`));
+                    reject(new RunError(runId, error.message));
                 });
         });
     }, [terminateWorker]);
