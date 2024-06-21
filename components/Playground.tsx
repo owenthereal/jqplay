@@ -9,6 +9,7 @@ import { ThemeProvider } from './ThemeProvider';
 import { Notification, NotificationProps } from './Notification';
 import { currentUnixTimestamp, generateMessageId, normalizeLineBreaks } from '@/lib/utils';
 import { JQWorker } from '@/workers';
+import { useRouter } from 'next/navigation';
 
 const runTimeout = 30000;
 
@@ -45,6 +46,7 @@ export function Playground(props: PlaygroundProps) {
 }
 
 function PlaygroundElement(props: PlaygroundProps) {
+    const router = useRouter();
     const [result, setResult] = useState<string>('');
     const [json, setJson] = useState<string>('');
     const [query, setQuery] = useState<string>('');
@@ -189,10 +191,8 @@ function PlaygroundElement(props: PlaygroundProps) {
                 throw new Error(data.errors ? data.errors.join(', ') : response.statusText);
             }
 
-            const snippetUrl = `${window.location.origin}/s/${data.slug}`;
-
             // Redirect to the new snippet URL
-            window.location.href = snippetUrl;
+            router.push(`/s/${data.slug}`);
         } catch (error: any) {
             setNotification({ message: error.message, messageId: generateMessageId(), serverity: 'error' });
         }

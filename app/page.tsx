@@ -1,6 +1,6 @@
 'use client'
 
-import { useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Playground, PlaygroundProps } from '@/components/Playground';
 import { Suspense, useEffect, useState } from 'react';
 import { Box, CircularProgress } from '@mui/material';
@@ -8,6 +8,8 @@ import { Notification, NotificationProps } from '@/components/Notification';
 import { generateMessageId } from '@/lib/utils';
 
 const PlaygroundWithParams = () => {
+    const router = useRouter();
+
     const searchParams = useSearchParams();
     const j = searchParams.get('j');
     const q = searchParams.get('q');
@@ -26,7 +28,7 @@ const PlaygroundWithParams = () => {
         } catch (error: any) {
             setNotification({ message: error.message, messageId: generateMessageId(), serverity: 'error' });
             setTimeout(() => {
-                window.location.href = window.location.origin;
+                router.push('/');
             }, 3000);
         }
     }, [j, q, o])

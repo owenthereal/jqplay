@@ -5,8 +5,11 @@ import { Box, CircularProgress } from '@mui/material';
 import { Playground, PlaygroundProps } from '@/components/Playground';
 import { NotificationProps, Notification } from '@/components/Notification';
 import { generateMessageId } from '@/lib/utils';
+import { useRouter } from 'next/navigation';
 
 const Page = ({ params }: { params: { slug: string } }) => {
+    const router = useRouter();
+
     const slug = params.slug;
     const [playgroundProps, setPlaygroundProps] = useState<PlaygroundProps | null>(null);
     const [notification, setNotification] = useState<NotificationProps | null>(null);
@@ -23,7 +26,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
             } catch (error: any) {
                 setNotification({ message: error.message, messageId: generateMessageId() });
                 setTimeout(() => {
-                    window.location.href = window.location.origin;
+                    router.push('/');
                 }, 3000);
             }
         };
@@ -32,7 +35,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
             fetchSnippet();
         } else {
             // Redirect to home if no slug
-            window.location.href = window.location.origin;
+            router.push('/');
         }
     }, [slug]);
 
