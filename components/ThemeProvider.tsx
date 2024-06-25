@@ -43,7 +43,7 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
                 main: darkMode ? '#61dafb' : '#007acc',
             },
             secondary: {
-                main: darkMode ? '#282c34' : '#f6f8fa',
+                main: darkMode ? '#f6f8fa' : '#282c34',
             },
             background: {
                 default: darkMode ? '#1e1e1e' : '#ffffff',

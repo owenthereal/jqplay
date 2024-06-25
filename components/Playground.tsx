@@ -77,7 +77,7 @@ function PlaygroundElement(props: PlaygroundProps) {
     }, []);
 
     const updateMinHeight = () => {
-        const freeHeight = window.innerHeight - 64 - 64 * 2; // 64px for header, 64px * 2 for options
+        const freeHeight = window.innerHeight - 64 - 110 - 21; // 64px for header, 110 for options, 21 for footer
         const editorHeight = freeHeight * 2 / 3;
         const queryEditorHeight = freeHeight / 3;
         const minHeight = 35;
