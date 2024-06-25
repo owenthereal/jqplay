@@ -52,6 +52,7 @@ function PlaygroundElement(props: PlaygroundProps) {
     const [query, setQuery] = useState<string>('');
     const [options, setOptions] = useState<string[]>([]);
     const [minEditorHeight, setMinEditorHeight] = useState<number>(0);
+    const [minQueryEditorHeight, setQueryMinEditorHeight] = useState<number>(0);
     const [notification, setNotification] = useState<NotificationProps | null>(null);
 
     const workerRef = useRef<JQWorker | null>(null);
@@ -76,9 +77,13 @@ function PlaygroundElement(props: PlaygroundProps) {
     }, []);
 
     const updateMinHeight = () => {
-        const calculatedHeight = (window.innerHeight - 64 - 64 * 2) / 2;
+        const freeHeight = window.innerHeight - 64 - 64 * 2; // 64px for header, 64px * 2 for options
+        const editorHeight = freeHeight * 2 / 3;
+        const queryEditorHeight = freeHeight / 3;
         const minHeight = 35;
-        setMinEditorHeight(Math.max(calculatedHeight, minHeight));
+
+        setMinEditorHeight(Math.max(editorHeight, minHeight));
+        setQueryMinEditorHeight(Math.max(queryEditorHeight, minHeight));
     };
 
     useEffect(() => {
@@ -215,19 +220,19 @@ function PlaygroundElement(props: PlaygroundProps) {
         <Box sx={{ display: 'flex', flexDirection: 'column', bgcolor: 'background.default', color: 'text.primary' }}>
             <Header onShare={handleShare} onExampleClick={onExampleClick} onCopyClick={onCopyClick} enableCopyButton={query.length > 0} />
             <Container sx={{ flexGrow: 1, py: 2, display: 'flex', flexDirection: 'column', minWidth: '100%' }}>
-                <Grid container spacing={2} sx={{ flexGrow: 1 }}>
-                    <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', minHeight: minEditorHeight }}>
-                        <JSONEditor value={json} handleChange={handleJSONEditorChange} />
-                    </Grid>
-                    <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', minHeight: minEditorHeight }}>
+                <Grid container spacing={1} sx={{ flexGrow: 1 }}>
+                    <Grid item xs={12} md={12} sx={{ display: 'flex', flexDirection: 'column', minHeight: minQueryEditorHeight }}>
                         <QueryEditor value={query} handleChange={handleQueryEditorChange} />
                     </Grid>
                 </Grid>
                 <Box>
                     <OptionsSelector options={options} setOptions={handleOptionsSelectorChange} />
                 </Box>
-                <Grid container spacing={1} sx={{ flexGrow: 1 }}>
-                    <Grid item xs={12} md={12} sx={{ display: 'flex', flexDirection: 'column', minHeight: minEditorHeight }}>
+                <Grid container spacing={2} sx={{ flexGrow: 1 }}>
+                    <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', minHeight: minEditorHeight }}>
+                        <JSONEditor value={json} handleChange={handleJSONEditorChange} />
+                    </Grid>
+                    <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', minHeight: minEditorHeight }}>
                         <OutputEditor result={result} />
                     </Grid>
                 </Grid>
