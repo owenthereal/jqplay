@@ -1,7 +1,7 @@
 # syntax = docker/dockerfile:1
 
 # Adjust NODE_VERSION as desired
-ARG NODE_VERSION=22.1.0
+ARG NODE_VERSION=22.3.0
 
 FROM node:${NODE_VERSION}-slim as base
 
@@ -27,11 +27,8 @@ RUN apt-get update -qq && \
 
 # Install node modules
 COPY --link package-lock.json package.json ./
-RUN npm ci --include=dev
-
-# Generate Prisma Client
 COPY --link prisma .
-RUN npx prisma generate
+RUN npm ci --include=dev
 
 # Copy application code
 COPY --link . .
