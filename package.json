@@ -21,7 +21,7 @@
     "@prisma/client": "^5.15.0",
     "@sentry/nextjs": "^8.9.2",
     "jq-wasm": "^0.0.9",
-    "next": "14.2.3",
+    "next": "14.2.4",
     "pg": "^8.12.0",
     "prisma": "^5.15.0",
     "react": "^18",

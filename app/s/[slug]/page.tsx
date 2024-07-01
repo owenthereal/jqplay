@@ -8,12 +8,11 @@ import { generateMessageId } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 
 const Page = ({ params }: { params: { slug: string } }) => {
-    const router = useRouter();
-
     const slug = params.slug;
     const [playgroundProps, setPlaygroundProps] = useState<PlaygroundProps | null>(null);
     const [notification, setNotification] = useState<NotificationProps | null>(null);
 
+    const router = useRouter();
     useEffect(() => {
         const fetchSnippet = async () => {
             try {
@@ -37,7 +36,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
             // Redirect to home if no slug
             router.push('/');
         }
-    }, [slug]);
+    }, [slug, router]);
 
     if (!playgroundProps) {
         return (

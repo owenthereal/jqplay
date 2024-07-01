@@ -8,8 +8,6 @@ import { Notification, NotificationProps } from '@/components/Notification';
 import { generateMessageId } from '@/lib/utils';
 
 const PlaygroundWithParams = () => {
-    const router = useRouter();
-
     const searchParams = useSearchParams();
     const j = searchParams.get('j');
     const q = searchParams.get('q');
@@ -18,6 +16,7 @@ const PlaygroundWithParams = () => {
     const [playgroundProps, setPlaygroundProps] = useState<PlaygroundProps | null>(null);
     const [notification, setNotification] = useState<NotificationProps | null>(null);
 
+    const router = useRouter();
     useEffect(() => {
         try {
             const initialQuery = typeof q === 'string' ? decodeURIComponent(q) : '';
@@ -31,7 +30,7 @@ const PlaygroundWithParams = () => {
                 router.push('/');
             }, 3000);
         }
-    }, [j, q, o])
+    }, [j, q, o, router])
 
     if (!playgroundProps) {
         return (
