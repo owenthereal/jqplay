@@ -1,8 +1,18 @@
 import * as Comlink from "comlink";
-import jq from "jq-wasm";
+
+let jq: typeof import('jq-wasm') | null = null;
 
 const worker = {
-    jq(json: string, query: string, options: any): Promise<string> {
+    async initialize() {
+        if (!jq) {
+            jq = await import('jq-wasm')
+        }
+    },
+
+    async jq(json: string, query: string, options: any): Promise<string> {
+        if (!jq) {
+            throw new Error('jq-wasm not initialized');
+        }
         return jq.raw(json, query, options);
     }
 };

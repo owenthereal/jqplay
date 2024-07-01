@@ -8,12 +8,9 @@ export class JQWorker {
 
     constructor(timeout: number) {
         this.#timeout = timeout;
-        try {
-            this.#webWorker = new Worker(new URL("./process.ts", import.meta.url), { type: "module" });
-            this.#worker = Comlink.wrap<WorkerInterface>(this.#webWorker);
-        } catch (error) {
-            throw new Error('Failed to initialize worker');
-        }
+        this.#webWorker = new Worker(new URL("./process.ts", import.meta.url), { type: "module" });
+        this.#worker = Comlink.wrap<WorkerInterface>(this.#webWorker);
+        this.#worker.initialize();
     }
 
     jq(json: string, query: string, options: any): Promise<string> {
@@ -29,8 +26,6 @@ export class JQWorker {
     }
 
     terminate() {
-        if (this.#webWorker) {
-            this.#webWorker.terminate();
-        }
+        this.#webWorker.terminate();
     }
 }
