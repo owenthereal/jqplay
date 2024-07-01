@@ -10,7 +10,6 @@ export class JQWorker {
         this.#timeout = timeout;
         this.#webWorker = new Worker(new URL("./process.ts", import.meta.url), { type: "module" });
         this.#worker = Comlink.wrap<WorkerInterface>(this.#webWorker);
-        this.#worker.initialize();
     }
 
     jq(json: string, query: string, options: any): Promise<string> {
