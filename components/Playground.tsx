@@ -111,13 +111,11 @@ function PlaygroundElement(props: PlaygroundProps) {
             const worker = new JQWorker(timeout);
             workerRef.current = worker;
 
-            workerRef.current.jq(normalizeLineBreaks(json), normalizeLineBreaks(query), options)
+            worker.jq(normalizeLineBreaks(json), normalizeLineBreaks(query), options)
                 .then((result) => {
-                    terminateWorker();
                     resolve(new RunResult(runId, result));
                 })
                 .catch((error: any) => {
-                    terminateWorker();
                     reject(new RunError(runId, error.message));
                 });
         });
@@ -125,7 +123,6 @@ function PlaygroundElement(props: PlaygroundProps) {
 
     const handleJQRun = useCallback((json: string, query: string, options: string[]) => {
         clearRunTimeout();
-        terminateWorker();
         setResult('');
 
         if (json === '' || query === '') {
@@ -150,7 +147,7 @@ function PlaygroundElement(props: PlaygroundProps) {
                     }
                 });
         }, 500);
-    }, [clearRunTimeout, terminateWorker, runJQ]);
+    }, [clearRunTimeout, runJQ]);
 
     useEffect(() => {
         handleJQRun(json, query, options);
