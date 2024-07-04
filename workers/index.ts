@@ -1,15 +1,22 @@
 import * as Comlink from "comlink";
 import type { Worker as WorkerInterface } from "./process";
+import jq from 'jq-wasm';
 
 export class JQWorker {
-    #worker: Comlink.Remote<WorkerInterface>;
-    #webWorker: Worker;
+    #worker: Comlink.Remote<WorkerInterface> | null = null;
+    #webWorker: Worker | null = null;
     #timeout: number;
 
     constructor(timeout: number) {
         this.#timeout = timeout;
-        this.#webWorker = new Worker(new URL("./process.ts", import.meta.url), { type: "module" });
-        this.#worker = Comlink.wrap<WorkerInterface>(this.#webWorker);
+        if (window.Worker) {
+            try {
+                this.#webWorker = new Worker(new URL("./process.ts", import.meta.url), { type: "module" });
+                this.#worker = Comlink.wrap<WorkerInterface>(this.#webWorker);
+            } catch (error) {
+                console.error("Failed to initialize Web Worker:", error);
+            }
+        }
     }
 
     jq(json: string, query: string, options: any): Promise<string> {
@@ -20,11 +27,21 @@ export class JQWorker {
             }, this.#timeout);
         });
 
-        const resultPromise = this.#worker.jq(json, query, options);
+        let resultPromise: Promise<string>;
+        if (this.#worker) {
+            resultPromise = this.#worker.jq(json, query, options);
+        } else {
+            resultPromise = jq.raw(json, query, options);
+        }
+
         return Promise.race([resultPromise, timeoutPromise]);
     }
 
     terminate() {
-        this.#webWorker.terminate();
+        if (this.#webWorker) {
+            this.#webWorker.terminate();
+            this.#webWorker = null;
+            this.#worker = null;
+        }
     }
 }
