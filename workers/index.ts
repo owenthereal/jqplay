@@ -11,7 +11,7 @@ export class JQWorker {
         this.#timeout = timeout;
         if (window.Worker) {
             try {
-                this.#webWorker = new Worker(new URL("./process.ts", import.meta.url), { type: "module" });
+                this.#webWorker = new Worker(new URL("/workers/process.ts", import.meta.url), { type: "module" });
                 this.#worker = Comlink.wrap<WorkerInterface>(this.#webWorker);
             } catch (error) {
                 console.error("Failed to initialize Web Worker:", error);
