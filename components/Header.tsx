@@ -1,5 +1,5 @@
 import { AppBar, Toolbar, IconButton, Box, Tooltip, Typography, useMediaQuery, useTheme } from '@mui/material';
-import { Brightness4, Brightness7, ContentCopy, Help, Share } from '@mui/icons-material';
+import { Brightness4, Brightness7, ContentCopy, Help, Share, VolunteerActivism } from '@mui/icons-material';
 import Logo from './Logo';
 import Link from 'next/link';
 import { useDarkMode } from './ThemeProvider';
@@ -61,9 +61,9 @@ const Header: React.FC<HeaderProps> = ({ onShare, onExampleClick, onCopyClick, e
                             {darkMode ? <Brightness7 /> : <Brightness4 />}
                         </IconButton>
                     </Tooltip>
-                    <Tooltip title="Copy jq command to clipboard">
+                    <Tooltip title="Copy command to clipboard">
                         <div>
-                            <IconButton color="inherit" onClick={onCopyClick} aria-label="Copy jq command to clipboard" disabled={!enableCopyButton}>
+                            <IconButton color="inherit" onClick={onCopyClick} aria-label="Copy command to clipboard" disabled={!enableCopyButton}>
                                 <ContentCopy />
                             </IconButton>
                         </div>
@@ -76,6 +76,13 @@ const Header: React.FC<HeaderProps> = ({ onShare, onExampleClick, onCopyClick, e
                     <Tooltip title="Share">
                         <IconButton color="inherit" onClick={onShare} aria-label="Share">
                             <Share />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Sponsor">
+                        <IconButton color="inherit" aria-label="Sponsor">
+                            <Link href="https://github.com/sponsors/owenthereal" passHref={true}>
+                                <VolunteerActivism />
+                            </Link>
                         </IconButton>
                     </Tooltip>
                     <CheatSheetDialog onExampleClick={handleExampleClick} open={cheatsheetOpen} onClose={handleCheatsheetClose} />

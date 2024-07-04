@@ -207,7 +207,7 @@ function PlaygroundElement(props: PlaygroundProps) {
 
     const onCopyClick = () => {
         navigator.clipboard.writeText(`jq ${options.join(' ')} '${query}'`).then(() => {
-            setNotification({ message: 'Copied jq command', messageId: generateMessageId(), serverity: 'success' });
+            setNotification({ message: 'Copied command', messageId: generateMessageId(), serverity: 'success' });
         }).catch((e: any) => {
             setNotification({ message: e.message, messageId: generateMessageId(), serverity: 'error' });
         });
