@@ -22,10 +22,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className={inter.className}>
         {children}
-        <Script
-          src="https://unpkg.com/pseudo-worker/dist/pseudo-worker.polyfill.min.js"
-          strategy="beforeInteractive"
-        />
       </body>
     </html>
   );
