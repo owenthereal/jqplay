@@ -54,6 +54,7 @@ function PlaygroundElement(props: PlaygroundProps) {
     const [json, setJson] = useState<string>('');
     const [query, setQuery] = useState<string>('');
     const [options, setOptions] = useState<string[]>([]);
+    const [minPlaygroundWidth, setMinPlaygroundWidth] = useState<string>("");
     const [minEditorHeight, setMinEditorHeight] = useState<number>(0);
     const [minQueryEditorHeight, setQueryMinEditorHeight] = useState<number>(0);
     const [notification, setNotification] = useState<NotificationProps | null>(null);
@@ -80,13 +81,19 @@ function PlaygroundElement(props: PlaygroundProps) {
     }, []);
 
     const updateMinHeight = () => {
-        const freeHeight = window.innerHeight - 64 - 110 - 21; // 64px for header, 110 for options, 21 for footer
-        const editorHeight = freeHeight * 2 / 3;
-        const queryEditorHeight = freeHeight / 3;
-        const minHeight = 35;
-
+        const height = window.innerHeight - 64 - 110 - 21; // 64px for header, 110 for options, 21 for footer
+        const editorHeight = height * 2 / 3;
+        const queryEditorHeight = height / 3;
+        const minHeight = 35 * 4;
         setMinEditorHeight(Math.max(editorHeight, minHeight));
         setQueryMinEditorHeight(Math.max(queryEditorHeight, minHeight));
+
+        const width = window.innerWidth;
+        let playgroundWidth = '100%';
+        if (width >= 1280) {
+            playgroundWidth = '1280px'
+        }
+        setMinPlaygroundWidth(playgroundWidth);
     };
 
     useEffect(() => {
@@ -219,7 +226,7 @@ function PlaygroundElement(props: PlaygroundProps) {
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', bgcolor: 'background.default', color: 'text.primary' }}>
             <Header onShare={handleShare} onExampleClick={onExampleClick} onCopyClick={onCopyClick} enableCopyButton={query.length > 0} />
-            <Container sx={{ flexGrow: 1, py: 2, display: 'flex', flexDirection: 'column', minWidth: '100%' }}>
+            <Container sx={{ flexGrow: 1, py: 2, display: 'flex', flexDirection: 'column', minWidth: minPlaygroundWidth }}>
                 <Grid container spacing={1} sx={{ flexGrow: 1 }}>
                     <Grid item xs={12} md={12} sx={{ display: 'flex', flexDirection: 'column', minHeight: minQueryEditorHeight }}>
                         <QueryEditor value={query} handleChange={handleQueryEditorChange} />
