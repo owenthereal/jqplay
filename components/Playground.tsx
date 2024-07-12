@@ -51,9 +51,15 @@ export function Playground(props: PlaygroundProps) {
 function PlaygroundElement(props: PlaygroundProps) {
     const router = useRouter();
     const [result, setResult] = useState<string>('');
+
     const [json, setJson] = useState<string>('');
     const [query, setQuery] = useState<string>('');
     const [options, setOptions] = useState<string[]>([]);
+
+    const [initialJson, setInitialJson] = useState<string | undefined>(props.json);
+    const [initialQuery, setInitialQuery] = useState<string | undefined>(props.query);
+    const [initialOptions, setInitialOptions] = useState<string[] | undefined>(props.options);
+
     const [minPlaygroundWidth, setMinPlaygroundWidth] = useState<string>("");
     const [minEditorHeight, setMinEditorHeight] = useState<number>(0);
     const [minQueryEditorHeight, setQueryMinEditorHeight] = useState<number>(0);
@@ -109,10 +115,10 @@ function PlaygroundElement(props: PlaygroundProps) {
 
     // initial values
     useEffect(() => {
-        setJson(props.json || '');
-        setQuery(props.query || '');
-        setOptions(props.options || []);
-    }, [props.json, props.query, props.options]);
+        setJson(initialJson || '');
+        setQuery(initialQuery || '');
+        setOptions(initialOptions || []);
+    }, [initialJson, initialQuery, initialQuery]);
 
     const runJQ = useCallback((runId: number, json: string, query: string, options: string[], timeout: number): Promise<RunResult> => {
         terminateWorker();
@@ -177,6 +183,7 @@ function PlaygroundElement(props: PlaygroundProps) {
 
     const handleOptionsSelectorChange = (options: string[]) => {
         setOptions(options);
+        setInitialOptions(options);
     };
 
     const handleShare = async () => {
@@ -211,8 +218,8 @@ function PlaygroundElement(props: PlaygroundProps) {
     };
 
     const onExampleClick = (json: string, query: string) => {
-        setJson(json);
-        setQuery(query);
+        setInitialJson(json);
+        setInitialQuery(query);
     };
 
     const onCopyClick = () => {
@@ -229,15 +236,15 @@ function PlaygroundElement(props: PlaygroundProps) {
             <Container sx={{ flexGrow: 1, py: 2, display: 'flex', flexDirection: 'column', minWidth: minPlaygroundWidth }}>
                 <Grid container spacing={1} sx={{ flexGrow: 1 }}>
                     <Grid item xs={12} md={12} sx={{ display: 'flex', flexDirection: 'column', minHeight: minQueryEditorHeight }}>
-                        <QueryEditor value={query} handleChange={handleQueryEditorChange} />
+                        <QueryEditor value={initialQuery} handleChange={handleQueryEditorChange} />
                     </Grid>
                 </Grid>
                 <Box>
-                    <OptionsSelector options={options} setOptions={handleOptionsSelectorChange} />
+                    <OptionsSelector options={initialOptions} setOptions={handleOptionsSelectorChange} />
                 </Box>
                 <Grid container spacing={2} sx={{ flexGrow: 1 }}>
                     <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', minHeight: minEditorHeight }}>
-                        <JSONEditor value={json} handleChange={handleJSONEditorChange} />
+                        <JSONEditor value={initialJson} handleChange={handleJSONEditorChange} />
                     </Grid>
                     <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', minHeight: minEditorHeight }}>
                         <OutputEditor result={result} />

@@ -2,7 +2,7 @@ import { Box, Paper, MenuItem, Select, FormControl, InputLabel, Chip, SelectChan
 import React, { useState } from 'react';
 
 interface OptionsProps {
-    options: string[];
+    options?: string[];
     setOptions: (options: string[]) => void;
 }
 
@@ -25,7 +25,8 @@ const OptionsSelector: React.FC<OptionsProps> = ({ options, setOptions }) => {
     };
 
     const handleDelete = (optionToDelete: string) => () => {
-        const newOptions = options.filter((option) => option !== optionToDelete);
+        const initialOptions = options || [];
+        const newOptions = initialOptions.filter((option) => option !== optionToDelete);
         setOptions(newOptions);
         if (newOptions.length === 0) {
             setSelectState({ open: false, focus: true });
