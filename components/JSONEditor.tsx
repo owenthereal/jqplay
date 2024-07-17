@@ -1,5 +1,4 @@
-import Editor from './Editor';
-import { useDarkMode } from './ThemeProvider';
+import EditorWrapper from './EditorWrapper';
 
 interface JSONEditorProps {
     value?: string;
@@ -7,10 +6,8 @@ interface JSONEditorProps {
 }
 
 const JSONEditor: React.FC<JSONEditorProps> = ({ value, handleChange }) => {
-    const { darkMode } = useDarkMode();
-
     return (
-        <Editor title="JSON" darkMode={darkMode} language="json" value={value} handleChange={handleChange} />
+        <EditorWrapper title="JSON" language="json" value={value} handleChange={handleChange} />
     );
 }
 

@@ -118,7 +118,7 @@ function PlaygroundElement(props: PlaygroundProps) {
         setJson(initialJson || '');
         setQuery(initialQuery || '');
         setOptions(initialOptions || []);
-    }, [initialJson, initialQuery, initialQuery]);
+    }, [initialJson, initialQuery, initialOptions]);
 
     const runJQ = useCallback((runId: number, json: string, query: string, options: string[], timeout: number): Promise<RunResult> => {
         terminateWorker();

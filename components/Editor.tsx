@@ -1,20 +1,18 @@
 import MonacoEditor from '@monaco-editor/react';
 import { editor } from 'monaco-editor';
-import { Box, Paper, useTheme } from '@mui/material';
+import { useTheme } from '@mui/material';
 import React from 'react';
-import Tab from '@mui/material/Tab';
-import { TabContext, TabList, TabPanel } from '@mui/lab';
+import { useDarkMode } from './ThemeProvider';
 
 interface EditorProps {
-    title: string;
-    darkMode: boolean;
     language: string;
     readOnly?: boolean;
     value?: string;
     handleChange?: (value: string | undefined) => void;
 }
 
-const Editor: React.FC<EditorProps> = ({ title, darkMode, handleChange, value, language, readOnly }) => {
+const Editor: React.FC<EditorProps> = ({ handleChange, value, language, readOnly }) => {
+    const { darkMode } = useDarkMode();
     const theme = useTheme();
 
     const customizeContextMenu = (editor: editor.IStandaloneCodeEditor) => {
@@ -44,44 +42,24 @@ const Editor: React.FC<EditorProps> = ({ title, darkMode, handleChange, value, l
     }
 
     return (
-        <Box component={Paper} sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1, borderRadius: 0, marginBottom: 2 }}>
-            <TabContext value={title}>
-                <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                    <TabList
-                        aria-label={title}
-                        textColor='inherit'
-                        indicatorColor='secondary'
-                        sx={{
-                            color: darkMode ? theme.palette.common.white : theme.palette.text.primary,
-                            paddingBottom: 1,
-                            paddingLeft: 1,
-                        }}
-                    >
-                        <Tab label={title} value={title} sx={{ padding: 0, fontSize: theme.typography.h6 }} />
-                    </TabList>
-                </Box>
-                <TabPanel value={title} sx={{ height: "100%", width: "100%", padding: 0 }}>
-                    <MonacoEditor
-                        height="100%"
-                        width="100%"
-                        defaultLanguage={language}
-                        theme={darkMode ? 'vs-dark' : 'light'}
-                        value={value}
-                        onChange={handleChange}
-                        onMount={handleEditorDidMount}
-                        options={{
-                            readOnly: readOnly,
-                            minimap: { enabled: false },
-                            scrollbar: { vertical: 'auto', horizontal: 'auto' },
-                            fontSize: theme.typography.body2.fontSize ? parseInt(theme.typography.body2.fontSize.toString()) : 12,
-                            fontFamily: theme.typography.body2.fontFamily,
-                            lineNumbers: 'on',
-                            automaticLayout: true,
-                        }}
-                    />
-                </TabPanel>
-            </TabContext >
-        </Box >
+        <MonacoEditor
+            height="100%"
+            width="100%"
+            defaultLanguage={language}
+            theme={darkMode ? 'vs-dark' : 'light'}
+            value={value}
+            onChange={handleChange}
+            onMount={handleEditorDidMount}
+            options={{
+                readOnly: readOnly,
+                minimap: { enabled: false },
+                scrollbar: { vertical: 'auto', horizontal: 'auto' },
+                fontSize: theme.typography.body2.fontSize ? parseInt(theme.typography.body2.fontSize.toString()) : 12,
+                fontFamily: theme.typography.body2.fontFamily,
+                lineNumbers: 'on',
+                automaticLayout: true,
+            }}
+        />
     );
 };
 
