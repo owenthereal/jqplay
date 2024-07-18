@@ -9,8 +9,9 @@ import { ThemeProvider } from './ThemeProvider';
 import { Notification, NotificationProps } from './Notification';
 import { currentUnixTimestamp, generateMessageId, normalizeLineBreaks } from '@/lib/utils';
 import { loader } from '@monaco-editor/react';
-import { JQWorker } from '@/workers';
+import { JQWorker, JsonInput } from '@/workers';
 import { useRouter } from 'next/navigation';
+import { HttpInput } from '@/workers/worker';
 
 const runTimeout = 30000;
 
@@ -52,13 +53,12 @@ function PlaygroundElement(props: PlaygroundProps) {
     const router = useRouter();
     const [result, setResult] = useState<string>('');
 
-    const [json, setJson] = useState<string>('');
+    const [input, setInput] = useState<JsonInput | null>(null);
     const [query, setQuery] = useState<string>('');
     const [options, setOptions] = useState<string[]>([]);
 
     const [initialJson, setInitialJson] = useState<string | undefined>(props.json);
     const [initialQuery, setInitialQuery] = useState<string | undefined>(props.query);
-    const [initialOptions, setInitialOptions] = useState<string[] | undefined>(props.options);
 
     const [minPlaygroundWidth, setMinPlaygroundWidth] = useState<string>("");
     const [minEditorHeight, setMinEditorHeight] = useState<number>(0);
@@ -115,19 +115,19 @@ function PlaygroundElement(props: PlaygroundProps) {
 
     // initial values
     useEffect(() => {
-        setJson(initialJson || '');
+        setInput(initialJson || '');
         setQuery(initialQuery || '');
-        setOptions(initialOptions || []);
-    }, [initialJson, initialQuery, initialOptions]);
+        setOptions(props.options || []);
+    }, [initialJson, initialQuery, props.options]);
 
-    const runJQ = useCallback((runId: number, json: string, query: string, options: string[], timeout: number): Promise<RunResult> => {
+    const runJQ = useCallback((runId: number, input: JsonInput, query: string, options: string[], timeout: number): Promise<RunResult> => {
         terminateWorker();
 
         return new Promise<RunResult>((resolve, reject) => {
             const worker = new JQWorker(timeout);
             workerRef.current = worker;
 
-            worker.jq(normalizeLineBreaks(json), normalizeLineBreaks(query), options)
+            worker.run(input, query, options)
                 .then((result) => {
                     resolve(new RunResult(runId, result));
                 })
@@ -137,11 +137,11 @@ function PlaygroundElement(props: PlaygroundProps) {
         });
     }, [terminateWorker]);
 
-    const handleJQRun = useCallback((json: string, query: string, options: string[]) => {
+    const handleJQRun = useCallback((input: JsonInput | null, query: string, options: string[]) => {
         clearRunTimeout();
         setResult('');
 
-        if (json === '' || query === '') {
+        if (!input || query === '') {
             return;
         }
 
@@ -151,7 +151,7 @@ function PlaygroundElement(props: PlaygroundProps) {
         runIdRef.current = runId;
 
         runTimeoutRef.current = setTimeout(() => {
-            runJQ(runId, json, query, options, runTimeout)
+            runJQ(runId, input, query, options, runTimeout)
                 .then((result) => {
                     if (runIdRef.current === result.runId) {
                         setResult(result.result);
@@ -166,33 +166,50 @@ function PlaygroundElement(props: PlaygroundProps) {
     }, [clearRunTimeout, runJQ]);
 
     useEffect(() => {
-        handleJQRun(json, query, options);
-    }, [json, query, options, handleJQRun]);
+        handleJQRun(input, query, options);
+    }, [input, query, options, handleJQRun]);
 
     const handleJSONEditorChange = (value: string | undefined) => {
         if (value !== undefined) {
-            setJson(value);
+            setInput(normalizeLineBreaks(value));
         }
     };
 
     const handleQueryEditorChange = (value: string | undefined) => {
         if (value !== undefined) {
-            setQuery(value);
+            setQuery(normalizeLineBreaks(value));
         }
     };
 
     const handleOptionsSelectorChange = (options: string[]) => {
         setOptions(options);
-        setInitialOptions(options);
+    };
+
+    const handleHttp = async (method: string, url: string, headers?: string, body?: string) => {
+        setInitialJson('');
+
+        if (method.length === 0 || url.length === 0) {
+            setInput(null);
+            return
+        }
+        setInput(new HttpInput(method, url, headers, body));
     };
 
     const handleShare = async () => {
-        if (json === '' || query === '') {
+        if (input === null || query === '') {
             setNotification({ message: 'JSON and Query cannot be empty.', messageId: generateMessageId(), serverity: 'error' });
             return;
         }
 
         try {
+            let json: string | null = null;
+            let http: HttpInput | null = null;
+            if (typeof input === 'string') {
+                json = input
+            } else {
+                http = input
+            }
+
             const response = await fetch('/api/snippets', {
                 method: 'POST',
                 headers: {
@@ -202,6 +219,7 @@ function PlaygroundElement(props: PlaygroundProps) {
                     json,
                     query,
                     options,
+                    http,
                 }),
             });
 
@@ -240,11 +258,11 @@ function PlaygroundElement(props: PlaygroundProps) {
                     </Grid>
                 </Grid>
                 <Box>
-                    <OptionsSelector options={initialOptions} setOptions={handleOptionsSelectorChange} />
+                    <OptionsSelector options={options} setOptions={handleOptionsSelectorChange} />
                 </Box>
                 <Grid container spacing={2} sx={{ flexGrow: 1 }}>
                     <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', minHeight: minEditorHeight }}>
-                        <JSONEditor value={initialJson} handleChange={handleJSONEditorChange} />
+                        <JSONEditor value={initialJson} handleJSONChange={handleJSONEditorChange} handleHTTPChange={handleHttp} />
                     </Grid>
                     <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', minHeight: minEditorHeight }}>
                         <OutputEditor result={result} />

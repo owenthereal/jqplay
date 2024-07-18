@@ -1,6 +1,5 @@
 import React from 'react';
 import Editor from './Editor';
-import { useDarkMode } from './ThemeProvider';
 import TabList from './TabList';
 
 interface EditorWrapperProps {
@@ -8,7 +7,7 @@ interface EditorWrapperProps {
     language: string;
     readOnly?: boolean;
     value?: string;
-    handleChange?: (value: string | undefined) => void;
+    handleChange?: (value?: string) => void;
 }
 
 const EditorWrapper: React.FC<EditorWrapperProps> = ({ title, handleChange, value, language, readOnly }) => {
