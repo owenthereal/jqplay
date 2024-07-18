@@ -12,15 +12,17 @@ interface TabItem {
 
 interface TabListProps {
     tabs: TabItem[];
+    handleTabChange?: (newValue: string) => void;
 }
 
-const TabList: React.FC<TabListProps> = ({ tabs }) => {
+const TabList: React.FC<TabListProps> = ({ tabs, handleTabChange }) => {
     const { darkMode } = useDarkMode();
     const theme = useTheme();
     const [tab, setTab] = React.useState(tabs[0].value);
 
-    const handleTabChange = (_: React.SyntheticEvent, newValue: string) => {
+    const onTabChange = (_: React.SyntheticEvent, newValue: string) => {
         setTab(newValue);
+        handleTabChange && handleTabChange(newValue);
     };
 
     return (
@@ -28,10 +30,10 @@ const TabList: React.FC<TabListProps> = ({ tabs }) => {
             <TabContext value={tab}>
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                     <MTabList
-                        aria-label={tabs[0].label}
+                        aria-label={tabs.find(({ value }) => value === tab)?.label}
                         textColor='inherit'
                         indicatorColor='secondary'
-                        onChange={handleTabChange}
+                        onChange={onTabChange}
                         sx={{
                             color: darkMode ? theme.palette.common.white : theme.palette.text.primary,
                             paddingBottom: 1,
@@ -39,12 +41,12 @@ const TabList: React.FC<TabListProps> = ({ tabs }) => {
                         }}
                     >
                         {tabs.map(({ label, value }) => (
-                            <Tab key={value} label={label} value={value} sx={{ padding: 0, fontSize: theme.typography.h6 }} />
+                            <Tab label={label} value={value} sx={{ padding: 0, fontSize: theme.typography.h6 }} />
                         ))}
                     </MTabList>
                 </Box>
                 {tabs.map(({ value, content }) => (
-                    <TabPanel key={value} value={value} sx={{ height: "100%", width: "100%", padding: 0 }}>
+                    <TabPanel value={value} sx={{ height: "100%", width: "100%", padding: 0 }}>
                         {content}
                     </TabPanel>
                 ))}

@@ -11,73 +11,63 @@ export class JQWorker {
 
     constructor(timeout: number) {
         this.#timeout = timeout;
+
+        // Check if the browser supports Web Workers
         if (window.Worker) {
-            try {
-                this.#webWorker = new Worker(new URL("/workers/process.ts", import.meta.url), { type: "module" });
-                this.#worker = Comlink.wrap<WorkerInterface>(this.#webWorker);
-            } catch (error) {
-                console.error("Failed to initialize Web Worker:", error);
-            }
+            this.initializeWorker();
+        } else {
+            console.warn("Web Workers are not supported in this environment. Falling back to main thread.");
         }
     }
 
-    run(
-        input: JsonInput,
-        query: string,
-        options: any
-    ): Promise<string> {
-        const timeoutPromise = new Promise<never>((_, reject) => {
-            setTimeout(() => {
-                this.terminate();
-                reject(new Error('http timed out'));
-            }, this.#timeout);
-        });
+    private initializeWorker(): void {
+        try {
+            this.#webWorker = new Worker(new URL("/workers/process.ts", import.meta.url), { type: "module" });
+            this.#worker = Comlink.wrap<WorkerInterface>(this.#webWorker);
+        } catch (error) {
+            console.error("Failed to initialize Web Worker:", error);
+        }
+    }
+
+    async run(input: JsonInput, query: string, options: any): Promise<string> {
+        const timeoutPromise = this.createTimeoutPromise();
 
         let resultPromise: Promise<string>;
         if (this.#worker) {
-            if (input instanceof HttpInput) {
-                resultPromise = this.#worker.http(
-                    input,
-                    query,
-                    options
-                );
-            } else {
-                resultPromise = this.#worker.jq(input, query, options);
-            }
+            resultPromise = this.runWithWorker(input, query, options);
         } else {
-            if (input instanceof HttpInput) {
-                resultPromise = worker.http(
-                    input,
-                    query,
-                    options
-                )
-            } else {
-                resultPromise = worker.jq(input, query, options);
-            }
+            resultPromise = this.runWithoutWorker(input, query, options);
         }
 
         return Promise.race([resultPromise, timeoutPromise]);
     }
 
-    jq(json: string, query: string, options: any): Promise<string> {
-        const timeoutPromise = new Promise<never>((_, reject) => {
+    private createTimeoutPromise(): Promise<never> {
+        return new Promise<never>((_, reject) => {
             setTimeout(() => {
                 this.terminate();
-                reject(new Error('jq timed out'));
+                reject(new Error('Operation timed out'));
             }, this.#timeout);
         });
-
-        let resultPromise: Promise<string>;
-        if (this.#worker) {
-            resultPromise = this.#worker.jq(json, query, options);
-        } else {
-            resultPromise = worker.jq(json, query, options);
-        }
-
-        return Promise.race([resultPromise, timeoutPromise]);
     }
 
-    terminate() {
+    private runWithWorker(input: JsonInput, query: string, options: any): Promise<string> {
+        if (input instanceof HttpInput) {
+            return this.#worker!.http(input, query, options);
+        } else {
+            return this.#worker!.jq(input, query, options);
+        }
+    }
+
+    private runWithoutWorker(input: JsonInput, query: string, options: any): Promise<string> {
+        if (input instanceof HttpInput) {
+            return worker.http(input, query, options);
+        } else {
+            return worker.jq(input, query, options);
+        }
+    }
+
+    terminate(): void {
         if (this.#webWorker) {
             this.#webWorker.terminate();
             this.#webWorker = null;

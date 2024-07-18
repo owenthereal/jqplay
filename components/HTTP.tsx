@@ -1,19 +1,17 @@
+import { HttpInput } from "@/workers/worker";
 import { Box, Grid, MenuItem, TextField, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 
 interface HTTPProps {
-    initialMethod?: string;
-    initialUrl?: string;
-    initialHeaders?: string;
-    initialBody?: string
+    value?: HttpInput
     handleHttp: (method: string, url: string, headers?: string, body?: string) => void;
 }
 
-const HTTP: React.FC<HTTPProps> = ({ initialMethod, initialUrl, initialHeaders, initialBody, handleHttp }) => {
-    const [method, setMethod] = useState<string>(initialMethod || 'GET');
-    const [url, setUrl] = useState<string | undefined>(initialUrl);
-    const [headers, setHeaders] = useState<string | undefined>(initialHeaders);
-    const [body, setBody] = useState<string | undefined>(initialBody);
+const HTTP: React.FC<HTTPProps> = ({ value, handleHttp }) => {
+    const [method, setMethod] = useState<string>(value?.method || 'GET');
+    const [url, setUrl] = useState<string | undefined>(value?.url);
+    const [headers, setHeaders] = useState<string | undefined>(value?.headers);
+    const [body, setBody] = useState<string | undefined>(value?.body);
 
     useEffect(() => {
         if (method.length === 0 || !url) {

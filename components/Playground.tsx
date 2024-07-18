@@ -53,7 +53,7 @@ function PlaygroundElement(props: PlaygroundProps) {
     const router = useRouter();
     const [result, setResult] = useState<string>('');
 
-    const [input, setInput] = useState<JsonInput | null>(null);
+    const [input, setInput] = useState<JsonInput | undefined>(undefined);
     const [query, setQuery] = useState<string>('');
     const [options, setOptions] = useState<string[]>([]);
 
@@ -137,7 +137,7 @@ function PlaygroundElement(props: PlaygroundProps) {
         });
     }, [terminateWorker]);
 
-    const handleJQRun = useCallback((input: JsonInput | null, query: string, options: string[]) => {
+    const handleJQRun = useCallback((input: JsonInput | undefined, query: string, options: string[]) => {
         clearRunTimeout();
         setResult('');
 
@@ -186,10 +186,8 @@ function PlaygroundElement(props: PlaygroundProps) {
     };
 
     const handleHttp = async (method: string, url: string, headers?: string, body?: string) => {
-        setInitialJson('');
-
         if (method.length === 0 || url.length === 0) {
-            setInput(null);
+            setInput(undefined);
             return
         }
         setInput(new HttpInput(method, url, headers, body));
@@ -202,8 +200,8 @@ function PlaygroundElement(props: PlaygroundProps) {
         }
 
         try {
-            let json: string | null = null;
-            let http: HttpInput | null = null;
+            let json: string | undefined = undefined;
+            let http: HttpInput | undefined = undefined;
             if (typeof input === 'string') {
                 json = input
             } else {
@@ -262,7 +260,7 @@ function PlaygroundElement(props: PlaygroundProps) {
                 </Box>
                 <Grid container spacing={2} sx={{ flexGrow: 1 }}>
                     <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', minHeight: minEditorHeight }}>
-                        <JSONEditor value={initialJson} handleJSONChange={handleJSONEditorChange} handleHTTPChange={handleHttp} />
+                        <JSONEditor input={input} handleJSONChange={handleJSONEditorChange} handleHTTPChange={handleHttp} />
                     </Grid>
                     <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', minHeight: minEditorHeight }}>
                         <OutputEditor result={result} />
