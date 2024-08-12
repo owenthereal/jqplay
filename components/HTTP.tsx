@@ -1,13 +1,16 @@
 import { HttpInput } from "@/workers/worker";
-import { Box, Grid, MenuItem, TextField, Typography } from "@mui/material";
+import { Box, Grid, MenuItem, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
+import Editor from "./Editor";
+import TabList from "./TabList";
 
 interface HTTPProps {
-    value?: HttpInput
+    value?: HttpInput;
+    minHeight?: number;
     handleHttp: (method: string, url: string, headers?: string, body?: string) => void;
 }
 
-const HTTP: React.FC<HTTPProps> = ({ value, handleHttp }) => {
+const HTTP: React.FC<HTTPProps> = ({ value, minHeight, handleHttp }) => {
     const [method, setMethod] = useState<string>(value?.method || 'GET');
     const [url, setUrl] = useState<string | undefined>(value?.url);
     const [headers, setHeaders] = useState<string | undefined>(value?.headers);
@@ -21,9 +24,18 @@ const HTTP: React.FC<HTTPProps> = ({ value, handleHttp }) => {
         handleHttp(method, url, headers, body);
     }, [method, url, headers, body]);
 
+    const handleBodyChange = (value: string | undefined) => {
+        setBody(value);
+    }
+
+    const handleHeadersChange = (value: string | undefined) => {
+        setHeaders(value);
+    }
+
+    const bodyHeight = minHeight ? minHeight - 64 : 250;
     return (
-        <Box component="form" sx={{ minWidth: "90%", mx: 1, mt: 1 }}>
-            <Grid container spacing={1} alignItems="center">
+        <Box component="form" sx={{ width: '100%' }}>
+            <Grid container spacing={2} alignItems="center" sx={{ paddingLeft: 1, paddingRight: 1 }}>
                 <Grid item xs={2}>
                     <TextField
                         select
@@ -51,27 +63,16 @@ const HTTP: React.FC<HTTPProps> = ({ value, handleHttp }) => {
                     />
                 </Grid>
             </Grid>
-            <TextField
-                label="Headers (JSON format)"
-                value={headers}
-                onChange={(e) => setHeaders(e.target.value)}
-                fullWidth
-                margin="normal"
-                multiline
-                rows={4}
-            />
-            <TextField
-                label="Body"
-                value={body}
-                onChange={(e) => setBody(e.target.value)}
-                fullWidth
-                margin="normal"
-                multiline
-                rows={6}
-                disabled={method === 'GET' || method === 'HEAD'}
-            />
-        </Box>
+            <Grid container spacing={1} sx={{ flexGrow: 1, paddingLeft: 1, paddingRight: 1 }}>
+                <Grid item xs={12} md={12} sx={{ display: 'flex', flexDirection: 'column', minHeight: bodyHeight }}>
+                    <TabList tabs={[
+                        { label: "Body", value: "body", content: <Editor value={body} language="json" readOnly={method == 'HEAD' || method == 'GET'} handleChange={handleBodyChange} /> },
+                        { label: "Headers", value: "headers", content: <Editor value={headers} language="json" readOnly={false} handleChange={handleHeadersChange} /> },
+                    ]} />
+                </Grid>
+            </Grid>
+        </Box >
     );
-}
+};
 
 export default HTTP;

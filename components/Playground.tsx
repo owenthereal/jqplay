@@ -260,7 +260,7 @@ function PlaygroundElement(props: PlaygroundProps) {
                 </Box>
                 <Grid container spacing={2} sx={{ flexGrow: 1 }}>
                     <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', minHeight: minEditorHeight }}>
-                        <JSONEditor input={input} handleJSONChange={handleJSONEditorChange} handleHTTPChange={handleHttp} />
+                        <JSONEditor input={input} minHeight={minEditorHeight} handleJSONChange={handleJSONEditorChange} handleHTTPChange={handleHttp} />
                     </Grid>
                     <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', minHeight: minEditorHeight }}>
                         <OutputEditor result={result} />
