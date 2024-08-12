@@ -27,7 +27,7 @@ export const worker = {
 
         const headers = new Headers();
         if (http.headers) {
-            const headersJson = JSON.parse(http.headers);
+            const headersJson = parseHeaders(http.headers);
             for (const key in headersJson) {
                 headers.set(key, headersJson[key]);
             }
@@ -42,3 +42,25 @@ export const worker = {
         return this.jq(JSON.stringify(json), query, options);
     }
 };
+
+
+function parseHeaders(headersString: string): Record<string, string> {
+    try {
+        const parsedHeaders = JSON.parse(headersString);
+
+        // Validate that the parsed object is a Record<string, string>
+        if (typeof parsedHeaders !== 'object' || Array.isArray(parsedHeaders)) {
+            throw new Error("Headers must be a key-value pair object.");
+        }
+
+        for (const [key, value] of Object.entries(parsedHeaders)) {
+            if (typeof key !== 'string' || typeof value !== 'string') {
+                throw new Error("Both header keys and values must be strings.");
+            }
+        }
+
+        return parsedHeaders;
+    } catch (error: any) {
+        throw new Error(`Failed to parse headers: ${error.message}`);
+    }
+}
