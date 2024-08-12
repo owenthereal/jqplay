@@ -32,11 +32,11 @@ const HTTP: React.FC<HTTPProps> = ({ value, minHeight, handleHttp }) => {
         setHeaders(value);
     }
 
-    const bodyHeight = minHeight ? minHeight - 64 : 250;
+    const bodyHeight = minHeight ? minHeight - 60 - 38 - 60 : 250;
     return (
         <Box component="form" sx={{ width: '100%' }}>
             <Grid container spacing={2} alignItems="center" sx={{ paddingLeft: 1, paddingRight: 1 }}>
-                <Grid item xs={2}>
+                <Grid item xs={3}>
                     <TextField
                         select
                         label="Method"
@@ -52,7 +52,7 @@ const HTTP: React.FC<HTTPProps> = ({ value, minHeight, handleHttp }) => {
                         ))}
                     </TextField>
                 </Grid>
-                <Grid item xs={10}>
+                <Grid item xs={9}>
                     <TextField
                         label="URL"
                         value={url}
