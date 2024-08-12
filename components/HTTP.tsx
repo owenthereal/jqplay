@@ -6,11 +6,10 @@ import TabList from "./TabList";
 
 interface HTTPProps {
     value?: HttpInput;
-    minHeight?: number;
     handleHttp: (method: string, url: string, headers?: string, body?: string) => void;
 }
 
-const HTTP: React.FC<HTTPProps> = ({ value, minHeight, handleHttp }) => {
+const HTTP: React.FC<HTTPProps> = ({ value, handleHttp }) => {
     const [method, setMethod] = useState<string>(value?.method || 'GET');
     const [url, setUrl] = useState<string | undefined>(value?.url);
     const [headers, setHeaders] = useState<string | undefined>(value?.headers);
@@ -32,9 +31,8 @@ const HTTP: React.FC<HTTPProps> = ({ value, minHeight, handleHttp }) => {
         setHeaders(value);
     }
 
-    const bodyHeight = minHeight ? minHeight - 60 - 38 - 60 : 250;
     return (
-        <Box component="form" sx={{ width: '100%' }}>
+        <Box component="form" sx={{ width: '100%', display: 'flex', flexDirection: 'column', height: '100%' }}>
             <Grid container spacing={2} alignItems="center" sx={{ paddingLeft: 1, paddingRight: 1 }}>
                 <Grid item xs={3}>
                     <TextField
@@ -63,10 +61,10 @@ const HTTP: React.FC<HTTPProps> = ({ value, minHeight, handleHttp }) => {
                     />
                 </Grid>
             </Grid>
-            <Grid container spacing={1} sx={{ flexGrow: 1, paddingLeft: 1, paddingRight: 1 }}>
-                <Grid item xs={12} md={12} sx={{ display: 'flex', flexDirection: 'column', minHeight: bodyHeight }}>
+            <Grid container spacing={1} sx={{ flexGrow: 1, flexDirection: 'column', paddingLeft: 1, paddingRight: 1 }}>
+                <Grid item xs={12} sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', height: '100%' }}>
                     <TabList tabs={[
-                        { label: "Body", value: "body", content: <Editor value={body} language="json" readOnly={method == 'HEAD' || method == 'GET'} handleChange={handleBodyChange} /> },
+                        { label: "Body", value: "body", content: <Editor value={body} language="json" readOnly={method === 'HEAD' || method === 'GET'} handleChange={handleBodyChange} /> },
                         { label: "Headers", value: "headers", content: <Editor value={headers} language="json" readOnly={false} handleChange={handleHeadersChange} /> },
                     ]} />
                 </Grid>

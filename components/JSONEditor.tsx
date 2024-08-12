@@ -6,12 +6,11 @@ import { HttpInput } from '@/workers/worker';
 
 interface JSONEditorProps {
     input?: JsonInput;
-    minHeight?: number;
     handleJSONChange: (value: string | undefined) => void;
     handleHTTPChange: (method: string, url: string, headers?: string, body?: string) => void;
 }
 
-const JSONEditor: React.FC<JSONEditorProps> = ({ input, minHeight, handleJSONChange, handleHTTPChange }) => {
+const JSONEditor: React.FC<JSONEditorProps> = ({ input, handleJSONChange, handleHTTPChange }) => {
     let json: string | undefined = undefined;
     let http: HttpInput | undefined = undefined;
     if (typeof input === 'string') {
@@ -23,7 +22,7 @@ const JSONEditor: React.FC<JSONEditorProps> = ({ input, minHeight, handleJSONCha
     return (
         <TabList tabs={[
             { label: "JSON", value: "editor", content: <Editor handleChange={handleJSONChange} value={json} language="json" readOnly={false} /> },
-            { label: "HTTP", value: "http", content: <HTTP handleHttp={handleHTTPChange} value={http} minHeight={minHeight} /> },
+            { label: "HTTP", value: "http", content: <HTTP handleHttp={handleHTTPChange} value={http} /> },
         ]} />
     )
 }
