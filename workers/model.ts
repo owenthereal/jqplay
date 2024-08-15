@@ -2,9 +2,10 @@ import { z } from 'zod';
 
 export const HttpMethodSchema = z.enum(['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD']);
 export const HttpHeadersSchema = z.record(z.string(), z.string());
+export const HttpUrlSchema = z.string().url();
 const HttpSchema = z.object({
     method: HttpMethodSchema,
-    url: z.string().url(),
+    url: HttpUrlSchema,
     headers: HttpHeadersSchema.optional(),
     body: z.string().optional(),
 });

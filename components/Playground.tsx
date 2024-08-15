@@ -11,7 +11,7 @@ import { currentUnixTimestamp, generateMessageId, normalizeLineBreaks } from '@/
 import { loader } from '@monaco-editor/react';
 import { JQWorker } from '@/workers';
 import { useRouter } from 'next/navigation';
-import { HttpHeadersSchema, HttpMethodType, HttpType, JQWorkerInput, JQWorkerInputType } from '@/workers/model';
+import { HttpHeadersSchema, HttpMethodType, HttpType, HttpUrlSchema, JQWorkerInput, JQWorkerInputType } from '@/workers/model';
 import { set, ZodError } from 'zod';
 
 const runTimeout = 30000;
@@ -168,11 +168,12 @@ function PlaygroundElement({ input }: PlaygroundProps) {
 
     const handleHttp = useCallback((method: HttpMethodType, url: string, headers?: string, body?: string) => {
         try {
+            const parsedUrl = HttpUrlSchema.parse(url);
             const parsedHeaders = headers ? HttpHeadersSchema.parse(JSON.parse(headers)) : undefined;
 
             const http: HttpType = {
                 method,
-                url,
+                url: parsedUrl,
                 headers: parsedHeaders,
                 body,
             };
