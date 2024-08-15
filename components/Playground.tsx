@@ -9,9 +9,10 @@ import { ThemeProvider } from './ThemeProvider';
 import { Notification, NotificationProps } from './Notification';
 import { currentUnixTimestamp, generateMessageId, normalizeLineBreaks } from '@/lib/utils';
 import { loader } from '@monaco-editor/react';
-import { JQWorker, JsonInput } from '@/workers';
+import { JQWorker } from '@/workers';
 import { useRouter } from 'next/navigation';
-import { HttpInput } from '@/workers/worker';
+import { HttpType, JQWorkerInput, JQWorkerInputType } from '@/workers/model';
+import { set } from 'zod';
 
 const runTimeout = 30000;
 
@@ -19,7 +20,6 @@ loader.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.50.0/
 
 class RunError extends Error {
     runId: number;
-
     constructor(runID: number, message: string) {
         super(message);
         this.runId = runID;
@@ -29,38 +29,34 @@ class RunError extends Error {
 class RunResult {
     runId: number;
     result: string;
-
     constructor(runID: number, result: string) {
         this.runId = runID;
         this.result = result;
     }
 }
+
 export interface PlaygroundProps {
-    json?: string;
-    query?: string;
-    options?: string[];
+    input?: JQWorkerInputType
 }
 
-export function Playground(props: PlaygroundProps) {
+export function Playground({ input }: PlaygroundProps) {
     return (
         <ThemeProvider>
-            <PlaygroundElement json={props.json} query={props.query} options={props.options} />
+            <PlaygroundElement input={input} />
         </ThemeProvider>
     );
 }
 
-function PlaygroundElement(props: PlaygroundProps) {
+function PlaygroundElement({ input }: PlaygroundProps) {
     const router = useRouter();
     const [result, setResult] = useState<string>('');
 
-    const [input, setInput] = useState<JsonInput | undefined>(undefined);
-    const [query, setQuery] = useState<string>('');
-    const [options, setOptions] = useState<string[]>([]);
+    const [http, setHttp] = useState<HttpType | undefined>(input?.http);
+    const [json, setJson] = useState<string | undefined>(input?.json);
+    const [query, setQuery] = useState<string>(input?.query || '');
+    const [options, setOptions] = useState<string[]>(input?.options || []);
 
-    const [initialJson, setInitialJson] = useState<string | undefined>(props.json);
-    const [initialQuery, setInitialQuery] = useState<string | undefined>(props.query);
-
-    const [minPlaygroundWidth, setMinPlaygroundWidth] = useState<string>("");
+    const [minPlaygroundWidth, setMinPlaygroundWidth] = useState<string>('100%');
     const [minEditorHeight, setMinEditorHeight] = useState<number>(0);
     const [minQueryEditorHeight, setQueryMinEditorHeight] = useState<number>(0);
     const [notification, setNotification] = useState<NotificationProps | null>(null);
@@ -81,13 +77,11 @@ function PlaygroundElement(props: PlaygroundProps) {
             clearTimeout(runTimeoutRef.current);
             runTimeoutRef.current = null;
         }
-        if (runIdRef.current) {
-            runIdRef.current = null;
-        }
+        runIdRef.current = null;
     }, []);
 
-    const updateMinHeight = () => {
-        const height = window.innerHeight - 64 - 110 - 21; // 64px for header, 110 for options, 21 for footer
+    const updateMinHeight = useCallback(() => {
+        const height = window.innerHeight - 64 - 110 - 21;
         const editorHeight = height * 2 / 3;
         const queryEditorHeight = height / 3;
         const minHeight = 35 * 4;
@@ -95,69 +89,59 @@ function PlaygroundElement(props: PlaygroundProps) {
         setQueryMinEditorHeight(Math.max(queryEditorHeight, minHeight));
 
         const width = window.innerWidth;
-        let playgroundWidth = '100%';
-        if (width >= 1280) {
-            playgroundWidth = '1280px'
-        }
-        setMinPlaygroundWidth(playgroundWidth);
-    };
+        setMinPlaygroundWidth(width >= 1280 ? '1280px' : '100%');
+    }, []);
 
     useEffect(() => {
         updateMinHeight();
         window.addEventListener('resize', updateMinHeight);
-
         return () => {
             window.removeEventListener('resize', updateMinHeight);
             clearRunTimeout();
             terminateWorker();
         };
-    }, [clearRunTimeout, terminateWorker]);
+    }, [updateMinHeight, clearRunTimeout, terminateWorker]);
 
-    // initial values
-    useEffect(() => {
-        setInput(initialJson || '');
-        setQuery(initialQuery || '');
-        setOptions(props.options || []);
-    }, [initialJson, initialQuery, props.options]);
-
-    const runJQ = useCallback((runId: number, input: JsonInput, query: string, options: string[], timeout: number): Promise<RunResult> => {
+    const runJQ = useCallback((runId: number, json: string | undefined, http: HttpType | undefined, query: string, options: string[], timeout: number): Promise<RunResult> => {
         terminateWorker();
-
         return new Promise<RunResult>((resolve, reject) => {
-            const worker = new JQWorker(timeout);
-            workerRef.current = worker;
+            try {
+                const worker = new JQWorker(timeout);
+                workerRef.current = worker;
 
-            worker.run(input, query, options)
-                .then((result) => {
-                    resolve(new RunResult(runId, result));
-                })
-                .catch((error: any) => {
-                    reject(new RunError(runId, error.message));
+                const jqi = JQWorkerInput.parse({
+                    json: json,
+                    http: http,
+                    query: query,
+                    options: options
                 });
+                worker.run(jqi)
+                    .then(result => resolve(new RunResult(runId, result)))
+                    .catch(error => reject(new RunError(runId, error.message)));
+            } catch (error: any) {
+                reject(new RunError(runId, error.message));
+            }
         });
     }, [terminateWorker]);
 
-    const handleJQRun = useCallback((input: JsonInput | undefined, query: string, options: string[]) => {
+    const handleJQRun = useCallback((json: string | undefined, http: HttpType | undefined, query: string, options: string[]) => {
         clearRunTimeout();
         setResult('');
 
-        if (!input || query === '') {
-            return;
-        }
+        if ((!json && !http) || query === '') return;
 
         setResult('Running...');
-
         const runId = currentUnixTimestamp();
         runIdRef.current = runId;
 
         runTimeoutRef.current = setTimeout(() => {
-            runJQ(runId, input, query, options, runTimeout)
-                .then((result) => {
+            runJQ(runId, json, http, query, options, runTimeout)
+                .then(result => {
                     if (runIdRef.current === result.runId) {
                         setResult(result.result);
                     }
                 })
-                .catch((error: RunError) => {
+                .catch(error => {
                     if (runIdRef.current === error.runId) {
                         setResult(`Error: ${error.message}`);
                     }
@@ -166,93 +150,68 @@ function PlaygroundElement(props: PlaygroundProps) {
     }, [clearRunTimeout, runJQ]);
 
     useEffect(() => {
-        handleJQRun(input, query, options);
-    }, [input, query, options, handleJQRun]);
+        handleJQRun(json, http, query, options);
+    }, [json, http, query, options, handleJQRun]);
 
     const handleJSONEditorChange = useCallback((value: string | undefined) => {
-        if (value !== undefined) {
-            setInput(normalizeLineBreaks(value));
-        }
-    }, [setInput]);
+        setJson(value ? normalizeLineBreaks(value) : undefined);
+        setHttp(undefined);
+    }, []);
 
     const handleQueryEditorChange = useCallback((value: string | undefined) => {
-        if (value !== undefined) {
-            setQuery(normalizeLineBreaks(value));
-        }
-    }, [setQuery]);
+        if (value) setQuery(normalizeLineBreaks(value));
+    }, []);
 
     const handleOptionsSelectorChange = useCallback((options: string[]) => {
         setOptions(options);
-    }, [setOptions]);
+    }, []);
 
-    const handleHttp = useCallback(async (method: string, url: string, headers?: string, body?: string) => {
-        if (method.length === 0 || url.length === 0) {
-            setInput(undefined);
-            return
-        }
-        setInput(new HttpInput(method, url, headers, body));
-    }, [setInput]);
+    const handleHttp = useCallback((http: HttpType) => {
+        setHttp(http);
+        setJson(undefined);
+    }, []);
 
     const handleShare = useCallback(async () => {
-        if (input === null || query === '') {
+        if ((!json && !http) || !query) {
             setNotification({ message: 'JSON and Query cannot be empty.', messageId: generateMessageId(), serverity: 'error' });
             return;
         }
 
         try {
-            let json: string | undefined = undefined;
-            let http: HttpInput | undefined = undefined;
-            if (typeof input === 'string') {
-                json = input
-            } else {
-                http = input
-            }
-
+            const body = { json: json, http: http, query: query, options: options }
             const response = await fetch('/api/snippets', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    json,
-                    query,
-                    options,
-                    http,
-                }),
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body),
             });
 
             const data = await response.json();
-            if (!response.ok) {
-                throw new Error(data.errors ? data.errors.join(', ') : response.statusText);
-            }
+            if (!response.ok) throw new Error(data.errors ? data.errors.join(', ') : response.statusText);
 
-            // Redirect to the new snippet URL
             router.push(`/s/${data.slug}`);
         } catch (error: any) {
             setNotification({ message: error.message, messageId: generateMessageId(), serverity: 'error' });
         }
-    }, [input, query, options, router, setNotification]);
+    }, [json, http, query, options, router]);
 
     const onExampleClick = useCallback((json: string, query: string) => {
-        setInitialJson(json);
-        setInitialQuery(query);
-    }, [setInitialJson, setInitialQuery]);
+        setJson(json);
+        setQuery(query);
+    }, []);
 
     const onCopyClick = useCallback(() => {
-        navigator.clipboard.writeText(`jq ${options.join(' ')} '${query}'`).then(() => {
-            setNotification({ message: 'Copied command', messageId: generateMessageId(), serverity: 'success' });
-        }).catch((e: any) => {
-            setNotification({ message: e.message, messageId: generateMessageId(), serverity: 'error' });
-        });
-    }, [query, options, setNotification]);
+        navigator.clipboard.writeText(`jq ${options.join(' ')} '${query}'`)
+            .then(() => setNotification({ message: 'Copied command', messageId: generateMessageId(), serverity: 'success' }))
+            .catch(error => setNotification({ message: error.message, messageId: generateMessageId(), serverity: 'error' }));
+    }, [query, options]);
 
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', bgcolor: 'background.default', color: 'text.primary' }}>
-            <Header onShare={handleShare} onExampleClick={onExampleClick} onCopyClick={onCopyClick} enableCopyButton={query.length > 0} />
+            <Header onShare={handleShare} onExampleClick={onExampleClick} onCopyClick={onCopyClick} enableCopyButton={!!query.length} />
             <Container sx={{ flexGrow: 1, py: 2, display: 'flex', flexDirection: 'column', minWidth: minPlaygroundWidth }}>
                 <Grid container spacing={1} sx={{ flexGrow: 1 }}>
                     <Grid item xs={12} md={12} sx={{ display: 'flex', flexDirection: 'column', minHeight: minQueryEditorHeight }}>
-                        <QueryEditor value={initialQuery} handleChange={handleQueryEditorChange} />
+                        <QueryEditor value={query} handleChange={handleQueryEditorChange} />
                     </Grid>
                 </Grid>
                 <Box>
@@ -260,7 +219,7 @@ function PlaygroundElement(props: PlaygroundProps) {
                 </Box>
                 <Grid container spacing={2} sx={{ flexGrow: 1 }}>
                     <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', minHeight: minEditorHeight }}>
-                        <JSONEditor input={input} handleJSONChange={handleJSONEditorChange} handleHTTPChange={handleHttp} />
+                        <JSONEditor json={json} http={http} handleJSONChange={handleJSONEditorChange} handleHTTPChange={handleHttp} />
                     </Grid>
                     <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', minHeight: minEditorHeight }}>
                         <OutputEditor result={result} />

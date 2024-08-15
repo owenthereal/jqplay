@@ -1,8 +1,8 @@
 import * as Comlink from "comlink";
 import type { WorkerInterface } from "./process";
-import { HttpInput, worker } from "./worker";
-
-export type JsonInput = HttpInput | string;
+import { worker } from "./worker";
+import { z } from 'zod';
+import { JQWorkerInput } from "./model";
 
 export class JQWorker {
     #worker: Comlink.Remote<WorkerInterface> | null = null;
@@ -29,14 +29,16 @@ export class JQWorker {
         }
     }
 
-    async run(input: JsonInput, query: string, options: any): Promise<string> {
+    async run(input: z.infer<typeof JQWorkerInput>): Promise<string> {
+        // Validate input using Zod
+        const validatedInput = JQWorkerInput.parse(input);
         const timeoutPromise = this.createTimeoutPromise();
 
         let resultPromise: Promise<string>;
         if (this.#worker) {
-            resultPromise = this.runWithWorker(input, query, options);
+            resultPromise = this.runWithWorker(validatedInput);
         } else {
-            resultPromise = this.runWithoutWorker(input, query, options);
+            resultPromise = this.runWithoutWorker(validatedInput);
         }
 
         return Promise.race([resultPromise, timeoutPromise]);
@@ -51,19 +53,19 @@ export class JQWorker {
         });
     }
 
-    private runWithWorker(input: JsonInput, query: string, options: any): Promise<string> {
-        if (input instanceof HttpInput) {
-            return this.#worker!.http(input, query, options);
+    private runWithWorker(input: z.infer<typeof JQWorkerInput>): Promise<string> {
+        if (input.http) {
+            return this.#worker!.http(input.http, input.query, input.options);
         } else {
-            return this.#worker!.jq(input, query, options);
+            return this.#worker!.jq(input.json!, input.query, input.options);
         }
     }
 
-    private runWithoutWorker(input: JsonInput, query: string, options: any): Promise<string> {
-        if (input instanceof HttpInput) {
-            return worker.http(input, query, options);
+    private runWithoutWorker(input: z.infer<typeof JQWorkerInput>): Promise<string> {
+        if (input.http) {
+            return worker.http(input.http, input.query, input.options);
         } else {
-            return worker.jq(input, query, options);
+            return worker.jq(input.json!, input.query, input.options);
         }
     }
 

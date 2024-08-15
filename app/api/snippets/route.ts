@@ -1,29 +1,14 @@
 import { NextResponse } from 'next/server';
 import prisma from '../../../lib/prisma';
 import crypto from 'crypto';
-import { z, ZodError } from 'zod';
-
-// Define the schema for Snippet validation using Zod
-const SnippetSchema = z.object({
-    json: z.string().min(1).optional(),
-    http: z.object({
-        method: z.enum(['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD']),
-        url: z.string().url(),
-        headers: z.record(z.string(), z.string()).optional(),
-        body: z.string().optional(),
-    }).optional(),
-    query: z.string().min(1),
-    options: z.array(z.string().min(1)).optional(),
-}).refine(data => data.json || data.http, {
-    message: 'Either json or http must be provided',
-    path: ['json', 'http'],
-});
+import { ZodError } from 'zod';
+import { JQWorkerInput, JQWorkerInputType } from '@/workers/model';
 
 export async function POST(req: Request) {
     try {
         // Parse and validate the request body against the Snippet schema
         const snippet = await req.json();
-        const validatedSnippet = SnippetSchema.parse(snippet);
+        const validatedSnippet = JQWorkerInput.parse(snippet);
 
         // Generate a unique slug for the snippet
         const slug = generateSlug(validatedSnippet);
@@ -64,7 +49,7 @@ export async function POST(req: Request) {
 }
 
 // Function to generate a unique slug for the snippet
-function generateSlug(snippet: z.infer<typeof SnippetSchema>, hashLen: number = 15): string {
+function generateSlug(snippet: JQWorkerInputType, hashLen: number = 15): string {
     const hash = crypto.createHash('sha1');
 
     // Hash the provided fields in the snippet

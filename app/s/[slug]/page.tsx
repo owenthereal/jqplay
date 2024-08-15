@@ -6,10 +6,11 @@ import { Playground, PlaygroundProps } from '@/components/Playground';
 import { NotificationProps, Notification } from '@/components/Notification';
 import { generateMessageId } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
+import { JQWorkerInput, JQWorkerInputType } from '@/workers/model';
 
 const Page = ({ params }: { params: { slug: string } }) => {
     const slug = params.slug;
-    const [playgroundProps, setPlaygroundProps] = useState<PlaygroundProps | null>(null);
+    const [input, setInput] = useState<JQWorkerInputType | null>(null);
     const [notification, setNotification] = useState<NotificationProps | null>(null);
 
     const router = useRouter();
@@ -20,8 +21,10 @@ const Page = ({ params }: { params: { slug: string } }) => {
                 if (!res.ok) {
                     throw new Error('Failed to fetch snippet');
                 }
-                const data: PlaygroundProps = await res.json();
-                setPlaygroundProps(data);
+
+                const data = await res.json();
+                const input = JQWorkerInput.parse(data);
+                setInput(input);
             } catch (error: any) {
                 setNotification({ message: error.message, messageId: generateMessageId() });
                 setTimeout(() => {
@@ -38,7 +41,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
         }
     }, [slug, router]);
 
-    if (!playgroundProps) {
+    if (!input) {
         return (
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
                 <CircularProgress />
@@ -49,9 +52,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
 
     return (
         <Playground
-            json={playgroundProps.json}
-            query={playgroundProps.query}
-            options={playgroundProps.options}
+            input={input}
         />
     );
 };

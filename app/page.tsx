@@ -1,11 +1,12 @@
 'use client'
 
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Playground, PlaygroundProps } from '@/components/Playground';
+import { Playground } from '@/components/Playground';
 import { Suspense, useEffect, useState } from 'react';
 import { Box, CircularProgress } from '@mui/material';
 import { Notification, NotificationProps } from '@/components/Notification';
 import { generateMessageId } from '@/lib/utils';
+import { JQWorkerInputType } from '@/workers/model';
 
 const PlaygroundWithParams = () => {
     const searchParams = useSearchParams();
@@ -13,17 +14,17 @@ const PlaygroundWithParams = () => {
     const q = searchParams.get('q');
     const o = searchParams.get('o');
 
-    const [playgroundProps, setPlaygroundProps] = useState<PlaygroundProps | null>(null);
+    const [input, setInput] = useState<JQWorkerInputType | null>(null);
     const [notification, setNotification] = useState<NotificationProps | null>(null);
 
     const router = useRouter();
     useEffect(() => {
         try {
-            const initialQuery = typeof q === 'string' ? decodeURIComponent(q) : '';
-            const initialJson = typeof j === 'string' ? decodeURIComponent(j) : '';
-            const initialOptions = o ? [decodeURIComponent(o)] : [];
+            const json = typeof j === 'string' ? decodeURIComponent(j) : '';
+            const query = typeof q === 'string' ? decodeURIComponent(q) : '';
+            const options = o ? [decodeURIComponent(o)] : [];
 
-            setPlaygroundProps({ json: initialJson, query: initialQuery, options: initialOptions });
+            setInput({ json, query, options });
         } catch (error: any) {
             setNotification({ message: error.message, messageId: generateMessageId(), serverity: 'error' });
             setTimeout(() => {
@@ -32,7 +33,7 @@ const PlaygroundWithParams = () => {
         }
     }, [j, q, o, router])
 
-    if (!playgroundProps) {
+    if (!input) {
         return (
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
                 <CircularProgress />
@@ -43,9 +44,7 @@ const PlaygroundWithParams = () => {
 
     return (
         <Playground
-            json={playgroundProps.json}
-            query={playgroundProps.query}
-            options={playgroundProps.options}
+            input={input}
         />
     );
 }

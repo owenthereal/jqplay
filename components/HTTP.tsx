@@ -1,26 +1,49 @@
-import { HttpInput } from "@/workers/worker";
 import { Box, Grid, MenuItem, TextField } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import Editor from "./Editor";
 import TabList from "./TabList";
+import { HttpMethodType, HttpType } from "@/workers/model";
 
 interface HTTPProps {
-    value?: HttpInput;
-    handleHttp: (method: string, url: string, headers?: string, body?: string) => void;
+    value?: HttpType;
+    handleHttp: (value: HttpType) => void;
 }
 
 const HTTP: React.FC<HTTPProps> = ({ value, handleHttp }) => {
-    const [method, setMethod] = useState<string>(value?.method || 'GET');
+    const [method, setMethod] = useState<HttpMethodType>(value?.method || 'GET');
     const [url, setUrl] = useState<string | undefined>(value?.url);
-    const [headers, setHeaders] = useState<string | undefined>(value?.headers);
+    const [headers, setHeaders] = useState<string | undefined>(
+        value?.headers ? JSON.stringify(value.headers, null, 2) : undefined
+    );
     const [body, setBody] = useState<string | undefined>(value?.body);
 
-    // Effect to handle the HTTP input whenever method, URL, headers, or body changes
-    useEffect(() => {
+    const handleHttpChange = useCallback(() => {
         if (method && url) {
-            handleHttp(method, url, headers, body);
+            let parsedHeaders: Record<string, string> | undefined = undefined;
+
+            try {
+                if (headers) {
+                    parsedHeaders = JSON.parse(headers);
+                }
+            } catch (error) {
+                console.error("Failed to parse headers:", error);
+                // TODO: set notification
+            }
+
+            const httpInput: HttpType = {
+                method,
+                url,
+                headers: parsedHeaders,
+                body,
+            };
+
+            handleHttp(httpInput);
         }
     }, [method, url, headers, body, handleHttp]);
+
+    useEffect(() => {
+        handleHttpChange();
+    }, [handleHttpChange]);
 
     return (
         <Box component="form" sx={{ width: '100%', display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -30,7 +53,7 @@ const HTTP: React.FC<HTTPProps> = ({ value, handleHttp }) => {
                         select
                         label="Method"
                         value={method}
-                        onChange={(e) => setMethod(e.target.value)}
+                        onChange={(e) => setMethod(e.target.value as HttpMethodType)}
                         fullWidth
                         margin="normal"
                     >
@@ -44,7 +67,7 @@ const HTTP: React.FC<HTTPProps> = ({ value, handleHttp }) => {
                 <Grid item xs={9}>
                     <TextField
                         label="URL"
-                        value={url}
+                        value={url || ''}
                         onChange={(e) => setUrl(e.target.value)}
                         fullWidth
                         margin="normal"
