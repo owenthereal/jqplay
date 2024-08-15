@@ -2,11 +2,11 @@ import { Box, Grid, MenuItem, TextField } from "@mui/material";
 import { useEffect, useState, useCallback } from "react";
 import Editor from "./Editor";
 import TabList from "./TabList";
-import { HttpMethodType, HttpType } from "@/workers/model";
+import { HttpMethodSchema, HttpMethodType, HttpType } from "@/workers/model";
 
 interface HTTPProps {
     value?: HttpType;
-    handleHttp: (value: HttpType) => void;
+    handleHttp: (method: HttpMethodType, url: string, headers?: string, body?: string) => void;
 }
 
 const HTTP: React.FC<HTTPProps> = ({ value, handleHttp }) => {
@@ -17,33 +17,11 @@ const HTTP: React.FC<HTTPProps> = ({ value, handleHttp }) => {
     );
     const [body, setBody] = useState<string | undefined>(value?.body);
 
-    const handleHttpChange = useCallback(() => {
+    useEffect(() => {
         if (method && url) {
-            let parsedHeaders: Record<string, string> | undefined = undefined;
-
-            try {
-                if (headers) {
-                    parsedHeaders = JSON.parse(headers);
-                }
-            } catch (error) {
-                console.error("Failed to parse headers:", error);
-                // TODO: set notification
-            }
-
-            const httpInput: HttpType = {
-                method,
-                url,
-                headers: parsedHeaders,
-                body,
-            };
-
-            handleHttp(httpInput);
+            handleHttp(method, url, headers, body);
         }
     }, [method, url, headers, body, handleHttp]);
-
-    useEffect(() => {
-        handleHttpChange();
-    }, [handleHttpChange]);
 
     return (
         <Box component="form" sx={{ width: '100%', display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -57,7 +35,7 @@ const HTTP: React.FC<HTTPProps> = ({ value, handleHttp }) => {
                         fullWidth
                         margin="normal"
                     >
-                        {['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS', 'HEAD'].map((option) => (
+                        {HttpMethodSchema.options.map((option) => (
                             <MenuItem key={option} value={option}>
                                 {option}
                             </MenuItem>

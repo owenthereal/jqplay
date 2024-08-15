@@ -11,8 +11,8 @@ import { currentUnixTimestamp, generateMessageId, normalizeLineBreaks } from '@/
 import { loader } from '@monaco-editor/react';
 import { JQWorker } from '@/workers';
 import { useRouter } from 'next/navigation';
-import { HttpType, JQWorkerInput, JQWorkerInputType } from '@/workers/model';
-import { set } from 'zod';
+import { HttpHeadersSchema, HttpMethodType, HttpType, JQWorkerInput, JQWorkerInputType } from '@/workers/model';
+import { set, ZodError } from 'zod';
 
 const runTimeout = 30000;
 
@@ -166,14 +166,40 @@ function PlaygroundElement({ input }: PlaygroundProps) {
         setOptions(options);
     }, []);
 
-    const handleHttp = useCallback((http: HttpType) => {
-        setHttp(http);
-        setJson(undefined);
+    const handleHttp = useCallback((method: HttpMethodType, url: string, headers?: string, body?: string) => {
+        try {
+            const parsedHeaders = headers ? HttpHeadersSchema.parse(JSON.parse(headers)) : undefined;
+
+            const http: HttpType = {
+                method,
+                url,
+                headers: parsedHeaders,
+                body,
+            };
+
+            setHttp(http);
+            setJson(undefined);
+        } catch (error: any) {
+            if (error instanceof ZodError) {
+                const errorMessage = error.errors.map((e) => e.message).join(', ');
+                setNotification({
+                    message: `Invalid headers: ${errorMessage}`,
+                    messageId: generateMessageId(),
+                    serverity: 'error'
+                });
+            } else {
+                setNotification({
+                    message: 'Invalid headers: Headers must be a valid JSON object with key-value pairs.',
+                    messageId: generateMessageId(),
+                    serverity: 'error'
+                });
+            }
+        }
     }, []);
 
     const handleShare = useCallback(async () => {
         if ((!json && !http) || !query) {
-            setNotification({ message: 'JSON and Query cannot be empty.', messageId: generateMessageId(), serverity: 'error' });
+            setNotification({ message: 'Please provide a Query and either JSON or HTTP data.', messageId: generateMessageId(), serverity: 'error' });
             return;
         }
 
