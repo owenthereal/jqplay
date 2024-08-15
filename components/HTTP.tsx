@@ -15,21 +15,12 @@ const HTTP: React.FC<HTTPProps> = ({ value, handleHttp }) => {
     const [headers, setHeaders] = useState<string | undefined>(value?.headers);
     const [body, setBody] = useState<string | undefined>(value?.body);
 
+    // Effect to handle the HTTP input whenever method, URL, headers, or body changes
     useEffect(() => {
-        if (method.length === 0 || !url) {
-            return;
+        if (method && url) {
+            handleHttp(method, url, headers, body);
         }
-
-        handleHttp(method, url, headers, body);
-    }, [method, url, headers, body]);
-
-    const handleBodyChange = (value: string | undefined) => {
-        setBody(value);
-    }
-
-    const handleHeadersChange = (value: string | undefined) => {
-        setHeaders(value);
-    }
+    }, [method, url, headers, body, handleHttp]);
 
     return (
         <Box component="form" sx={{ width: '100%', display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -63,13 +54,37 @@ const HTTP: React.FC<HTTPProps> = ({ value, handleHttp }) => {
             </Grid>
             <Grid container spacing={1} sx={{ flexGrow: 1, flexDirection: 'column', paddingLeft: 1, paddingRight: 1 }}>
                 <Grid item xs={12} sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', height: '100%' }}>
-                    <TabList tabs={[
-                        { label: "Body", value: "body", content: <Editor value={body} language="json" readOnly={method === 'HEAD' || method === 'GET'} handleChange={handleBodyChange} /> },
-                        { label: "Headers", value: "headers", content: <Editor value={headers} language="json" readOnly={false} handleChange={handleHeadersChange} /> },
-                    ]} />
+                    <TabList
+                        tabs={[
+                            {
+                                label: "Body",
+                                value: "body",
+                                content: (
+                                    <Editor
+                                        value={body}
+                                        language="json"
+                                        readOnly={method === 'HEAD' || method === 'GET'}
+                                        handleChange={setBody}
+                                    />
+                                )
+                            },
+                            {
+                                label: "Headers",
+                                value: "headers",
+                                content: (
+                                    <Editor
+                                        value={headers}
+                                        language="json"
+                                        readOnly={false}
+                                        handleChange={setHeaders}
+                                    />
+                                )
+                            }
+                        ]}
+                    />
                 </Grid>
             </Grid>
-        </Box >
+        </Box>
     );
 };
 

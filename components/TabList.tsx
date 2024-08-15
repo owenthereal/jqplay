@@ -41,12 +41,12 @@ const TabList: React.FC<TabListProps> = ({ tabs, handleTabChange }) => {
                         }}
                     >
                         {tabs.map(({ label, value }) => (
-                            <Tab label={label} value={value} sx={{ padding: 0, fontSize: theme.typography.h6 }} />
+                            <Tab key={value} label={label} value={value} sx={{ padding: 0, fontSize: theme.typography.h6 }} />
                         ))}
                     </MTabList>
                 </Box>
                 {tabs.map(({ value, content }) => (
-                    <TabPanel value={value} sx={{ height: "100%", width: "100%", padding: 0 }}>
+                    <TabPanel key={value} value={value} sx={{ height: "100%", width: "100%", padding: 0 }}>
                         {content}
                     </TabPanel>
                 ))}

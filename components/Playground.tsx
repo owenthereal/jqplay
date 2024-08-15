@@ -169,31 +169,31 @@ function PlaygroundElement(props: PlaygroundProps) {
         handleJQRun(input, query, options);
     }, [input, query, options, handleJQRun]);
 
-    const handleJSONEditorChange = (value: string | undefined) => {
+    const handleJSONEditorChange = useCallback((value: string | undefined) => {
         if (value !== undefined) {
             setInput(normalizeLineBreaks(value));
         }
-    };
+    }, [setInput]);
 
-    const handleQueryEditorChange = (value: string | undefined) => {
+    const handleQueryEditorChange = useCallback((value: string | undefined) => {
         if (value !== undefined) {
             setQuery(normalizeLineBreaks(value));
         }
-    };
+    }, [setQuery]);
 
-    const handleOptionsSelectorChange = (options: string[]) => {
+    const handleOptionsSelectorChange = useCallback((options: string[]) => {
         setOptions(options);
-    };
+    }, [setOptions]);
 
-    const handleHttp = async (method: string, url: string, headers?: string, body?: string) => {
+    const handleHttp = useCallback(async (method: string, url: string, headers?: string, body?: string) => {
         if (method.length === 0 || url.length === 0) {
             setInput(undefined);
             return
         }
         setInput(new HttpInput(method, url, headers, body));
-    };
+    }, [setInput]);
 
-    const handleShare = async () => {
+    const handleShare = useCallback(async () => {
         if (input === null || query === '') {
             setNotification({ message: 'JSON and Query cannot be empty.', messageId: generateMessageId(), serverity: 'error' });
             return;
@@ -231,20 +231,20 @@ function PlaygroundElement(props: PlaygroundProps) {
         } catch (error: any) {
             setNotification({ message: error.message, messageId: generateMessageId(), serverity: 'error' });
         }
-    };
+    }, [input, query, options, router, setNotification]);
 
-    const onExampleClick = (json: string, query: string) => {
+    const onExampleClick = useCallback((json: string, query: string) => {
         setInitialJson(json);
         setInitialQuery(query);
-    };
+    }, [setInitialJson, setInitialQuery]);
 
-    const onCopyClick = () => {
+    const onCopyClick = useCallback(() => {
         navigator.clipboard.writeText(`jq ${options.join(' ')} '${query}'`).then(() => {
             setNotification({ message: 'Copied command', messageId: generateMessageId(), serverity: 'success' });
         }).catch((e: any) => {
             setNotification({ message: e.message, messageId: generateMessageId(), serverity: 'error' });
         });
-    };
+    }, [query, options, setNotification]);
 
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', bgcolor: 'background.default', color: 'text.primary' }}>
