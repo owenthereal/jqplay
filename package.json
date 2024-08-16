@@ -12,12 +12,12 @@
     "prisma:migrate": "npm run setup-db && npx prisma migrate dev"
   },
   "dependencies": {
-    "@emotion/react": "^11.11.4",
-    "@emotion/styled": "^11.11.5",
+    "@emotion/react": "^11.13.0",
+    "@emotion/styled": "^11.13.0",
     "@monaco-editor/react": "^4.6.0",
-    "@mui/icons-material": "^5.15.19",
-    "@mui/lab": "^5.0.0-alpha.170",
-    "@mui/material": "^5.15.19",
+    "@mui/icons-material": "^5.16.7",
+    "@mui/lab": "^5.0.0-alpha.173",
+    "@mui/material": "^5.16.7",
     "@prisma/client": "^5.18.0",
     "@sentry/nextjs": "^8.26.0",
     "jq-wasm": "^0.0.9",
@@ -31,7 +31,7 @@
   },
   "devDependencies": {
     "@flydotio/dockerfile": "^0.5.7",
-    "@types/node": "^20",
+    "@types/node": "^22",
     "@types/pg": "^8.11.6",
     "@types/react": "^18",
     "@types/react-dom": "^18",
