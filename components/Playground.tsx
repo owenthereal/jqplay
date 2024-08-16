@@ -82,9 +82,9 @@ function PlaygroundElement({ input }: PlaygroundProps) {
 
     const updateMinHeight = useCallback(() => {
         const height = window.innerHeight - 64 - 110 - 21;
-        const editorHeight = height * 2 / 3;
-        const queryEditorHeight = height / 3;
-        const minHeight = 35 * 4;
+        const editorHeight = height * 3 / 4;
+        const queryEditorHeight = height / 4;
+        const minHeight = 21 * 5;
         setMinEditorHeight(Math.max(editorHeight, minHeight));
         setQueryMinEditorHeight(Math.max(queryEditorHeight, minHeight));
 
