@@ -7,7 +7,7 @@ interface JSONEditorProps {
     json?: string;
     http?: HttpType;
     handleJSONChange: (value: string | undefined) => void;
-    handleHTTPChange: (method: HttpMethodType, url: string, headers?: string, body?: string) => void;
+    handleHTTPChange: (method: HttpMethodType, url?: string, headers?: string, body?: string) => void;
 }
 
 const JSONEditor: React.FC<JSONEditorProps> = ({ json, http, handleJSONChange, handleHTTPChange }) => {

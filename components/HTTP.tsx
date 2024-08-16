@@ -6,21 +6,17 @@ import { HttpMethodSchema, HttpMethodType, HttpType } from "@/workers/model";
 
 interface HTTPProps {
     value?: HttpType;
-    handleHttp: (method: HttpMethodType, url: string, headers?: string, body?: string) => void;
+    handleHttp: (method: HttpMethodType, url?: string, headers?: string, body?: string) => void;
 }
 
 const HTTP: React.FC<HTTPProps> = ({ value, handleHttp }) => {
     const [method, setMethod] = useState<HttpMethodType>(value?.method || 'GET');
     const [url, setUrl] = useState<string | undefined>(value?.url);
-    const [headers, setHeaders] = useState<string | undefined>(
-        value?.headers ? JSON.stringify(value.headers, null, 2) : undefined
-    );
+    const [headers, setHeaders] = useState<string | undefined>(value?.headers);
     const [body, setBody] = useState<string | undefined>(value?.body);
 
     useEffect(() => {
-        if (method && url) {
-            handleHttp(method, url, headers, body);
-        }
+        handleHttp(method, url, headers, body);
     }, [method, url, headers, body, handleHttp]);
 
     return (
@@ -45,7 +41,7 @@ const HTTP: React.FC<HTTPProps> = ({ value, handleHttp }) => {
                 <Grid item xs={9}>
                     <TextField
                         label="URL"
-                        value={url || ''}
+                        value={url}
                         onChange={(e) => setUrl(e.target.value)}
                         fullWidth
                         margin="normal"

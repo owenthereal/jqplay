@@ -109,16 +109,20 @@ function PlaygroundElement({ input }: PlaygroundProps) {
                 const worker = new JQWorker(timeout);
                 workerRef.current = worker;
 
-                const jqi = JQWorkerInput.parse({
+                const input = JQWorkerInput.parse({
                     json: json,
                     http: http,
                     query: query,
                     options: options
                 });
-                worker.run(jqi)
+                worker.run(input)
                     .then(result => resolve(new RunResult(runId, result)))
                     .catch(error => reject(new RunError(runId, error.message)));
             } catch (error: any) {
+                if (error instanceof ZodError) {
+                    const errorMessage = error.errors.map((e) => e.message).join(', ');
+                    reject(new RunError(runId, errorMessage));
+                }
                 reject(new RunError(runId, error.message));
             }
         });
@@ -166,36 +170,20 @@ function PlaygroundElement({ input }: PlaygroundProps) {
         setOptions(options);
     }, []);
 
-    const handleHttp = useCallback((method: HttpMethodType, url: string, headers?: string, body?: string) => {
-        try {
-            const parsedUrl = HttpUrlSchema.parse(url);
-            const parsedHeaders = headers ? HttpHeadersSchema.parse(JSON.parse(headers)) : undefined;
-
-            const http: HttpType = {
-                method,
-                url: parsedUrl,
-                headers: parsedHeaders,
-                body,
-            };
-
-            setHttp(http);
-            setJson(undefined);
-        } catch (error: any) {
-            if (error instanceof ZodError) {
-                const errorMessage = error.errors.map((e) => e.message).join(', ');
-                setNotification({
-                    message: `Invalid headers: ${errorMessage}`,
-                    messageId: generateMessageId(),
-                    serverity: 'error'
-                });
-            } else {
-                setNotification({
-                    message: 'Invalid headers: Headers must be a valid JSON object with key-value pairs.',
-                    messageId: generateMessageId(),
-                    serverity: 'error'
-                });
-            }
+    const handleHttp = useCallback((method: HttpMethodType, url?: string, headers?: string, body?: string) => {
+        if (url === undefined) {
+            return;
         }
+
+        const http: HttpType = {
+            method,
+            url: url || '',
+            headers,
+            body,
+        };
+
+        setHttp(http);
+        setJson(undefined);
     }, []);
 
     const handleShare = useCallback(async () => {
