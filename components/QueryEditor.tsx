@@ -2,7 +2,7 @@ import EditorWrapper from './EditorWrapper';
 
 interface QueryEditorProps {
   value?: string;
-  handleChange?: (value: string | undefined) => void;
+  handleChange: (value: string | undefined) => void;
 }
 
 const QueryEditor: React.FC<QueryEditorProps> = ({ value, handleChange }) => {

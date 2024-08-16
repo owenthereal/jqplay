@@ -1,6 +1,8 @@
 import * as Comlink from "comlink";
-import type { Worker as WorkerInterface } from "./process";
-import jq from 'jq-wasm';
+import type { WorkerInterface } from "./process";
+import { worker } from "./worker";
+import { z } from 'zod';
+import { JQWorkerInput, JQWorkerInputType } from "./model";
 
 export class JQWorker {
     #worker: Comlink.Remote<WorkerInterface> | null = null;
@@ -9,35 +11,65 @@ export class JQWorker {
 
     constructor(timeout: number) {
         this.#timeout = timeout;
+
+        // Check if the browser supports Web Workers
         if (window.Worker) {
-            try {
-                this.#webWorker = new Worker(new URL("/workers/process.ts", import.meta.url), { type: "module" });
-                this.#worker = Comlink.wrap<WorkerInterface>(this.#webWorker);
-            } catch (error) {
-                console.error("Failed to initialize Web Worker:", error);
-            }
+            this.initializeWorker();
+        } else {
+            console.warn("Web Workers are not supported in this environment. Falling back to main thread.");
         }
     }
 
-    jq(json: string, query: string, options: any): Promise<string> {
-        const timeoutPromise = new Promise<never>((_, reject) => {
-            setTimeout(() => {
-                this.terminate();
-                reject(new Error('jq timed out'));
-            }, this.#timeout);
-        });
+    private initializeWorker(): void {
+        try {
+            this.#webWorker = new Worker(new URL("/workers/process.ts", import.meta.url), { type: "module" });
+            this.#worker = Comlink.wrap<WorkerInterface>(this.#webWorker);
+        } catch (error) {
+            console.error("Failed to initialize Web Worker:", error);
+        }
+    }
+
+    async run(input: JQWorkerInputType): Promise<string> {
+        // Validate input using Zod
+        const validatedInput = JQWorkerInput.parse(input);
+        const timeoutPromise = this.createTimeoutPromise();
 
         let resultPromise: Promise<string>;
         if (this.#worker) {
-            resultPromise = this.#worker.jq(json, query, options);
+            resultPromise = this.runWithWorker(validatedInput);
         } else {
-            resultPromise = jq.raw(json, query, options);
+            resultPromise = this.runWithoutWorker(validatedInput);
         }
 
         return Promise.race([resultPromise, timeoutPromise]);
     }
 
-    terminate() {
+    private createTimeoutPromise(): Promise<never> {
+        return new Promise<never>((_, reject) => {
+            setTimeout(() => {
+                this.terminate();
+                reject(new Error('Operation timed out'));
+            }, this.#timeout);
+        });
+    }
+
+    private runWithWorker(input: JQWorkerInputType): Promise<string> {
+        if (input.http) {
+            return this.#worker!.http(input.http, input.query, input.options);
+        } else {
+            return this.#worker!.jq(input.json!, input.query, input.options);
+        }
+    }
+
+    private runWithoutWorker(input: JQWorkerInputType): Promise<string> {
+        if (input.http) {
+            return worker.http(input.http, input.query, input.options);
+        } else {
+            return worker.jq(input.json!, input.query, input.options);
+        }
+    }
+
+    terminate(): void {
         if (this.#webWorker) {
             this.#webWorker.terminate();
             this.#webWorker = null;
