@@ -212,6 +212,7 @@ function PlaygroundElement({ input }: PlaygroundProps) {
     const onExampleClick = useCallback((json: string, query: string) => {
         setJson(json);
         setQuery(query);
+        setHttp(undefined);
     }, []);
 
     const onCopyClick = useCallback(() => {
