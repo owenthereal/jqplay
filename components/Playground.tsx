@@ -160,15 +160,15 @@ function PlaygroundElement({ input }: PlaygroundProps) {
     const handleJSONEditorChange = useCallback((value: string | undefined) => {
         setJson(value ? normalizeLineBreaks(value) : undefined);
         setHttp(undefined);
-    }, []);
+    }, [setJson, setHttp]);
 
     const handleQueryEditorChange = useCallback((value: string | undefined) => {
         if (value) setQuery(normalizeLineBreaks(value));
-    }, []);
+    }, [setQuery]);
 
     const handleOptionsSelectorChange = useCallback((options: string[]) => {
         setOptions(options);
-    }, []);
+    }, [setOptions]);
 
     const handleHttp = useCallback((method: HttpMethodType, url?: string, headers?: string, body?: string) => {
         if (url === undefined) {
@@ -184,7 +184,7 @@ function PlaygroundElement({ input }: PlaygroundProps) {
 
         setHttp(http);
         setJson(undefined);
-    }, []);
+    }, [setHttp, setJson]);
 
     const handleShare = useCallback(async () => {
         if ((!json && !http) || !query) {
@@ -213,7 +213,7 @@ function PlaygroundElement({ input }: PlaygroundProps) {
         setJson(json);
         setQuery(query);
         setHttp(undefined);
-    }, []);
+    }, [setJson, setQuery, setHttp]);
 
     const onCopyClick = useCallback(() => {
         navigator.clipboard.writeText(`jq ${options.join(' ')} '${query}'`)
