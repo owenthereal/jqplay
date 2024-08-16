@@ -10,17 +10,17 @@ release_command = 'npx --yes prisma migrate deploy'
 [http_service]
 internal_port = 3000
 force_https = true
-auto_stop_machines = false
 auto_start_machines = true
+auto_stop_machines = "off"
 min_machines_running = 2
 processes = ['app']
 
 [[vm]]
 size = 'shared-cpu-1x'
-memory = 256
+memory = 512
 
 [[http_service.checks]]
-grace_period = "3s"
+grace_period = "10s"
 interval = "30s"
 timeout = "5s"
 method = "GET"
