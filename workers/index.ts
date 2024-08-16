@@ -2,7 +2,7 @@ import * as Comlink from "comlink";
 import type { WorkerInterface } from "./process";
 import { worker } from "./worker";
 import { z } from 'zod';
-import { JQWorkerInput } from "./model";
+import { JQWorkerInput, JQWorkerInputType } from "./model";
 
 export class JQWorker {
     #worker: Comlink.Remote<WorkerInterface> | null = null;
@@ -29,7 +29,7 @@ export class JQWorker {
         }
     }
 
-    async run(input: z.infer<typeof JQWorkerInput>): Promise<string> {
+    async run(input: JQWorkerInputType): Promise<string> {
         // Validate input using Zod
         const validatedInput = JQWorkerInput.parse(input);
         const timeoutPromise = this.createTimeoutPromise();
@@ -53,7 +53,7 @@ export class JQWorker {
         });
     }
 
-    private runWithWorker(input: z.infer<typeof JQWorkerInput>): Promise<string> {
+    private runWithWorker(input: JQWorkerInputType): Promise<string> {
         if (input.http) {
             return this.#worker!.http(input.http, input.query, input.options);
         } else {
@@ -61,7 +61,7 @@ export class JQWorker {
         }
     }
 
-    private runWithoutWorker(input: z.infer<typeof JQWorkerInput>): Promise<string> {
+    private runWithoutWorker(input: JQWorkerInputType): Promise<string> {
         if (input.http) {
             return worker.http(input.http, input.query, input.options);
         } else {

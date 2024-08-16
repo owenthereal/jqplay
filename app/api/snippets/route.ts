@@ -35,15 +35,12 @@ export async function POST(req: Request) {
         return NextResponse.json({ slug: newSnippet.slug }, { status: 200 });
 
     } catch (error) {
-        // Handle validation errors specifically
+        console.error('Failed to save snippet:', error);
+
         if (error instanceof ZodError) {
             return NextResponse.json({ errors: error.errors }, { status: 422 });
         }
 
-        // Log unexpected errors for debugging purposes
-        console.error('Failed to save snippet:', error);
-
-        // Return a generic error message to the client
         return NextResponse.json({ error: 'Failed to save snippet' }, { status: 500 });
     }
 }

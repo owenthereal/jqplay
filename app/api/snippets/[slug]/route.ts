@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import prisma from '../../../../lib/prisma';
 import { version as uuidVersion, validate as uuidValidate } from 'uuid';
+import { JQWorkerInput } from '@/workers/model';
+import { ZodError } from 'zod';
 
 export async function GET(req: Request, { params }: { params: { slug: string } }) {
     const { slug } = params;
@@ -27,12 +29,16 @@ export async function GET(req: Request, { params }: { params: { slug: string } }
             query: snippet.query,
             options: snippet.options || [],
         };
+        const parsedSnippet = JQWorkerInput.parse(responseSnippet);
 
-        // Return the snippet as a JSON response
-        return NextResponse.json(responseSnippet);
+        return NextResponse.json(parsedSnippet);
     } catch (error) {
-        console.error('Error fetching snippet:', error);
-        // Return a 500 response in case of a server error
+        console.error('Failed to fetch snippet:', error);
+
+        if (error instanceof ZodError) {
+            return NextResponse.json({ errors: error.errors }, { status: 422 });
+        }
+
         return NextResponse.json({ error: 'Server error' }, { status: 500 });
     }
 }
