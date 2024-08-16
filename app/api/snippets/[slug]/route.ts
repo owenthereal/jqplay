@@ -3,6 +3,7 @@ import prisma from '../../../../lib/prisma';
 import { version as uuidVersion, validate as uuidValidate } from 'uuid';
 import { JQWorkerInput } from '@/workers/model';
 import { ZodError } from 'zod';
+import * as Sentry from '@sentry/node';
 
 export async function GET(req: Request, { params }: { params: { slug: string } }) {
     const { slug } = params;
@@ -34,6 +35,7 @@ export async function GET(req: Request, { params }: { params: { slug: string } }
         return NextResponse.json(parsedSnippet);
     } catch (error) {
         console.error('Failed to fetch snippet:', error);
+        Sentry.captureException(error);
 
         if (error instanceof ZodError) {
             return NextResponse.json({ errors: error.errors }, { status: 422 });

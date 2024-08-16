@@ -3,6 +3,7 @@ import prisma from '../../../lib/prisma';
 import crypto from 'crypto';
 import { ZodError } from 'zod';
 import { JQWorkerInput, JQWorkerInputType } from '@/workers/model';
+import * as Sentry from '@sentry/node';
 
 export async function POST(req: Request) {
     try {
@@ -36,6 +37,7 @@ export async function POST(req: Request) {
 
     } catch (error) {
         console.error('Failed to save snippet:', error);
+        Sentry.captureException(error);
 
         if (error instanceof ZodError) {
             return NextResponse.json({ errors: error.errors }, { status: 422 });
