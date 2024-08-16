@@ -1,5 +1,5 @@
 import { Box, Paper, useTheme } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import Tab from '@mui/material/Tab';
 import { TabContext, TabList as MTabList, TabPanel } from '@mui/lab';
 import { useDarkMode } from './ThemeProvider';
@@ -20,16 +20,26 @@ const TabList: React.FC<TabListProps> = ({ tabs, handleTabChange }) => {
     const { darkMode } = useDarkMode();
     const theme = useTheme();
 
-    // Determine the default active tab
-    const defaultActiveTab = tabs.find(tab => tab.active)?.value || tabs[0]?.value;
-    const [tab, setTab] = useState(defaultActiveTab);
+    const getInitialActiveTab = () => tabs.find(tab => tab.active)?.value || tabs[0]?.value;
 
-    const onTabChange = (_: React.SyntheticEvent, newValue: string) => {
+    const [tab, setTab] = useState(getInitialActiveTab);
+
+    useEffect(() => {
+        // Update the tab only if there's an explicitly active tab in the updated tabs prop
+        const activeTab = tabs.find(tab => tab.active)?.value;
+        if (activeTab) {
+            setTab(activeTab);
+        }
+    }, [tabs]);
+
+    const onTabChange = useCallback((_: React.SyntheticEvent, newValue: string) => {
         setTab(newValue);
-        handleTabChange && handleTabChange(newValue);
-    };
+        if (handleTabChange) {
+            handleTabChange(newValue);
+        }
+    }, [handleTabChange]);
 
-    if (tabs.length === 0) return null; // Return null if no tabs are provided
+    if (!tabs.length) return null; // Return null if no tabs are provided
 
     return (
         <Box component={Paper} sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1, borderRadius: 0, marginBottom: 2 }}>

@@ -2,6 +2,7 @@ import { HttpMethodType, HttpType } from '@/workers/model';
 import Editor from './Editor';
 import HTTP from './HTTP';
 import TabList from './TabList';
+import { useState } from 'react';
 
 interface JSONEditorProps {
     json?: string;
