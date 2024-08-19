@@ -26,7 +26,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
                 const input = JQWorkerInput.parse(data);
                 setInput(input);
             } catch (error: any) {
-                setNotification({ message: error.message, messageId: generateMessageId() });
+                setNotification({ message: error.message, messageId: generateMessageId(), serverity: 'error' });
                 setTimeout(() => {
                     router.push('/');
                 }, 3000);
@@ -45,7 +45,7 @@ const Page = ({ params }: { params: { slug: string } }) => {
         return (
             <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
                 <CircularProgress />
-                <Notification message={notification?.message} messageId={notification?.messageId} />
+                <Notification message={notification?.message} messageId={notification?.messageId} serverity={notification?.serverity} />
             </Box>
         );
     }
