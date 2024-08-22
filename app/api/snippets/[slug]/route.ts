@@ -35,7 +35,7 @@ export async function GET(req: Request, { params }: { params: { slug: string } }
         return NextResponse.json(parsedSnippet);
     } catch (error) {
         console.error('Failed to fetch snippet:', error);
-        Sentry.captureException(error);
+        Sentry.captureException(error, { extra: { slug } });
 
         if (error instanceof ZodError) {
             return NextResponse.json({ errors: error.errors }, { status: 422 });

@@ -37,7 +37,7 @@ export async function POST(req: Request) {
 
     } catch (error) {
         console.error('Failed to save snippet:', error);
-        Sentry.captureException(error);
+        Sentry.captureException(error, { extra: { body: req.body } });
 
         if (error instanceof ZodError) {
             return NextResponse.json({ errors: error.errors }, { status: 422 });
