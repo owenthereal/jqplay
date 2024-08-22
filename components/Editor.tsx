@@ -1,8 +1,13 @@
-import MonacoEditor from '@monaco-editor/react';
-import { editor } from 'monaco-editor';
-import { useTheme } from '@mui/material';
-import React from 'react';
+import { Box, CircularProgress, useTheme } from '@mui/material';
+import React, { useEffect, useState } from 'react';
 import { useDarkMode } from './ThemeProvider';
+import dynamic from 'next/dynamic';
+import { InitMonacoEditor } from './InitMonacoEditor';
+
+// Dynamically load MonacoEditor without SSR
+const MonacoEditor = dynamic(() => import('@monaco-editor/react'), {
+    ssr: false,
+});
 
 interface EditorProps {
     language: string;
@@ -14,21 +19,35 @@ interface EditorProps {
 const Editor: React.FC<EditorProps> = ({ handleChange, value, language, readOnly }) => {
     const { darkMode } = useDarkMode();
     const theme = useTheme();
+    const [monacoConfigured, setMonacoConfigured] = useState(false);
 
-    const customizeContextMenu = (editor: editor.IStandaloneCodeEditor) => {
+    useEffect(() => {
+        const configureMonaco = async () => {
+            try {
+                await InitMonacoEditor(); // Configure Monaco globally
+                setMonacoConfigured(true); // Set the local state to true
+            } catch (error) {
+                console.error('Failed to configure Monaco:', error);
+            }
+        };
+
+        configureMonaco();
+    }, []);
+
+    const customizeContextMenu = (editor: any) => {
         try {
             const removableIds = ['editor.action.changeAll', 'editor.action.quickCommand'];
-            const contextmenu = editor.getContribution('editor.contrib.contextmenu') as any;
+            const contextmenu = editor.getContribution('editor.contrib.contextmenu');
             if (!contextmenu) return;
             const realMethod = contextmenu._getMenuActions;
             contextmenu._getMenuActions = function () {
                 let items = realMethod.apply(contextmenu, arguments);
                 items = items.filter((item: { id: string }) => !removableIds.includes(item.id));
                 if (items.length > 0 && items[0].id === 'vs.actions.separator') {
-                    items = items.slice(1, items.length - 1);
+                    items = items.slice(1);
                 }
                 if (items.length > 0 && items[items.length - 1].id === 'vs.actions.separator') {
-                    items = items.slice(0, items.length - 1);
+                    items = items.slice(0, -1);
                 }
                 return items;
             };
@@ -37,8 +56,18 @@ const Editor: React.FC<EditorProps> = ({ handleChange, value, language, readOnly
         }
     };
 
-    function handleEditorDidMount(editor: editor.IStandaloneCodeEditor) {
+    const handleEditorDidMount = (editor: any) => {
         customizeContextMenu(editor);
+    };
+
+    const loadingComponent = (
+        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', width: '100%' }}>
+            <CircularProgress />
+        </Box>
+    );
+
+    if (!monacoConfigured) {
+        return loadingComponent;
     }
 
     return (
@@ -48,13 +77,14 @@ const Editor: React.FC<EditorProps> = ({ handleChange, value, language, readOnly
             defaultLanguage={language}
             theme={darkMode ? 'vs-dark' : 'light'}
             value={value}
+            loading={loadingComponent}
             onChange={handleChange}
             onMount={handleEditorDidMount}
             options={{
-                readOnly: readOnly,
+                readOnly,
                 minimap: { enabled: false },
                 scrollbar: { vertical: 'auto', horizontal: 'auto' },
-                fontSize: theme.typography.body2.fontSize ? parseInt(theme.typography.body2.fontSize.toString()) : 12,
+                fontSize: parseInt(theme.typography.body2.fontSize?.toString() || '12'),
                 fontFamily: theme.typography.body2.fontFamily,
                 lineNumbers: 'on',
                 automaticLayout: true,

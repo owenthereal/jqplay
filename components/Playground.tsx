@@ -8,15 +8,12 @@ import OutputEditor from './OutputEditor';
 import { ThemeProvider } from './ThemeProvider';
 import { Notification, NotificationProps } from './Notification';
 import { currentUnixTimestamp, generateMessageId, normalizeLineBreaks } from '@/lib/utils';
-import { loader } from '@monaco-editor/react';
 import { JQWorker } from '@/workers';
 import { useRouter } from 'next/navigation';
 import { HttpMethodType, HttpType, JQWorkerInput, JQWorkerInputType } from '@/workers/model';
 import { ZodError } from 'zod';
 
 const runTimeout = 30000;
-
-loader.config({ paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor@0.50.0/min/vs' } });
 
 class RunError extends Error {
     runId: number;

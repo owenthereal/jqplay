@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Box, CircularProgress } from '@mui/material';
-import { Playground, PlaygroundProps } from '@/components/Playground';
+import { Playground } from '@/components/Playground';
 import { NotificationProps, Notification } from '@/components/Notification';
 import { generateMessageId } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
