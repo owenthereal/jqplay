@@ -11,8 +11,8 @@ import { currentUnixTimestamp, generateMessageId, normalizeLineBreaks } from '@/
 import { loader } from '@monaco-editor/react';
 import { JQWorker } from '@/workers';
 import { useRouter } from 'next/navigation';
-import { HttpHeadersSchema, HttpMethodType, HttpType, HttpUrlSchema, JQWorkerInput, JQWorkerInputType } from '@/workers/model';
-import { set, ZodError } from 'zod';
+import { HttpMethodType, HttpType, JQWorkerInput, JQWorkerInputType } from '@/workers/model';
+import { ZodError } from 'zod';
 
 const runTimeout = 30000;
 
@@ -110,9 +110,9 @@ function PlaygroundElement({ input }: PlaygroundProps) {
                 workerRef.current = worker;
 
                 const input = JQWorkerInput.parse({
-                    json: json,
+                    json: normalizeLineBreaks(json),
                     http: http,
-                    query: query,
+                    query: normalizeLineBreaks(query),
                     options: options
                 });
                 worker.run(input)
@@ -158,12 +158,12 @@ function PlaygroundElement({ input }: PlaygroundProps) {
     }, [json, http, query, options, handleJQRun]);
 
     const handleJSONEditorChange = useCallback((value: string | undefined) => {
-        setJson(value ? normalizeLineBreaks(value) : undefined);
+        setJson(value);
         setHttp(undefined);
     }, [setJson, setHttp]);
 
     const handleQueryEditorChange = useCallback((value: string | undefined) => {
-        if (value) setQuery(normalizeLineBreaks(value));
+        if (value) setQuery(value);
     }, [setQuery]);
 
     const handleOptionsSelectorChange = useCallback((options: string[]) => {
