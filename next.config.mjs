@@ -16,7 +16,6 @@ const nextConfig = {
                 new MonacoWebpackPlugin({
                     languages: ['json'],
                     filename: 'static/[name].worker.js', // Make sure this matches the output path in Next.js
-                    features: ['gotoSymbol', 'format', 'clipboard'],
                 })
             );
         }
