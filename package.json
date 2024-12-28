@@ -16,7 +16,7 @@
     "@emotion/styled": "^11.13.0",
     "@monaco-editor/react": "^4.6.0",
     "@mui/icons-material": "^5.16.7",
-    "@mui/lab": "^5.0.0-alpha.173",
+    "@mui/lab": "^5.0.0-alpha.175",
     "@mui/material": "^5.16.7",
     "@prisma/client": "^5.18.0",
     "@sentry/nextjs": "^8.33.1",
