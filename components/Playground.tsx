@@ -53,7 +53,6 @@ function PlaygroundElement({ input }: PlaygroundProps) {
     const [query, setQuery] = useState<string>(input?.query || '');
     const [options, setOptions] = useState<string[]>(input?.options || []);
 
-    const [minPlaygroundWidth, setMinPlaygroundWidth] = useState<string>('100%');
     const [minEditorHeight, setMinEditorHeight] = useState<number>(0);
     const [minQueryEditorHeight, setQueryMinEditorHeight] = useState<number>(0);
     const [notification, setNotification] = useState<NotificationProps | null>(null);
@@ -78,15 +77,12 @@ function PlaygroundElement({ input }: PlaygroundProps) {
     }, []);
 
     const updateMinHeight = useCallback(() => {
-        const height = window.innerHeight - 64 - 110 - 21;
+        const height = window.innerHeight - 64 - 110;
         const editorHeight = height * 3 / 4;
         const queryEditorHeight = height / 4;
-        const minHeight = 21 * 5;
+        const minHeight = 130;
         setMinEditorHeight(Math.max(editorHeight, minHeight));
         setQueryMinEditorHeight(Math.max(queryEditorHeight, minHeight));
-
-        const width = window.innerWidth;
-        setMinPlaygroundWidth(width >= 1280 ? '1280px' : '100%');
     }, []);
 
     useEffect(() => {
@@ -221,7 +217,7 @@ function PlaygroundElement({ input }: PlaygroundProps) {
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', bgcolor: 'background.default', color: 'text.primary' }}>
             <Header onShare={handleShare} onExampleClick={onExampleClick} onCopyClick={onCopyClick} enableCopyButton={!!query.length} />
-            <Container sx={{ flexGrow: 1, py: 2, display: 'flex', flexDirection: 'column', minWidth: minPlaygroundWidth }}>
+            <Container sx={{ flexGrow: 1, py: 2, display: 'flex', flexDirection: 'column', minWidth: '100%' }}>
                 <Grid container spacing={1} sx={{ flexGrow: 1 }}>
                     <Grid item xs={12} md={12} sx={{ display: 'flex', flexDirection: 'column', minHeight: minQueryEditorHeight }}>
                         <QueryEditor value={query} handleChange={handleQueryEditorChange} />
