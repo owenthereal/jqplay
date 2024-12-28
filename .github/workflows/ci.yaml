@@ -21,8 +21,8 @@ jobs:
         run: npm run lint
       - name: Build project
         run: npm run build
-  release:
-    needs: [build]
-    uses: ./.github/workflows/release.yaml
-    if: github.ref == 'refs/heads/main'
-    secrets: inherit
+#   release:
+#     needs: [build]
+#     uses: ./.github/workflows/release.yaml
+#     if: github.ref == 'refs/heads/main'
+#     secrets: inherit
