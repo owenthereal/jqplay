@@ -12,7 +12,7 @@ import { Notification, NotificationProps } from './Notification';
 import { currentUnixTimestamp, generateMessageId, normalizeLineBreaks } from '@/lib/utils';
 import { JQWorker } from '@/workers';
 import { useRouter } from 'next/navigation';
-import { HttpMethodType, HttpType, Snippet, SnippetType } from '@/workers/model';
+import { HttpMethodType, HttpType, Snippet, SnippetType, OptionsType, Options } from '@/workers/model';
 import { ZodError } from 'zod';
 
 const runTimeout = 30000;
@@ -36,28 +36,29 @@ class RunResult {
 
 export interface PlaygroundProps {
     input?: SnippetType
+    initialNotification?: NotificationProps
 }
 
-export function Playground({ input }: PlaygroundProps) {
+export function Playground({ input, initialNotification }: PlaygroundProps) {
     return (
         <ThemeProvider>
-            <PlaygroundElement input={input} />
+            <PlaygroundElement input={input} initialNotification={initialNotification} />
         </ThemeProvider>
     );
 }
 
-function PlaygroundElement({ input }: PlaygroundProps) {
+function PlaygroundElement({ input, initialNotification }: PlaygroundProps) {
     const router = useRouter();
     const [result, setResult] = useState<string>('');
 
     const [http, setHttp] = useState<HttpType | undefined>(input?.http ?? undefined);
     const [json, setJson] = useState<string | undefined>(input?.json ?? undefined);
     const [query, setQuery] = useState<string>(input?.query || '');
-    const [options, setOptions] = useState<string[]>(input?.options || []);
+    const [options, setOptions] = useState<OptionsType>(input?.options || []);
 
     const [minEditorHeight, setMinEditorHeight] = useState<number>(0);
     const [minQueryEditorHeight, setQueryMinEditorHeight] = useState<number>(0);
-    const [notification, setNotification] = useState<NotificationProps | null>(null);
+    const [notification, setNotification] = useState<NotificationProps | undefined>(initialNotification);
 
     const workerRef = useRef<JQWorker | null>(null);
     const runIdRef = useRef<number | null>(null);
@@ -162,7 +163,8 @@ function PlaygroundElement({ input }: PlaygroundProps) {
     }, [setQuery]);
 
     const handleOptionsSelectorChange = useCallback((options: string[]) => {
-        setOptions(options);
+        const opts = Options.parse(options);
+        setOptions(opts);
     }, [setOptions]);
 
     const handleHttp = useCallback((method: HttpMethodType, url?: string, headers?: string, body?: string) => {

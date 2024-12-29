@@ -34,12 +34,15 @@ export const HttpRequestSchema = z.object({
     body: z.string().optional(),
 });
 
+export const Option = z.enum(['-c', '-n', '-R', '-r', '-s', '-S']);
+export const Options = z.array(Option);
+
 // Main input schema
 export const Snippet = z.object({
     json: z.string().optional().nullable(),
     http: HttpRequestSchema.optional().nullable(),
     query: z.string().min(1),
-    options: z.array(z.string().min(1)).optional().nullable(),
+    options: Options.optional().nullable(),
 }).refine(data => (data.json ? !data.http : !!data.http), {
     message: 'Either JSON or HTTP must be provided, but not both.',
     path: ['json', 'http'],
@@ -49,3 +52,4 @@ export const Snippet = z.object({
 export type HttpMethodType = z.infer<typeof HttpMethodSchema>;
 export type HttpType = z.infer<typeof HttpRequestSchema>;
 export type SnippetType = z.infer<typeof Snippet>;
+export type OptionsType = z.infer<typeof Options>;

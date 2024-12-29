@@ -1,64 +1,60 @@
-'use client'
-
-import { useRouter, useSearchParams } from 'next/navigation';
 import { Playground } from '@/components/Playground';
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense } from 'react';
 import { Box, CircularProgress } from '@mui/material';
-import { Notification, NotificationProps } from '@/components/Notification';
+import { NotificationProps } from '@/components/Notification';
 import { generateMessageId } from '@/lib/utils';
-import { SnippetType } from '@/workers/model';
+import { Snippet, SnippetType } from '@/workers/model';
+import { ZodError } from 'zod';
 
-const PlaygroundWithParams = () => {
-    const searchParams = useSearchParams();
-    const j = searchParams.get('j');
-    const q = searchParams.get('q');
-    const o = searchParams.get('o');
+interface PageProps {
+    searchParams: Promise<Record<string, string | string[] | undefined>>;
+}
 
-    const [input, setInput] = useState<SnippetType | null>(null);
-    const [notification, setNotification] = useState<NotificationProps | null>(null);
+export default async function Page({ searchParams }: PageProps): Promise<JSX.Element | void> {
+    const params = await searchParams;
+    const j = typeof params.j === 'string' ? decodeURIComponent(params.j) : undefined;
+    const q = typeof params.q === 'string' ? decodeURIComponent(params.q) : undefined;
 
-    const router = useRouter();
-    useEffect(() => {
-        try {
-            const json = typeof j === 'string' ? decodeURIComponent(j) : '';
-            const query = typeof q === 'string' ? decodeURIComponent(q) : '';
-            const options = o ? [decodeURIComponent(o)] : [];
+    let o: string[] | undefined;
+    if (params.o) {
+        const rawOptions = Array.isArray(params.o) ? params.o : [params.o];
+        o = rawOptions.map(val => decodeURIComponent(val));
+    }
 
-            setInput({ json, query, options });
-        } catch (error: any) {
-            setNotification({ message: error.message, messageId: generateMessageId(), serverity: 'error' });
-            setTimeout(() => {
-                router.push('/');
-            }, 3000);
+    let snippet: SnippetType | undefined;
+    let notification: NotificationProps | undefined;
+
+    try {
+        snippet = Snippet.parse({ json: j, query: q, options: o });
+    } catch (error: any) {
+        let message = error.message
+        if (error instanceof ZodError) {
+            message = error.errors.map(e => e.message).join(', ');
         }
-    }, [j, q, o, router])
 
-    if (!input) {
-        return (
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-                <CircularProgress />
-                <Notification message={notification?.message} messageId={notification?.messageId} serverity={notification?.serverity} />
-            </Box>
-        );
+        notification = {
+            message: message,
+            messageId: generateMessageId(),
+            serverity: 'error',
+        };
     }
 
     return (
-        <Playground
-            input={input}
-        />
-    );
-}
-
-const Page = () => {
-    return (
-        <Suspense fallback={
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-                <CircularProgress />
-            </Box>
-        }>
-            <PlaygroundWithParams />
+        <Suspense
+            fallback={
+                <Box
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        height: '100vh',
+                    }}
+                >
+                    <CircularProgress />
+                </Box>
+            }
+        >
+            <Playground input={snippet} initialNotification={notification} />
         </Suspense>
     );
-};
-
-export default Page;
+}
