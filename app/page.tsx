@@ -6,7 +6,7 @@ import { Suspense, useEffect, useState } from 'react';
 import { Box, CircularProgress } from '@mui/material';
 import { Notification, NotificationProps } from '@/components/Notification';
 import { generateMessageId } from '@/lib/utils';
-import { JQWorkerInputType } from '@/workers/model';
+import { SnippetType } from '@/workers/model';
 
 const PlaygroundWithParams = () => {
     const searchParams = useSearchParams();
@@ -14,7 +14,7 @@ const PlaygroundWithParams = () => {
     const q = searchParams.get('q');
     const o = searchParams.get('o');
 
-    const [input, setInput] = useState<JQWorkerInputType | null>(null);
+    const [input, setInput] = useState<SnippetType | null>(null);
     const [notification, setNotification] = useState<NotificationProps | null>(null);
 
     const router = useRouter();

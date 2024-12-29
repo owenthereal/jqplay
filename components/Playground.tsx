@@ -1,3 +1,5 @@
+'use client'
+
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { Box, Container, Grid, Link, Typography } from '@mui/material';
 import Header from './Header';
@@ -10,7 +12,7 @@ import { Notification, NotificationProps } from './Notification';
 import { currentUnixTimestamp, generateMessageId, normalizeLineBreaks } from '@/lib/utils';
 import { JQWorker } from '@/workers';
 import { useRouter } from 'next/navigation';
-import { HttpMethodType, HttpType, JQWorkerInput, JQWorkerInputType } from '@/workers/model';
+import { HttpMethodType, HttpType, Snippet, SnippetType } from '@/workers/model';
 import { ZodError } from 'zod';
 
 const runTimeout = 30000;
@@ -33,7 +35,7 @@ class RunResult {
 }
 
 export interface PlaygroundProps {
-    input?: JQWorkerInputType
+    input?: SnippetType
 }
 
 export function Playground({ input }: PlaygroundProps) {
@@ -48,8 +50,8 @@ function PlaygroundElement({ input }: PlaygroundProps) {
     const router = useRouter();
     const [result, setResult] = useState<string>('');
 
-    const [http, setHttp] = useState<HttpType | undefined>(input?.http);
-    const [json, setJson] = useState<string | undefined>(input?.json);
+    const [http, setHttp] = useState<HttpType | undefined>(input?.http ?? undefined);
+    const [json, setJson] = useState<string | undefined>(input?.json ?? undefined);
     const [query, setQuery] = useState<string>(input?.query || '');
     const [options, setOptions] = useState<string[]>(input?.options || []);
 
@@ -102,7 +104,7 @@ function PlaygroundElement({ input }: PlaygroundProps) {
                 const worker = new JQWorker(timeout);
                 workerRef.current = worker;
 
-                const input = JQWorkerInput.parse({
+                const input = Snippet.parse({
                     json: normalizeLineBreaks(json),
                     http: http,
                     query: normalizeLineBreaks(query),

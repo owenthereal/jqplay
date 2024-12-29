@@ -35,11 +35,11 @@ export const HttpRequestSchema = z.object({
 });
 
 // Main input schema
-export const JQWorkerInput = z.object({
-    json: z.string().optional(),
-    http: HttpRequestSchema.optional(),
+export const Snippet = z.object({
+    json: z.string().optional().nullable(),
+    http: HttpRequestSchema.optional().nullable(),
     query: z.string().min(1),
-    options: z.array(z.string().min(1)).optional(),
+    options: z.array(z.string().min(1)).optional().nullable(),
 }).refine(data => (data.json ? !data.http : !!data.http), {
     message: 'Either JSON or HTTP must be provided, but not both.',
     path: ['json', 'http'],
@@ -48,4 +48,4 @@ export const JQWorkerInput = z.object({
 // TypeScript types for better type inference
 export type HttpMethodType = z.infer<typeof HttpMethodSchema>;
 export type HttpType = z.infer<typeof HttpRequestSchema>;
-export type JQWorkerInputType = z.infer<typeof JQWorkerInput>;
+export type SnippetType = z.infer<typeof Snippet>;

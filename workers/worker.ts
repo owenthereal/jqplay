@@ -1,15 +1,15 @@
 import { HttpType } from './model';
 
 export const worker = {
-    async jq(json: string, query: string, options?: Array<string>): Promise<string> {
+    async jq(json: string, query: string, options?: Array<string> | null): Promise<string> {
         const jq = await import('jq-wasm');
-        return jq.raw(json, query, options);
+        return jq.raw(json, query, options ?? undefined);
     },
 
     async http(
         http: HttpType,
         query: string,
-        options?: Array<string>
+        options?: Array<string> | null,
     ): Promise<string> {
         if (!http) {
             throw new Error('HTTP input is undefined');
