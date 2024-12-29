@@ -219,11 +219,31 @@ function PlaygroundElement({ input }: PlaygroundProps) {
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', bgcolor: 'background.default', color: 'text.primary' }}>
             <Header onShare={handleShare} onExampleClick={onExampleClick} onCopyClick={onCopyClick} enableCopyButton={!!query.length} />
-            <Container sx={{ flexGrow: 1, py: 2, display: 'flex', flexDirection: 'column', minWidth: '100%' }}>
-                <Grid container spacing={2} sx={{ flexGrow: 1, minWidth: '100%' }}>
-                    <Grid item xs={6} md={6} sx={{ display: 'flex', flexDirection: 'column' }}>
+            <Container
+                sx={{
+                    flexGrow: 1,
+                    py: 2,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    minWidth: '100%',
+                }}
+            >
+                <Grid
+                    container
+                    spacing={2}
+                    sx={{
+                        flexGrow: 1,
+                        minWidth: '100%',
+                    }}
+                >
+                    <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column' }}>
                         <Grid container spacing={1} sx={{ flexGrow: 1 }}>
-                            <Grid item xs={12} md={12} sx={{ display: 'flex', flexDirection: 'column', minHeight: minQueryEditorHeight }}>
+                            <Grid
+                                item
+                                xs={12}
+                                md={12}
+                                sx={{ display: 'flex', flexDirection: 'column', minHeight: minQueryEditorHeight }}
+                            >
                                 <QueryEditor value={query} handleChange={handleQueryEditorChange} />
                             </Grid>
                         </Grid>
@@ -231,14 +251,19 @@ function PlaygroundElement({ input }: PlaygroundProps) {
                             <OptionsSelector options={options} setOptions={handleOptionsSelectorChange} />
                         </Box>
                         <Grid container spacing={1} sx={{ flexGrow: 1 }}>
-                            <Grid item xs={12} md={12} sx={{ display: 'flex', flexDirection: 'column', minHeight: minEditorHeight }}>
+                            <Grid
+                                item
+                                xs={12}
+                                md={12}
+                                sx={{ display: 'flex', flexDirection: 'column', minHeight: minEditorHeight }}
+                            >
                                 <JSONEditor json={json} http={http} handleJSONChange={handleJSONEditorChange} handleHTTPChange={handleHttp} />
                             </Grid>
                         </Grid>
                     </Grid>
-                    <Grid item xs={6} md={6} sx={{ display: 'flex', flexDirection: 'column' }}>
+                    <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column' }}>
                         <Grid container sx={{ flexGrow: 1 }}>
-                            <Grid item xs={12} md={12} sx={{ display: 'flex', flexDirection: 'column', minHeight: '100%' }}>
+                            <Grid item xs={12} md={12} sx={{ display: 'flex', flexDirection: 'column', minHeight: minEditorHeight }}>
                                 <OutputEditor result={result} />
                             </Grid>
                         </Grid>
