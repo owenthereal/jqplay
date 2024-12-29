@@ -80,8 +80,8 @@ function PlaygroundElement({ input }: PlaygroundProps) {
 
     const updateMinHeight = useCallback(() => {
         const height = window.innerHeight - 64 - 110;
-        const editorHeight = height * 3 / 4;
-        const queryEditorHeight = height / 4;
+        const editorHeight = height * 2 / 3;
+        const queryEditorHeight = height / 3;
         const minHeight = 130;
         setMinEditorHeight(Math.max(editorHeight, minHeight));
         setQueryMinEditorHeight(Math.max(queryEditorHeight, minHeight));
@@ -219,21 +219,54 @@ function PlaygroundElement({ input }: PlaygroundProps) {
     return (
         <Box sx={{ display: 'flex', flexDirection: 'column', bgcolor: 'background.default', color: 'text.primary' }}>
             <Header onShare={handleShare} onExampleClick={onExampleClick} onCopyClick={onCopyClick} enableCopyButton={!!query.length} />
-            <Container sx={{ flexGrow: 1, py: 2, display: 'flex', flexDirection: 'column', minWidth: '100%' }}>
-                <Grid container spacing={1} sx={{ flexGrow: 1 }}>
-                    <Grid item xs={12} md={12} sx={{ display: 'flex', flexDirection: 'column', minHeight: minQueryEditorHeight }}>
-                        <QueryEditor value={query} handleChange={handleQueryEditorChange} />
+            <Container
+                sx={{
+                    flexGrow: 1,
+                    py: 2,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    minWidth: '100%',
+                }}
+            >
+                <Grid
+                    container
+                    spacing={2}
+                    sx={{
+                        flexGrow: 1,
+                        minWidth: '100%',
+                    }}
+                >
+                    <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column' }}>
+                        <Grid container spacing={1} sx={{ flexGrow: 1 }}>
+                            <Grid
+                                item
+                                xs={12}
+                                md={12}
+                                sx={{ display: 'flex', flexDirection: 'column', minHeight: minQueryEditorHeight }}
+                            >
+                                <QueryEditor value={query} handleChange={handleQueryEditorChange} />
+                            </Grid>
+                        </Grid>
+                        <Box>
+                            <OptionsSelector options={options} setOptions={handleOptionsSelectorChange} />
+                        </Box>
+                        <Grid container spacing={1} sx={{ flexGrow: 1 }}>
+                            <Grid
+                                item
+                                xs={12}
+                                md={12}
+                                sx={{ display: 'flex', flexDirection: 'column', minHeight: minEditorHeight }}
+                            >
+                                <JSONEditor json={json} http={http} handleJSONChange={handleJSONEditorChange} handleHTTPChange={handleHttp} />
+                            </Grid>
+                        </Grid>
                     </Grid>
-                </Grid>
-                <Box>
-                    <OptionsSelector options={options} setOptions={handleOptionsSelectorChange} />
-                </Box>
-                <Grid container spacing={2} sx={{ flexGrow: 1 }}>
-                    <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', minHeight: minEditorHeight }}>
-                        <JSONEditor json={json} http={http} handleJSONChange={handleJSONEditorChange} handleHTTPChange={handleHttp} />
-                    </Grid>
-                    <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', minHeight: minEditorHeight }}>
-                        <OutputEditor result={result} />
+                    <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column' }}>
+                        <Grid container sx={{ flexGrow: 1 }}>
+                            <Grid item xs={12} md={12} sx={{ display: 'flex', flexDirection: 'column', minHeight: minEditorHeight }}>
+                                <OutputEditor result={result} />
+                            </Grid>
+                        </Grid>
                     </Grid>
                 </Grid>
                 <Box sx={{ textAlign: 'center' }}>
