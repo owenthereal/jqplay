@@ -1,60 +1,35 @@
-'use client';
-
-import { useEffect, useState } from 'react';
-import { Box, CircularProgress } from '@mui/material';
 import { Playground } from '@/components/Playground';
-import { NotificationProps, Notification } from '@/components/Notification';
-import { generateMessageId } from '@/lib/utils';
-import { useRouter } from 'next/navigation';
-import { JQWorkerInput, JQWorkerInputType } from '@/workers/model';
+import { redirect } from 'next/navigation';
+import { Snippet } from '@/workers/model';
+import { GetSnippet } from '@/lib/prisma';
+import * as Sentry from '@sentry/browser';
 
-const Page = ({ params }: { params: { slug: string } }) => {
-    const slug = params.slug;
-    const [input, setInput] = useState<JQWorkerInputType | null>(null);
-    const [notification, setNotification] = useState<NotificationProps | null>(null);
+interface PageProps {
+    params: Promise<{ slug: string }>;
+}
 
-    const router = useRouter();
-    useEffect(() => {
-        const fetchSnippet = async () => {
-            try {
-                const res = await fetch(`/api/snippets/${slug}`);
-                if (!res.ok) {
-                    throw new Error('Failed to fetch snippet');
-                }
-
-                const data = await res.json();
-                const input = JQWorkerInput.parse(data);
-                setInput(input);
-            } catch (error: any) {
-                setNotification({ message: error.message, messageId: generateMessageId(), serverity: 'error' });
-                setTimeout(() => {
-                    router.push('/');
-                }, 3000);
-            }
-        };
-
-        if (slug) {
-            fetchSnippet();
-        } else {
-            // Redirect to home if no slug
-            router.push('/');
-        }
-    }, [slug, router]);
-
-    if (!input) {
-        return (
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-                <CircularProgress />
-                <Notification message={notification?.message} messageId={notification?.messageId} serverity={notification?.serverity} />
-            </Box>
-        );
+export default async function Page({ params }: PageProps): Promise<JSX.Element | void> {
+    const slug = (await params).slug;
+    if (!slug) {
+        return redirect('/');
     }
 
-    return (
-        <Playground
-            input={input}
-        />
-    );
-};
+    try {
+        const snippet = await GetSnippet(slug);
+        if (!snippet) {
+            return redirect('/');
+        }
 
-export default Page;
+        const input = Snippet.parse(snippet);
+        return (
+            <Playground
+                input={input}
+            />
+        );
+    } catch (error: any) {
+        console.error(`Failed to load snippet: ${error.message}`);
+        Sentry.captureException(error, { extra: { slug } });
+
+        redirect('/')
+    }
+};
