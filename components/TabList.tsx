@@ -42,7 +42,7 @@ const TabList: React.FC<TabListProps> = ({ tabs, handleTabChange }) => {
     if (!tabs.length) return null; // Return null if no tabs are provided
 
     return (
-        <Box component={Paper} sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1, borderRadius: 0, marginBottom: 2 }}>
+        <Paper elevation={1} variant="outlined" sx={{ display: 'flex', flexDirection: 'column', flexGrow: 1, borderRadius: 0, marginBottom: 2 }}>
             <TabContext value={tab}>
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                     <MTabList
@@ -51,7 +51,7 @@ const TabList: React.FC<TabListProps> = ({ tabs, handleTabChange }) => {
                         indicatorColor="secondary"
                         onChange={onTabChange}
                         sx={{
-                            color: darkMode ? theme.palette.common.white : theme.palette.text.primary,
+                            backgroundColor: theme.palette.background.default,
                             paddingBottom: 1,
                             paddingLeft: 1,
                         }}
@@ -67,7 +67,7 @@ const TabList: React.FC<TabListProps> = ({ tabs, handleTabChange }) => {
                     </TabPanel>
                 ))}
             </TabContext>
-        </Box>
+        </Paper>
     );
 };
 

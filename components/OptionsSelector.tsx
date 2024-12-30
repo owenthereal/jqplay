@@ -34,7 +34,7 @@ const OptionsSelector: React.FC<OptionsProps> = ({ options, setOptions }) => {
     };
 
     return (
-        <Box component={Paper} sx={{ mb: 2, p: 2 }}>
+        <Paper variant="outlined" sx={{ mb: 2, p: 2, backgroundColor: theme.palette.background.default }}>
             <FormControl fullWidth variant="outlined" sx={{ mt: 1 }}>
                 <InputLabel id="options-label">Options</InputLabel>
                 <Select
@@ -47,7 +47,7 @@ const OptionsSelector: React.FC<OptionsProps> = ({ options, setOptions }) => {
                     onChange={handleOptionsChange}
                     input={<OutlinedInput id="select-multiple-chip" label="Options" />}
                     renderValue={(selected) => (
-                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5, }}>
                             {(selected as string[]).map((value) => (
                                 <Chip
                                     key={value}
@@ -67,7 +67,7 @@ const OptionsSelector: React.FC<OptionsProps> = ({ options, setOptions }) => {
                     ))}
                 </Select>
             </FormControl>
-        </Box>
+        </Paper>
     );
 };
 

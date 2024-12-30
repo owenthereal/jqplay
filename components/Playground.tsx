@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { Box, Container, Grid, Link, Typography } from '@mui/material';
+import { Box, Container, Grid, Link, Paper, Typography } from '@mui/material';
 import Header from './Header';
 import JSONEditor from './JSONEditor';
 import QueryEditor from './QueryEditor';
