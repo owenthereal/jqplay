@@ -2,7 +2,7 @@ import { Playground } from '@/components/Playground';
 import { Suspense } from 'react';
 import { Box, CircularProgress } from '@mui/material';
 import { NotificationProps } from '@/components/Notification';
-import { generateMessageId } from '@/lib/utils';
+import { generateMessageId, prettifyZodError } from '@/lib/utils';
 import { Snippet, SnippetType } from '@/workers/model';
 import { ZodError } from 'zod';
 
@@ -29,9 +29,11 @@ export default async function Page({ searchParams }: PageProps): Promise<JSX.Ele
             snippet = Snippet.parse({ json: j, query: q, options: o });
         }
     } catch (error: any) {
-        let message = error.message
+        let message = ''
         if (error instanceof ZodError) {
-            message = error.errors.map(e => `${e.path.join(', ')} ${e.message}`.toLowerCase()).join(', ');
+            message = prettifyZodError(error);
+        } else {
+            message = error.message
         }
 
         notification = {

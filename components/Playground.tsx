@@ -9,7 +9,7 @@ import OptionsSelector from './OptionsSelector';
 import OutputEditor from './OutputEditor';
 import { ThemeProvider } from './ThemeProvider';
 import { Notification, NotificationProps } from './Notification';
-import { currentUnixTimestamp, generateMessageId, normalizeLineBreaks } from '@/lib/utils';
+import { currentUnixTimestamp, generateMessageId, normalizeLineBreaks, prettifyZodError } from '@/lib/utils';
 import { JQWorker } from '@/workers';
 import { useRouter } from 'next/navigation';
 import { HttpMethodType, HttpType, Snippet, SnippetType, OptionsType, Options } from '@/workers/model';
@@ -116,7 +116,7 @@ function PlaygroundElement({ input, initialNotification }: PlaygroundProps) {
                     .catch(error => reject(new RunError(runId, error.message)));
             } catch (error: any) {
                 if (error instanceof ZodError) {
-                    const errorMessage = error.errors.map((e) => e.message).join(', ');
+                    const errorMessage = prettifyZodError(error);
                     reject(new RunError(runId, errorMessage));
                 }
                 reject(new RunError(runId, error.message));
