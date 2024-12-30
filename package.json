@@ -12,7 +12,7 @@
     "prisma:migrate": "npm run setup-db && npx prisma migrate dev"
   },
   "dependencies": {
-    "@emotion/react": "^11.13.0",
+    "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.13.0",
     "@monaco-editor/react": "^4.6.0",
     "@mui/icons-material": "^6.3.0",
