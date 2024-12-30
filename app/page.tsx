@@ -25,11 +25,13 @@ export default async function Page({ searchParams }: PageProps): Promise<JSX.Ele
     let notification: NotificationProps | undefined;
 
     try {
-        snippet = Snippet.parse({ json: j, query: q, options: o });
+        if (j || q) {
+            snippet = Snippet.parse({ json: j, query: q, options: o });
+        }
     } catch (error: any) {
         let message = error.message
         if (error instanceof ZodError) {
-            message = error.errors.map(e => e.message).join(', ');
+            message = error.errors.map(e => `${e.path.join(', ')} ${e.message}`.toLowerCase()).join(', ');
         }
 
         notification = {

@@ -16,16 +16,16 @@ export default async function Page({ params }: PageProps): Promise<JSX.Element |
 
     try {
         const snippet = await GetSnippet(slug);
-        if (!snippet) {
-            return redirect('/');
+        if (snippet) {
+            const input = Snippet.parse(snippet);
+            return (
+                <Playground
+                    input={input}
+                />
+            );
+        } else {
+            redirect('/');
         }
-
-        const input = Snippet.parse(snippet);
-        return (
-            <Playground
-                input={input}
-            />
-        );
     } catch (error: any) {
         console.error(`Failed to load snippet: ${error.message}`);
         Sentry.captureException(error, { extra: { slug } });
