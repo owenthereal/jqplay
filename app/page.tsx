@@ -5,35 +5,34 @@ import { NotificationProps } from '@/components/Notification';
 import { generateMessageId, prettifyZodError } from '@/lib/utils';
 import { Snippet, SnippetType } from '@/workers/model';
 import { ZodError } from 'zod';
+import * as Sentry from '@sentry/node';
 
 interface PageProps {
     searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
 export default async function Page({ searchParams }: PageProps): Promise<JSX.Element | void> {
-    const params = await searchParams;
-    const j = typeof params.j === 'string' ? decodeURIComponent(params.j) : undefined;
-    const q = typeof params.q === 'string' ? decodeURIComponent(params.q) : undefined;
-
-    let o: string[] | undefined;
-    if (params.o) {
-        const rawOptions = Array.isArray(params.o) ? params.o : [params.o];
-        o = rawOptions.map(val => decodeURIComponent(val));
-    }
-
     let snippet: SnippetType | undefined;
     let notification: NotificationProps | undefined;
 
+    const params = await searchParams;
     try {
+        const j = typeof params.j === 'string' ? decodeURIComponent(params.j) : undefined;
+        const q = typeof params.q === 'string' ? decodeURIComponent(params.q) : undefined;
+
+        let o: string[] | undefined;
+        if (params.o) {
+            const rawOptions = Array.isArray(params.o) ? params.o : [params.o];
+            o = rawOptions.map(val => decodeURIComponent(val));
+        }
+
         if (j || q) {
             snippet = Snippet.parse({ json: j, query: q, options: o });
         }
     } catch (error: any) {
-        let message = ''
+        let message = error.message
         if (error instanceof ZodError) {
             message = prettifyZodError(error);
-        } else {
-            message = error.message
         }
 
         notification = {
@@ -41,6 +40,9 @@ export default async function Page({ searchParams }: PageProps): Promise<JSX.Ele
             messageId: generateMessageId(),
             serverity: 'error',
         };
+
+        console.error(`Failed to parse snippet: ${error.message}`);
+        Sentry.captureException(error, { extra: { params } });
     }
 
     return (

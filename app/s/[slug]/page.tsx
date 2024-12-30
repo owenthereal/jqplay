@@ -2,7 +2,7 @@ import { Playground } from '@/components/Playground';
 import { redirect } from 'next/navigation';
 import { Snippet } from '@/workers/model';
 import { GetSnippet } from '@/lib/prisma';
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '@sentry/node';
 
 interface PageProps {
     params: Promise<{ slug: string }>;
