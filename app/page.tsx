@@ -17,26 +17,26 @@ export default async function Page({ searchParams }: PageProps): Promise<JSX.Ele
 
     const params = await searchParams;
     try {
-        const j = typeof params.j === 'string' ? decodeURIComponent(params.j) : undefined;
-        const q = typeof params.q === 'string' ? decodeURIComponent(params.q) : undefined;
+        const j = (typeof params.j === 'string') ? safeDecode(params.j, 'j') : undefined;
+        const q = (typeof params.q === 'string') ? safeDecode(params.q, 'q') : undefined;
 
-        let o: string[] | undefined;
+        let o: string[] | string | undefined;
         if (params.o) {
             const rawOptions = Array.isArray(params.o) ? params.o : [params.o];
-            o = rawOptions.map(val => decodeURIComponent(val));
+            o = rawOptions.map(val => safeDecode(val, 'o'));
         }
 
         if (j || q) {
             snippet = Snippet.parse({ json: j, query: q, options: o });
         }
     } catch (error: any) {
-        let message = error.message
+        let message = error.message;
         if (error instanceof ZodError) {
             message = prettifyZodError(error);
         }
 
         notification = {
-            message: message,
+            message,
             messageId: generateMessageId(),
             serverity: 'error',
         };
@@ -63,4 +63,12 @@ export default async function Page({ searchParams }: PageProps): Promise<JSX.Ele
             <Playground input={snippet} initialNotification={notification} />
         </Suspense>
     );
+}
+
+function safeDecode(value: string, fieldName: string): string {
+    try {
+        return decodeURIComponent(value);
+    } catch (error: any) {
+        throw new Error(`Failed to decode "${fieldName}" as URI: ${error.message}`);
+    }
 }
