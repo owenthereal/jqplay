@@ -44,7 +44,7 @@ export const Snippet = z.object({
     query: z.string().min(1),
     options: Options.optional().nullable(),
 }).refine(data => (data.json ? !data.http : !!data.http), {
-    message: 'Either JSON or HTTP must be provided, but not both.',
+    message: 'Either JSON or HTTP must be provided.',
     path: ['json', 'http'],
 });
 
