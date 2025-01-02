@@ -16,14 +16,14 @@ export default async function Page({ searchParams }: PageProps): Promise<JSX.Ele
     let notification: NotificationProps | undefined;
 
     const params = await searchParams;
-    try {
-        const j = (typeof params.j === 'string') ? safeDecode(params.j, 'j') : undefined;
-        const q = (typeof params.q === 'string') ? safeDecode(params.q, 'q') : undefined;
 
+    try {
+        const j = (typeof params.j === 'string') ? params.j : undefined;
+        const q = (typeof params.q === 'string') ? params.q : undefined;
         let o: string[] | string | undefined;
         if (params.o) {
             const rawOptions = Array.isArray(params.o) ? params.o : [params.o];
-            o = rawOptions.map(val => safeDecode(val, 'o'));
+            o = rawOptions.map(val => val);
         }
 
         if (j || q) {
@@ -63,12 +63,4 @@ export default async function Page({ searchParams }: PageProps): Promise<JSX.Ele
             <Playground input={snippet} initialNotification={notification} />
         </Suspense>
     );
-}
-
-function safeDecode(value: string, fieldName: string): string {
-    try {
-        return decodeURIComponent(value);
-    } catch (error: any) {
-        throw new Error(`Failed to decode "${fieldName}" as URI: ${error.message}`);
-    }
 }
