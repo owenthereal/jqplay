@@ -1,4 +1,4 @@
-import { Box, Grid, MenuItem, TextField } from "@mui/material";
+import { Box, Grid, MenuItem, TextField, useTheme } from "@mui/material";
 import { useEffect, useState, useCallback } from "react";
 import Editor from "./Editor";
 import TabList from "./TabList";
@@ -10,6 +10,8 @@ interface HTTPProps {
 }
 
 const HTTP: React.FC<HTTPProps> = ({ value, handleHttp }) => {
+    const theme = useTheme();
+
     const [method, setMethod] = useState<HttpMethodType>(value?.method || 'GET');
     const [url, setUrl] = useState<string | undefined>(value?.url);
     const [headers, setHeaders] = useState<string | undefined>(value?.headers);
@@ -20,7 +22,7 @@ const HTTP: React.FC<HTTPProps> = ({ value, handleHttp }) => {
     }, [method, url, headers, body, handleHttp]);
 
     return (
-        <Box component="form" sx={{ width: '100%', display: 'flex', flexDirection: 'column', height: '100%' }}>
+        <Box component="form" sx={{ width: '100%', display: 'flex', flexDirection: 'column', height: '100%', backgroundColor: theme.palette.background.default }}>
             <Grid container spacing={2} alignItems="center" sx={{ paddingLeft: 1, paddingRight: 1 }}>
                 <Grid item xs={3}>
                     <TextField
