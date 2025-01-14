@@ -1,5 +1,4 @@
-import { Box, Typography, useTheme, IconButton } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+import { Box, Typography, useTheme } from '@mui/material';
 import { useDarkMode } from './ThemeProvider';
 
 interface SectionTitleProps {

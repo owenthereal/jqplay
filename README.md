@@ -1,36 +1,62 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# jqplay
+
+A [jq](https://jqlang.github.io/jq) playground built with [Next.js](https://nextjs.org).
+Test your jq queries against JSON directly in your browser. All jq queries and HTTP requests to fetch JSON are processed **locally** in your browser. Snippets are sent to the server **only** if you choose to share them.
+
+✨ **Try it out at [jqplay.org](https://jqplay.org)!**
+
+## How It Works
+
+- **WebAssembly-Powered**: jqplay integrates the [jq-wasm](https://github.com/owenthereal/jq-wasm) package, a WebAssembly-based jq JSON processor for Node.js and browsers, with no native dependencies. This ensures that all jq queries run directly in your browser.
+- **Local Data Processing**: Your JSON input is processed locally in your browser, ensuring your data stays private and secure.
+- **Shareable Snippets**: If you share your jq query, a unique URL is generated on the server. Others can open the shared snippet, but the query will still run locally in their browser.
 
 ## Getting Started
 
-First, run the development server:
+Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- Node.js (>= 14.x recommended)
+- npm or yarn package manager
+- PostgreSQL (for storing shared snippets)
+
+## Running the App
+
+### 1. Clone the repository
+
+```console
+git clone https://github.com/owenthereal/jqplay
+cd jqplay
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Start in Development Mode
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+To start the app in development mode with hot reload enabled and a local PostgreSQL database:
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+```console
+docker compose up
+```
 
-## Learn More
+Open your browser to <http://localhost:3000> to explore jqplay.
 
-To learn more about Next.js, take a look at the following resources:
+### 3. Run a Production Build
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+For a production-ready build, use:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+```console
+npm run build
+npm run start
+```
 
-## Deploy on Vercel
+Open your browser to <http://localhost:3000> to use jqplay locally in production mode.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Contributing
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Contributions are welcome! 🎉 Whether you’re fixing bugs, adding features, or improving documentation, your help is appreciated.
+
+## License
+
+📜 jqplay is licensed under the [MIT License](LICENSE).
+
+---
+
+Happy querying! 🚀

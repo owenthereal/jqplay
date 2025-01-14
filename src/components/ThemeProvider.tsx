@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, ReactNode, useEffect, FC } from 'react';
-import { ThemeProvider as MuiThemeProvider, createTheme, Theme } from '@mui/material/styles';
+import { ThemeProvider as MuiThemeProvider, createTheme } from '@mui/material/styles';
 
 interface ThemeContextType {
     darkMode: boolean;
