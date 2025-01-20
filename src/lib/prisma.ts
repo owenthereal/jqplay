@@ -8,7 +8,7 @@ declare global {
 }
 
 // Use a single PrismaClient instance in development and production environments.
-const prisma = global.prisma || new PrismaClient({
+const prisma: PrismaClient = global.prisma || new PrismaClient({
     log: process.env.NODE_ENV === 'development' ? ['query', 'info', 'warn', 'error'] : ['warn', 'error'],
 });
 
@@ -18,7 +18,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 export default prisma;
 
-export async function GetSnippet(slug: string) {
+export async function GetSnippet(slug: string): Promise<SnippetType | null> {
     const whereClause = uuidValidateV4(slug)
         ? { id: slug } // If valid UUID v4, search by ID
         : { slug: slug }; // Otherwise, search by slug
@@ -28,7 +28,7 @@ export async function GetSnippet(slug: string) {
     });
 }
 
-export async function UpsertSnippet(snippet: SnippetType) {
+export async function UpsertSnippet(snippet: SnippetType): Promise<SnippetType> {
     const slug = generateSlug(snippet);
     return prisma.snippets.upsert({
         where: { slug },
@@ -75,6 +75,6 @@ function generateSlug(snippet: SnippetType, hashLen: number = 15): string {
     return base64Encoded.substring(0, hashLen);
 }
 
-function uuidValidateV4(uuid: string) {
+function uuidValidateV4(uuid: string): boolean {
     return uuidValidate(uuid) && uuidVersion(uuid) === 4;
 }
