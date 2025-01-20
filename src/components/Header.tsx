@@ -15,17 +15,17 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ onShare, onExampleClick, onCopyClick, enableCopyButton }) => {
     const { darkMode, toggleDarkMode } = useDarkMode();
-    const [cheatsheetOpen, setCheatSheetOpen] = useState(false);
+    const [cheatsheetOpen, setCheatSheetOpen] = useState<boolean>(false);
 
     const theme = useTheme();
     const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
-    const toolbarStyle = {
+    const toolbarStyle: React.CSSProperties = {
         backgroundColor: darkMode ? '#333333' : '#f5f5f5',
         color: darkMode ? '#ffffff' : '#333333',
     };
 
-    const subtitleStyle = {
+    const subtitleStyle: React.CSSProperties = {
         color: darkMode ? '#cccccc' : '#666666',
     };
 

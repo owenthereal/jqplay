@@ -16,8 +16,11 @@ export async function POST(req: Request) {
         Sentry.captureException(error, { extra: { body: req.body } });
 
         if (error instanceof ZodError) {
-            return NextResponse.json({ errors: error.errors }, { status: 422 });
+            const errorMessages = error.errors.map(e => `${e.path.join(', ')} ${e.message}`.toLowerCase());
+            return NextResponse.json({ errors: errorMessages }, { status: 422 });
         }
-        return NextResponse.json({ error: error.message || 'Failed to save snippet' }, { status: 500 });
+
+        const errorMessage = error?.message || 'An unknown error occurred';
+        return NextResponse.json({ error: errorMessage }, { status: 500 });
     }
 }
