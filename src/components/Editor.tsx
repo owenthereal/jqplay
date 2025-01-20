@@ -19,7 +19,7 @@ interface EditorProps {
 const Editor: React.FC<EditorProps> = ({ handleChange, value, language, readOnly }) => {
     const { darkMode } = useDarkMode();
     const theme = useTheme();
-    const [monacoConfigured, setMonacoConfigured] = useState(false);
+    const [monacoConfigured, setMonacoConfigured] = useState<boolean>(false);
 
     useEffect(() => {
         const configureMonaco = async () => {
