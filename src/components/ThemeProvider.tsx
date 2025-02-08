@@ -3,7 +3,6 @@ import { ThemeProvider as MuiThemeProvider, createTheme } from '@mui/material/st
 
 interface ThemeContextType {
     darkMode: boolean;
-    toggleDarkMode: () => void;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -11,7 +10,7 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 export const useDarkMode = (): ThemeContextType => {
     const context = useContext(ThemeContext);
     if (!context) {
-        throw new Error('useTheme must be used within a ThemeProvider');
+        throw new Error('useDarkMode must be used within a ThemeProvider');
     }
     return context;
 };
@@ -24,17 +23,21 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
     const [darkMode, setDarkMode] = useState(false);
 
     useEffect(() => {
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme) {
-            setDarkMode(savedTheme === 'dark');
+        if (typeof window !== 'undefined') {
+            const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+            // Set initial value
+            setDarkMode(mediaQuery.matches);
+
+            // Listener for OS-level theme changes
+            const handleChange = (e: MediaQueryListEvent) => {
+                setDarkMode(e.matches);
+            };
+
+            mediaQuery.addEventListener('change', handleChange);
+            return () => mediaQuery.removeEventListener('change', handleChange);
         }
     }, []);
-
-    const toggleDarkMode = () => {
-        const newMode = !darkMode;
-        setDarkMode(newMode);
-        localStorage.setItem('theme', newMode ? 'dark' : 'light');
-    };
 
     const theme = createTheme({
         palette: {
@@ -57,8 +60,10 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
             },
         },
         typography: {
-            fontSize: 14,
-            fontFamily: 'Roboto, Arial, Helvetica, sans-serif',
+            fontSize: 16,
+            fontFamily:
+                '"Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", ' +
+                'Roboto, "Helvetica Neue", Arial, sans-serif',
             h6: {
                 fontWeight: 600,
                 fontSize: '1rem',
@@ -66,7 +71,7 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
             },
             subtitle1: {
                 fontWeight: 600,
-                fontSize: '0.875rem',
+                fontSize: '1rem',
                 lineHeight: 1.5,
             },
             subtitle2: {
@@ -75,13 +80,15 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
                 lineHeight: 1.5,
             },
             body1: {
+                fontSize: '1rem',
+                lineHeight: 1.5,
                 fontWeight: 400,
-                fontSize: 14,
             },
             // editor font
             body2: {
                 fontSize: 14,
-                fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace',
+                fontFamily:
+                    'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace',
             },
         },
         shape: {
@@ -90,10 +97,8 @@ export const ThemeProvider: FC<ThemeProviderProps> = ({ children }) => {
     });
 
     return (
-        <ThemeContext.Provider value={{ darkMode, toggleDarkMode }}>
-            <MuiThemeProvider theme={theme}>
-                {children}
-            </MuiThemeProvider>
+        <ThemeContext.Provider value={{ darkMode }}>
+            <MuiThemeProvider theme={theme}>{children}</MuiThemeProvider>
         </ThemeContext.Provider>
     );
 };
