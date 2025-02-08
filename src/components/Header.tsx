@@ -61,16 +61,12 @@ const Header: React.FC<HeaderProps> = ({ onShare, onExampleClick, onCopyClick, e
                 }}
             >
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Link href="/" passHref style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
+                    <Link href="https://jqlang.org" passHref style={{ textDecoration: 'none', display: 'flex', alignItems: 'center' }}>
                         <Logo darkMode={darkMode} />
                     </Link>
                     {!isSmallScreen && (
                         <Typography variant="subtitle1" sx={subtitleStyle} ml={1}>
-                            The {' '}
-                            <Link href="https://jqlang.org" passHref style={{ textDecoration: 'none', color: 'inherit' }}>
-                                JQ
-                            </Link>
-                            {' '} Playground
+                            The JQ Playground
                         </Typography>
                     )}
                 </Box>
