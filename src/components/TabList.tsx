@@ -2,7 +2,6 @@ import { Box, Paper, useTheme } from '@mui/material';
 import React, { useEffect, useState, useCallback } from 'react';
 import Tab from '@mui/material/Tab';
 import { TabContext, TabList as MTabList, TabPanel } from '@mui/lab';
-import { useDarkMode } from './ThemeProvider';
 
 interface TabItem {
     label: string;
@@ -17,7 +16,6 @@ interface TabListProps {
 }
 
 const TabList: React.FC<TabListProps> = ({ tabs, handleTabChange }) => {
-    const { darkMode } = useDarkMode();
     const theme = useTheme();
 
     const getInitialActiveTab = () => tabs.find(tab => tab.active)?.value || tabs[0]?.value;

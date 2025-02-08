@@ -27,8 +27,17 @@ Sentry.init({
       blockAllMedia: true,
     }),
     Sentry.feedbackIntegration({
-      colorScheme: localStorage.getItem('theme') === 'dark' ? 'dark' : 'light',
+      colorScheme: getColorScheme(),
       isEmailRequired: true,
     }),
   ],
 });
+
+function getColorScheme() {
+  if (typeof window !== 'undefined') {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    return mediaQuery.matches ? 'dark' : 'light';
+  }
+
+  return 'light';
+}
